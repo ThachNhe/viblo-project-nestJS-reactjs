@@ -1,75 +1,20 @@
-version: "3.8"
 services:
-  mysqldb:
-    image: mysql
+  dev-db:
+    container_name: pg_container
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
     environment:
-      - MYSQL_ROOT_PASSWORD=123
-      - MYSQL_DATABASE=viblo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=viblo
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
     ports:
-      - 3306:3306
-    command: --default-authentication-plugin=mysql_native_password
-    networks:
-      - shared-network
-    volumes:
-      - db-config:/etc/mysql
-      - db-data:/var/lib/mysql
-      - ./db/backup/files:/data_backup/data
-
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx-prod
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #   ports:
-  #     - 80:80
-  #   command: /bin/sh -c "nginx -g 'daemon off;'"
-  #   depends_on:
-  #     api-prod:
-  #       condition: service_healthy
-  #     app-prod:
-  #       condition: service_started
-  #   networks:
-  #     - shared-network
-
-  api-prod:
-    container_name: nestjs-server
-    image: nestjs-api-prod:1.0.0
-    build:
-      context: nestjs-server
-      target: production
-      dockerfile: Dockerfile
-    command: sh -c './bin/wait-for -t 0 mysqldb:3306 -- yarn start:prod'
-    depends_on:
-      - mysqldb
-    networks:
-      - shared-network
-    ports:
-      - 9000:9000
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "curl", "http://api-prod:9000" ]
-      interval: 5s
-      timeout: 3s
-      retries: 6
-
-  app-prod:
-    container_name: client
-    image: react-app-prod:1.0.0
-    build:
-      context: client
-      target: production
-      dockerfile: Dockerfile
-    command: yarn run start:prod
-    ports:
-      - 3000:3000
-    networks:
-      - shared-network
-    restart: unless-stopped
-
-networks:
-  shared-network:
-
-
-volumes:
-  db-config:
-  db-data:
+      - "5050:80"
