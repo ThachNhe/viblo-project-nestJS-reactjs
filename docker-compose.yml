@@ -35,22 +35,19 @@ services:
       - ~/minio/data:/data
     command: server /data --console-address ":9001"
 
-#   nestjs_server:
-#     build: ./
-#     container_name: nestjs_server
-#     ports:
-#       - 8000:3000
+# app:
+#     build:
+#       context: ./nestjs-server
+#       dockerfile: Dockerfile
+#     container_name: nest-docker-postgres
 #     environment:
-#       - JWT_KEY=${JWT_KEY}
-#       - DATABASE_HOST=dev-db
-#       - DATABASE_PORT=5432
-#       - DATABASE_USER=postgres
-#       - DATABASE_PASSWORD=1234
-#       - DATABASE_NAME=viblo
+#       - PORT=${PORT}
+#     ports:
+#       - '3000:3000'
 #     depends_on:
-#       - dev-db
-#     networks:
-#       - shared-network
-#     restart: unless-stopped
+#       - db
+#     volumes:
+#       - ./src:/app/src
+
 # networks:
 #   shared-network:
