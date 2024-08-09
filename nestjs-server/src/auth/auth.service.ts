@@ -1,12 +1,16 @@
+import { ConfigService } from '@nestjs/config';
 import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import * as argon2 from "argon2";
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
-   constructor(private prismaService: PrismaService) {
-
-   }
+   constructor(
+      private prismaService: PrismaService,
+      private jwtService: JwtService,
+      private configService: ConfigService
+   ) { }
    async registerService(body: AuthDTORegister) {
       let hasPassword = await argon2.hash(body.password);
       try {
@@ -62,12 +66,27 @@ export class AuthService {
             }
          }
          delete user.password;
-         return user;
+         return this.convertToJwtString(user.email, user.id);
+
       } catch (error) {
          return {
             errCode: -2,
             err: error
          }
+      }
+   }
+
+   async convertToJwtString(email: string, userId: number): Promise<{ accessToken: string }> {
+      const payload = {
+         sub: userId,
+         email: email
+      }
+      const jwtToken = await this.jwtService.signAsync(payload, {
+         expiresIn: '100m',
+         secret: this.configService.get('JWT_KEY')
+      })
+      return {
+         accessToken: jwtToken
       }
    }
 }

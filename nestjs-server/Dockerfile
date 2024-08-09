@@ -1,20 +1,23 @@
-FROM node:20 AS production
 
-# ARG NODE_ENV=production
-# ENV NODE_ENV=${NODE_ENV}
+# Dockerfile
+FROM node:20
 
-# WORKDIR /usr/src/api
+# Create app directory
+WORKDIR /usr/src/app
 
-# COPY package.json .
-# # COPY yarn.lock .
+# Install app dependencies
+COPY package*.json ./
 
-# RUN yarn global add @nestjs/cli
-# RUN yarn install --production=true
+RUN npm install
 
-# RUN apt-get -q update && apt-get -qy install netcat
+# Bundle app source
+COPY . .
 
-# COPY . .
+# Build the NestJS application
+RUN npm run build
 
-# RUN yarn build 
+# Expose the port the app runs on
+EXPOSE 3000
 
-# CMD ["sh", "-c", "yarn typeorm migration:run && yarn start:prod"]
+# Command to run the app
+CMD ["npm", "run", "start:dev"]
