@@ -8,19 +8,19 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=viblo
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
 
-  pgadmin:
-    container_name: pgadmin4_container
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
-    ports:
-      - "5050:80"
+  # pgadmin:
+  #   container_name: pgadmin4_container
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+  #     - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+  #   ports:
+  #     - "5050:80"
 
   minio:
     image: quay.io/minio/minio
@@ -29,25 +29,26 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: ROOTNAME
-      MINIO_ROOT_PASSWORD: CHANGEME123
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     volumes:
       - ~/minio/data:/data
     command: server /data --console-address ":9001"
+    # app:
+    #     build:
+    #       context: ./nestjs-server
+    #       dockerfile: Dockerfile
+    #     container_name: nest-docker-postgres
+    #     environment:
+    #       - PORT=${PORT}
+    #     ports:
+    #       - '3000:3000'
+    #     depends_on:
+    #       - db
+    #     volumes:
+    #       - ./src:/app/src
 
-# app:
-#     build:
-#       context: ./nestjs-server
-#       dockerfile: Dockerfile
-#     container_name: nest-docker-postgres
-#     environment:
-#       - PORT=${PORT}
-#     ports:
-#       - '3000:3000'
-#     depends_on:
-#       - db
-#     volumes:
-#       - ./src:/app/src
-
-# networks:
-#   shared-network:
+    # networks:
+    #   shared-network:
+volumes:
+  cloudbeaver:
