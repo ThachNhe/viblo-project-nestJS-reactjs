@@ -1,9 +1,10 @@
 import { ConfigService } from '@nestjs/config';
 import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import * as argon2 from "argon2";
 import { JwtService } from '@nestjs/jwt';
-import { access } from 'fs';
+import { AppDataSource } from '../index';
+import { User } from '../entity/User';
 @Injectable()
 export class AuthService {
   constructor(
@@ -13,51 +14,61 @@ export class AuthService {
   // user register service
   async registerService(body: AuthDTORegister) {
     let hashedPassword = await argon2.hash(body.password);
-    // const user = await this.prismaService.user.create({
-    //   data: {
-    //     email: body.email,
-    //     password: hashedPassword,
-    //     userName: body.userName,
-    //     fullName: body.fullName,
-    //     imgURL: body.imgURL
-    //   },
-    // })
-
-    // return {
-    //   errCode: 0,
-    //   msg: 'Register success!',
-    //   user: user
-    // }
-
+    const userRepository = AppDataSource.getRepository(User);
+    const user = new User();
+    user.email = body.email;
+    user.password = hashedPassword;
+    user.userName = body.userName;
+    user.fullName = body.fullName;
+    user.avatar = body.avatar;
+    try {
+      await userRepository.save(user);
+      delete user.password;
+      delete user.avatar;
+      return {
+        errCode: 0,
+        msg: 'Register success!',
+        user: user
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('User has been existed!');
+    }
   }
+
   // user login service
-  async loginService(body: AuthDTOLogin) {
+  async loginService(body: AuthDTOLogin): Promise<any> {
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOne({
+      where: [
+        { email: body.email },
+        { userName: body.userName }
+      ],
+      select: ['id', 'email', 'userName', 'fullName', 'avatar', 'password']
+    });
 
-    // const user = await this.prismaService.user.findFirst({
-    //   where: {
-    //     OR: [
-    //       { email: body.email },
-    //       { userName: body.userName },
-    //     ],
-    //   },
-    // });
+    if (!user) {
+      throw new UnauthorizedException();
+    }
 
-    // if (!user) {
-    //   throw new UnauthorizedException();
-    // }
+    const isValidPassword = await argon2.verify(user.password, body.password);
+    if (!isValidPassword) {
+      throw new UnauthorizedException();
+    }
 
-    // const isValidPassword = await argon2.verify(user.password, body.password);
-    // if (!isValidPassword) {
-    //   throw new UnauthorizedException();
-    // }
+    delete user.password;
+    const Jwt = await this.getAccessToken(user.email, user.id);
 
-    // delete user.password;
-    // const Jwt = this.getAccessToken(user.email, user.id);
-
-    // return {
-    //   ...user,
-    //   accessToken: Jwt
-    // }
+    return {
+      statusCode: 200,
+      success: true,
+      error: null,
+      data: {
+        user,
+        accessToken: Jwt
+      }
+      // ...user,
+      // accessToken: Jwt
+    }
   }
   // get access token for user
   async getAccessToken(email: string, userId: number) {
