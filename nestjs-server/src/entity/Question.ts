@@ -1,10 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany } from "typeorm"
 import { User } from "./User"
-import { Comment } from "./Comment"
 import { Tag } from "./Tag"
+import { Answer } from "./Answer"
 
-@Entity({ name: 'posts' })
-export class Post {
+
+@Entity({ name: 'questions' })
+export class Question {
 
   @PrimaryGeneratedColumn()
   id: number
@@ -14,12 +15,6 @@ export class Post {
 
   @Column({ type: 'text' })
   content_markdown: string
-
-  @Column({ type: 'text' })
-  table_content: string
-
-  @Column({ nullable: true })
-  tags_array: string
 
   @Column({ default: 0 })
   view_number: number
@@ -31,35 +26,20 @@ export class Post {
   bookmark_number: number
 
   @Column({ default: 0 })
-  number_comment: number
+  answer_number: number
 
-  @Column({ default: false })
-  isPublished: boolean
 
-  @Column({ nullable: true })
-  seriesId: number
-
-  @ManyToOne(() => User, user => user.posts, {
-    orphanedRowAction: 'delete',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  author: User
-
-  @OneToMany(() => Comment, comment => comment.post, {
+  @OneToMany(() => Answer, answer => answer.question, {
     cascade: true,
     eager: true,
   })
-  comments: Comment[]
+  answers: Answer[]
 
-  @ManyToMany(() => Tag, (tag) => tag.posts)
+  @ManyToOne(() => User, user => user.questions)
+  author: User
+
+  @ManyToMany(() => Tag, (tag) => tag.questions)
   tags: Tag[]
-
-  @ManyToMany(() => User, (user) => user.bookmarked_posts)
-  bookmarkers: User[]
-
-  @ManyToMany(() => User, (user) => user.voted_posts)
-  voters: User[]
 
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
   public created_at: Date;

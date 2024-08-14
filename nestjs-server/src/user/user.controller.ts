@@ -15,5 +15,6 @@ export class UserController {
   async getUsers() {
     return this.userService.getUsersService()
   }
+
 }
 

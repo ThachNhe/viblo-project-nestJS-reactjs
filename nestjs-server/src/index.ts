@@ -3,6 +3,13 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "./entity/User"
 import { Post } from "./entity/Post"
+import { Comment } from "./entity/Comment"
+import { Series } from "./entity/Series"
+import { Question } from "./entity/Question"
+import { Answer } from "./entity/Answer"
+import { Tag } from "./entity/Tag"
+import { Notification } from "./entity/Notification"
+import { NotificationDetail } from "./entity/NotificationDetail"
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: "localhost",
@@ -12,7 +19,8 @@ export const AppDataSource = new DataSource({
   database: "viblo-db",
   synchronize: true,
   logging: false,
-  entities: [User, Post],
+  entities: [User, Post, Comment, Series, Question, Answer, Tag,
+    Notification, NotificationDetail],
   migrations: [],
   subscribers: [],
 })

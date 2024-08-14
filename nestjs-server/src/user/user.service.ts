@@ -7,7 +7,9 @@ export class UserService {
   getUsersService() {
     const userRepository = AppDataSource.getRepository(User);
     return userRepository.find({
-      select: ["id", "email", "userName", "fullName", "avatar", "followerNumber"]
+      select: ["id", "email", "userName", "fullName", "avatar", "follower_number"],
+      relations: ["posts"]
     });
   }
+
 }
