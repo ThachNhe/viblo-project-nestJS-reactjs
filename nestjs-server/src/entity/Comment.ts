@@ -1,33 +1,45 @@
-
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, ManyToOne, UpdateDateColumn } from "typeorm"
-import { Post } from "./Post"
-import { User } from "./User"
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  ManyToOne,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Post } from './Post';
+import { User } from './User';
 @Entity({ name: 'comments' })
 export class Comment {
-
   @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: number
+  id: number;
 
   @Column({ type: 'text' })
-  content: string
+  content: string;
 
   @Column({ nullable: true })
-  parentName: string
+  parentName: string;
 
-  @ManyToOne(() => User, user => user.comments)
-  user: User
+  @ManyToOne(() => User, (user) => user.comments)
+  user: User;
 
-  @ManyToOne(() => Post, post => post.comments, {
+  @ManyToOne(() => Post, (post) => post.comments, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  post: Post
+  post: Post;
 
-
-  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   public created_at: Date;
 
-  @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   public updated_at: Date;
 }

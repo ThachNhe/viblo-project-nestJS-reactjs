@@ -1,69 +1,84 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany } from "typeorm"
-import { User } from "./User"
-import { Comment } from "./Comment"
-import { Tag } from "./Tag"
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
+import { User } from './User';
+import { Comment } from './Comment';
+import { Tag } from './Tag';
 
 @Entity({ name: 'posts' })
 export class Post {
-
   @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: number
+  id: number;
 
   @Column()
-  title: string
+  title: string;
 
   @Column({ type: 'text' })
-  content_markdown: string
+  content_markdown: string;
 
   @Column({ type: 'text' })
-  table_content: string
+  table_content: string;
 
   @Column({ nullable: true })
-  tags_array: string
+  tags_array: string;
 
   @Column({ default: 0 })
-  view_number: number
+  view_number: number;
 
   @Column({ default: 0 })
-  vote_number: number
+  vote_number: number;
 
   @Column({ default: 0 })
-  bookmark_number: number
+  bookmark_number: number;
 
   @Column({ default: 0 })
-  number_comment: number
+  number_comment: number;
 
   @Column({ default: false })
-  isPublished: boolean
+  isPublished: boolean;
 
   @Column({ nullable: true })
-  seriesId: number
+  seriesId: number;
 
-  @ManyToOne(() => User, user => user.posts, {
+  @ManyToOne(() => User, (user) => user.posts, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  author: User
+  author: User;
 
-  @OneToMany(() => Comment, comment => comment.post, {
+  @OneToMany(() => Comment, (comment) => comment.post, {
     cascade: true,
     eager: true,
   })
-  comments: Comment[]
+  comments: Comment[];
 
   @ManyToMany(() => Tag, (tag) => tag.posts)
-  tags: Tag[]
+  tags: Tag[];
 
   @ManyToMany(() => User, (user) => user.bookmarked_posts)
-  bookmarkers: User[]
+  bookmarkers: User[];
 
   @ManyToMany(() => User, (user) => user.voted_posts)
-  voters: User[]
+  voters: User[];
 
-  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   public created_at: Date;
 
-  @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   public updated_at: Date;
 }

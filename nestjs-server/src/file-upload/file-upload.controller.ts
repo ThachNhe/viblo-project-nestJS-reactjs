@@ -30,6 +30,7 @@ export class FileUploadController {
   @Get('/presignedUrl/:name')
   @UseInterceptors(FileInterceptor('image'))
   async presignedUrl(@Param('name') name: string) {
-    return await this.fileUploadService.presignedUrl(name)
+    console.log("check name : ", name)
+    // return await this.fileUploadService.presignedUrl(name)
   }
 }
