@@ -7,7 +7,7 @@ import { Answer } from "./Answer"
 @Entity({ name: 'questions' })
 export class Question {
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number
 
   @Column()

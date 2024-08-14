@@ -7,7 +7,7 @@ import { User } from "./User"
 @Entity({ name: 'series' })
 export class Series {
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number
 
   @Column()

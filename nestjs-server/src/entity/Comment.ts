@@ -5,7 +5,7 @@ import { User } from "./User"
 @Entity({ name: 'comments' })
 export class Comment {
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number
 
   @Column({ type: 'text' })

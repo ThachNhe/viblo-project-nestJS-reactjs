@@ -5,7 +5,7 @@ import { NotificationDetail } from "./NotificationDetail";
 @Entity({ name: 'notifications' })
 export class Notification {
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number
 
   @Column()
