@@ -1,20 +1,47 @@
+import React, { useState } from "react";
+import axios from "./axios";
 
-import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import  * as actions from "./redux/action/index";
-function TestRedux() {
-   const dispatch = useDispatch();
-   const [users, setUsers] = useState([]);
-   const usersRedux = useSelector((state) => state.user.users);
-   useEffect(() => {
-      dispatch(actions.getAllUserAction());
-   }, []);
-   useEffect(() => {
-   console.log(usersRedux);
-   }, [usersRedux]);
- return (
-   <div className='text-black font-semibold text-lg'></div>
-  )
-}
+const TestRedux = () => {
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    if (event.target.files) {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+
+    try {
+      // get presigned URL from server
+      const response = await axios.put("/minio/presigned-url", {
+        fileName: file.name,
+      });
+
+      const presignedUrl = response.presignedURL;
+      await axios.put(presignedUrl, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+
+      const getUrlResponse = await axios.get(
+        `/minio/presigned-get-url?fileName=${file.name}`
+      );
+      // const imageUrl = getUrlResponse;
+      // console.log("Image URL:", imageUrl);
+    } catch (error) {
+      console.error("error when upload!!:", error);
+    }
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button>
+    </div>
+  );
+};
 
 export default TestRedux;

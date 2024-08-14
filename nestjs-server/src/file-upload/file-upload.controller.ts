@@ -1,36 +1,47 @@
-import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, Get, Param, Req } from '@nestjs/common';
-import { FileInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express'
+import { Controller, Body, Put, Query, Get } from '@nestjs/common';
 import { FileUploadService } from './file-upload.service';
-import { BufferedFile } from 'src/minio-client/file.model';
+@Controller('minio')
+export class MinioController {
+  constructor(private readonly minioService: FileUploadService) {}
 
-@Controller('file-upload')
-export class FileUploadController {
-  constructor(
-    private fileUploadService: FileUploadService
-  ) { }
+  @Put('presigned-url')
+  async getPresignedUrl(@Body('fileName') fileName: string) {
+    // console.log('check file  :', fileName);
+    const bucketName = 'test';
+    const objectName = fileName;
+    const expirySeconds = 60 * 60 * 60;
 
-  //  @Post('single')
-  //  @UseInterceptors(FileInterceptor('image'))
-  //  async uploadSingle(
-  //     @UploadedFile() image: BufferedFile
-  //  ) {
-  //     return await this.fileUploadService.uploadSingle(image)
-  //  }
+    const presignedURL = await this.minioService.generatePresignedUrl(
+      bucketName,
+      objectName,
+      expirySeconds,
+    );
 
-  //  @Post('many')
-  //  @UseInterceptors(FileFieldsInterceptor([
-  //     { name: 'image1', maxCount: 1 },
-  //     { name: 'image2', maxCount: 1 },
-  //  ]))
-  //  async uploadMany(
-  //     @UploadedFiles() files: BufferedFile,
-  //  ) {
-  //     return this.fileUploadService.uploadMany(files)
-  //  }
-  @Get('/presignedUrl/:name')
-  @UseInterceptors(FileInterceptor('image'))
-  async presignedUrl(@Param('name') name: string) {
-    console.log("check name : ", name)
-    // return await this.fileUploadService.presignedUrl(name)
+    return {
+      status: 'success',
+      presignedURL,
+    };
+  }
+
+  @Get('presigned-get-url')
+  async getPresignedGetUrl(@Query('fileName') fileName: string) {
+    const bucketName = 'test';
+    const objectName = fileName;
+    const expirySeconds = 60 * 60 * 60;
+    console.log(
+      'check get controller   :',
+      bucketName,
+      objectName,
+      expirySeconds,
+    );
+    const imageURL = await this.minioService.generatePresignedGetUrl(
+      bucketName,
+      objectName,
+      expirySeconds,
+    );
+    return {
+      status: 'success',
+      imageURL,
+    };
   }
 }

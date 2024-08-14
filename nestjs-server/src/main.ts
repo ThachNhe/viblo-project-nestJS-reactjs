@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+require('dotenv').config({ path: `../${process.env.NODE_ENV}.env` });
 declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

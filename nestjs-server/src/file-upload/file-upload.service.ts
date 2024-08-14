@@ -1,58 +1,67 @@
 import { Injectable } from '@nestjs/common';
-import { MinioClientService } from 'src/minio-client/minio-client.service';
-import { BufferedFile } from 'src/minio-client/file.model';
-
-// @Injectable()
-// export class FileUploadService {
-//    constructor(
-//       private minioClientService: MinioClientService
-//    ) { }
-
-//    async uploadSingle(image: BufferedFile) {
-
-//       let uploaded_image = await this.minioClientService.upload(image)
-
-//       return {
-//          image_url: uploaded_image.url,
-//          message: "Successfully uploaded to MinIO S3"
-//       }
-//    }
-
-//    async uploadMany(files: BufferedFile) {
-
-//       let image1 = files['image1'][0]
-//       let uploaded_image1 = await this.minioClientService.upload(image1)
-
-//       let image2 = files['image2'][0]
-//       let uploaded_image2 = await this.minioClientService.upload(image2)
-
-//       return {
-//          image1_url: uploaded_image1.url,
-//          image2_url: uploaded_image2.url,
-//          message: 'Successfully uploaded mutiple image on MinioS3'
-//       }
-//    }
-// }
-
-
-const Minio = require('minio')
-const client = new Minio.Client({
-  endPoint: 'play.min.io',
-  port: 9000,
-  useSSL: true,
-  accessKey: 'Q3AM3UQ867SPQQA43P2F',
-  secretKey: 'zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG'
-})
-
+import * as Minio from 'minio';
+import { ConfigService } from '@nestjs/config';
+import 'dotenv/config';
 @Injectable()
 export class FileUploadService {
-  async presignedUrl(name: string) {
-    console.log("check name : ", name)
+  public configService: ConfigService;
+  private readonly minioClient: Minio.Client;
+  constructor() {
+    // this.minioClient = new Minio.Client({
+    //   endPoint: configService.get('MINIO_ENDPOINT'),
+    //   port: 9000,
+    //   useSSL: configService.get('MINIO_USE_SSL'),
+    //   accessKey: configService.get('MINIO_ACCESS_KEY'),
+    //   secretKey: configService.get('MINIO_SECRET_KEY'),
+    // });
+
+    this.minioClient = new Minio.Client({
+      endPoint: 'localhost',
+      port: 9000,
+      useSSL: false,
+      accessKey: 'AKIAIOSFODNN7EXAMPLE',
+      secretKey: 'wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY',
+    });
+  }
+
+  async generatePresignedUrl(
+    bucketName: string,
+    objectName: string,
+    expirySeconds: number,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.minioClient.presignedPutObject(
+        bucketName,
+        objectName,
+        expirySeconds,
+        (err, presignedUrl) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(presignedUrl);
+          }
+        },
+      );
+    });
+  }
+
+  async generatePresignedGetUrl(
+    bucketName: string,
+    objectName: string,
+    expirySeconds: number,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.minioClient.presignedGetObject(
+        bucketName,
+        objectName,
+        expirySeconds,
+        (err, presignedUrl) => {
+          if (err) reject(err);
+          else {
+            resolve(presignedUrl);
+          }
+        },
+      );
+    });
   }
 }
-//   server.get('/presignedUrl', (req, res) => {
-//   client.presignedPutObject('uploads', req.query.name, (err, url) => {
-//     if (err) throw err
-//     res.end(url)
-//   })
-// })
