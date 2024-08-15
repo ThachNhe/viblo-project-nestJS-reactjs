@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Req,
   Post,
   Body,
   BadRequestException,
@@ -8,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -29,4 +30,12 @@ export class AuthController {
     }
     return this.authService.loginService(body, response);
   }
+
+  @Post('refresh-token')
+  refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    return this.authService.requestNewAccessToken(req, res);
+  }
+
+  @Get('test-authorize')
+  authorize() {}
 }

@@ -15,10 +15,7 @@ import { Question } from './Question';
 import { Answer } from './Answer';
 import { NotificationDetail } from './NotificationDetail';
 import { Tag } from './Tag';
-enum Role {
-  Admin = 'ADMIN',
-  User = 'USER',
-}
+import { Role } from '../enums/role.enum';
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -41,7 +38,7 @@ export class User {
     enum: Role,
     default: Role.User,
   })
-  role: Role;
+  roles: Role[];
 
   @Column()
   avatar: string;

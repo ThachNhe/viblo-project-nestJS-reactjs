@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+import { Role } from '../enums/role.enum';
 import {
   Injectable,
   InternalServerErrorException,
@@ -45,9 +46,17 @@ export class AuthService {
     const userRepository = AppDataSource.getRepository(User);
     const user = await userRepository.findOne({
       where: [{ email: body.email }, { userName: body.userName }],
-      select: ['id', 'email', 'userName', 'fullName', 'avatar', 'password'],
+      select: [
+        'id',
+        'email',
+        'userName',
+        'fullName',
+        'avatar',
+        'password',
+        'roles',
+      ],
     });
-
+    // console.log('check user : ', user);
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -58,8 +67,16 @@ export class AuthService {
     }
 
     delete user.password;
-    const accessToken = await this.getAccessToken(user.email, user.id);
-    const refreshToken = await this.getRefreshToken(user.email, user.id);
+    const accessToken = await this.getAccessToken(
+      user.email,
+      user.id,
+      user.roles,
+    );
+    const refreshToken = await this.getRefreshToken(
+      user.email,
+      user.id,
+      user.roles,
+    );
 
     response.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -76,15 +93,14 @@ export class AuthService {
         user,
         accessToken: accessToken,
       },
-      // ...user,
-      // accessToken: Jwt
     };
   }
   // get access token for user
-  async getAccessToken(email: string, userId: number) {
+  async getAccessToken(email: string, userId: number, role: Role[]) {
     const payload = {
       sub: userId,
       email: email,
+      role: role,
     };
 
     return await this.jwtService.signAsync(payload, {
@@ -94,15 +110,58 @@ export class AuthService {
   }
 
   // get refresh token for user
-  async getRefreshToken(email: string, userId: number) {
+  async getRefreshToken(email: string, userId: number, role: Role[]) {
     const payload = {
       sub: userId,
       email: email,
+      role: role,
     };
 
     return await this.jwtService.signAsync(payload, {
-      expiresIn: '100m',
+      expiresIn: '365d',
       secret: this.configService.get('JWT_REFRESH_KEY'),
     });
+  }
+
+  // request new access token
+  async requestNewAccessToken(req: Request, res: Response) {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
+    const payload = await this.jwtService.verifyAsync(refreshToken, {
+      secret: this.configService.get('JWT_REFRESH_KEY'),
+    });
+
+    // if (!payload) {
+    //   throw new BadRequestException('Invalid token');
+    // }
+    console.log('check payload', payload);
+    const newAccessToken = await this.getAccessToken(
+      payload.email,
+      +payload.sub,
+      payload.role,
+    );
+
+    const newRefreshToken = await this.getRefreshToken(
+      payload.email,
+      +payload.sub,
+      payload.role,
+    );
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      path: './',
+    });
+
+    return {
+      success: true,
+      statusCode: 200,
+      data: {
+        accessToken: newAccessToken,
+      },
+    };
   }
 }
