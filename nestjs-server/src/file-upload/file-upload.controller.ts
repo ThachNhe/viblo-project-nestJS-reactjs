@@ -28,12 +28,6 @@ export class MinioController {
     const bucketName = 'test';
     const objectName = fileName;
     const expirySeconds = 60 * 60 * 60;
-    console.log(
-      'check get controller   :',
-      bucketName,
-      objectName,
-      expirySeconds,
-    );
     const imageURL = await this.minioService.generatePresignedGetUrl(
       bucketName,
       objectName,

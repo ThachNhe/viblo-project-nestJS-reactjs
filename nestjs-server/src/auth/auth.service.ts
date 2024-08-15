@@ -1,7 +1,12 @@
 import { ConfigService } from '@nestjs/config';
 import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
-import { Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
-import * as argon2 from "argon2";
+import { Response } from 'express';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { AppDataSource } from '../index';
 import { User } from '../entity/User';
@@ -9,8 +14,8 @@ import { User } from '../entity/User';
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private configService: ConfigService
-  ) { }
+    private configService: ConfigService,
+  ) {}
   // user register service
   async registerService(body: AuthDTORegister) {
     let hashedPassword = await argon2.hash(body.password);
@@ -28,7 +33,7 @@ export class AuthService {
       return {
         errCode: 0,
         msg: 'Register success!',
-        user: user
+        user: user,
       };
     } catch (error) {
       throw new InternalServerErrorException('User has been existed!');
@@ -36,14 +41,11 @@ export class AuthService {
   }
 
   // user login service
-  async loginService(body: AuthDTOLogin): Promise<any> {
+  async loginService(body: AuthDTOLogin, response: Response) {
     const userRepository = AppDataSource.getRepository(User);
     const user = await userRepository.findOne({
-      where: [
-        { email: body.email },
-        { userName: body.userName }
-      ],
-      select: ['id', 'email', 'userName', 'fullName', 'avatar', 'password']
+      where: [{ email: body.email }, { userName: body.userName }],
+      select: ['id', 'email', 'userName', 'fullName', 'avatar', 'password'],
     });
 
     if (!user) {
@@ -56,7 +58,15 @@ export class AuthService {
     }
 
     delete user.password;
-    const Jwt = await this.getAccessToken(user.email, user.id);
+    const accessToken = await this.getAccessToken(user.email, user.id);
+    const refreshToken = await this.getRefreshToken(user.email, user.id);
+
+    response.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      path: './',
+    });
 
     return {
       statusCode: 200,
@@ -64,23 +74,35 @@ export class AuthService {
       error: null,
       data: {
         user,
-        accessToken: Jwt
-      }
+        accessToken: accessToken,
+      },
       // ...user,
       // accessToken: Jwt
-    }
+    };
   }
   // get access token for user
   async getAccessToken(email: string, userId: number) {
     const payload = {
       sub: userId,
-      email: email
-    }
+      email: email,
+    };
 
     return await this.jwtService.signAsync(payload, {
       expiresIn: '100m',
-      secret: this.configService.get('JWT_KEY')
-    })
+      secret: this.configService.get('JWT_ACCESS_KEY'),
+    });
+  }
 
+  // get refresh token for user
+  async getRefreshToken(email: string, userId: number) {
+    const payload = {
+      sub: userId,
+      email: email,
+    };
+
+    return await this.jwtService.signAsync(payload, {
+      expiresIn: '100m',
+      secret: this.configService.get('JWT_REFRESH_KEY'),
+    });
   }
 }
