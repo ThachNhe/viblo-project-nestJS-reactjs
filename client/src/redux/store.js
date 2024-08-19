@@ -1,7 +1,21 @@
-import { createStore, applyMiddleware } from 'redux';
-import { thunk } from 'redux-thunk';
-import rootReducer from './reducer/rootReducer';
+import { createStore, applyMiddleware } from "redux";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage"; // Sử dụng local storage
+import { thunk } from "redux-thunk";
+import rootReducer from "./reducer/rootReducer";
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+// Cấu hình persist
+const persistConfig = {
+  key: "root",
+  storage,
+};
 
-export default store;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// Tạo store với persistedReducer
+const store = createStore(persistedReducer, applyMiddleware(thunk));
+
+// Tạo persistor
+const persistor = persistStore(store);
+
+export { store, persistor };

@@ -13,7 +13,7 @@ const Login = () => {
         <div className=" flex flex-row gap-5 ">
           <button
             type="button"
-            class="px-3 py-2 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 
+            className="px-3 py-2 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 
                 focus:outline-none focus:ring-blue-300  border  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
                  text-gray-700 hover:text-blue-400  font-medium text-center gap-2 md:min-w-[120px] w-14"
           >
@@ -25,7 +25,7 @@ const Login = () => {
         <div className=" flex flex-row gap-3  min-w-14">
           <button
             type="button"
-            class="px-3 py-2 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 focus:outline-none
+            className="px-3 py-2 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 focus:outline-none
                  focus:ring-blue-300  border  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-gray-700 
                  hover:text-blue-400  font-medium text-center gap-2  md:min-w-[120px]"
           >
@@ -37,7 +37,7 @@ const Login = () => {
         <div className=" flex flex-row gap-5 min-w-9">
           <button
             type="button"
-            class="px-3 py-2 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 
+            className="px-3 py-2 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 
                 focus:outline-none focus:ring-blue-300  border  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
                  text-gray-700 hover:text-blue-400  font-medium text-center gap-2 md:min-w-[120px]"
           >

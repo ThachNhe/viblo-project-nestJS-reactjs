@@ -1,21 +1,21 @@
 const Search = () => {
   return (
-    <div class="flex items-center max-w-sm ">
-      <div class="flex flex-row w-300 border-none ">
+    <div className="flex items-center max-w-sm ">
+      <div className="flex flex-row w-300 border-none ">
         <input
           type="text"
           id="simple-search"
-          class="bg-gray-50 border border-gray-300 px-10"
+          className="bg-gray-50 border border-gray-300 px-10"
           placeholder="Tìm kiếm trên Viblo..."
           required
         />
         <button
           type="submit"
-          class="p-2.5  text-sm font-medium text-white bg-blue-700  border-none hover:bg-blue-800 focus:ring-4 out-line-none
+          className="p-2.5  text-sm font-medium text-white bg-blue-700  border-none hover:bg-blue-800 focus:ring-4 out-line-none
            focus:ring-blue-300 "
         >
           <svg
-            class="w-4 h-4"
+            className="w-4 h-4"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -29,7 +29,7 @@ const Search = () => {
               d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
             />
           </svg>
-          <span class="sr-only">Search</span>
+          <span className="sr-only">Search</span>
         </button>
       </div>
     </div>
