@@ -4,7 +4,7 @@ import SocialLogin from "./SocialLogin";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../redux/action/index";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import toast from "react-hot-toast";
 const Login = () => {
@@ -13,39 +13,38 @@ const Login = () => {
   const [userNamePassword, setUserNamePassword] = useState();
   const [password, setPassword] = useState();
   const userInfo = useSelector((state) => state?.auth?.userInfo);
-  
+  const isLogin = useSelector((state) => state?.auth?.isLogin);
 
   const isEmail = (email) => {
     return email.includes("@");
   };
-  
 
   useEffect(() => {
-    if (userInfo?.success) {
-      toast.success("Login success!");
+    if (userInfo?.success && isLogin) {
       navigate("/");
-    } else {
-      toast.error("Your login information is not correct!");
     }
   }, [userInfo]);
 
-  //submit login form 
+  //submit login form
   const handlerSubmitLoginForm = (e) => {
     e.preventDefault();
     let payload = "";
-
-    if (isEmail(userNamePassword)) {
-      payload = {
-        email: userNamePassword,
-        password,
-      };
-    } else {
-      payload = {
-        userName: userNamePassword,
-        password,
-      };
+    try {
+      if (isEmail(userNamePassword)) {
+        payload = {
+          email: userNamePassword,
+          password,
+        };
+      } else {
+        payload = {
+          userName: userNamePassword,
+          password,
+        };
+      }
+      dispatch(actions.userLogin(payload));
+    } catch (error) {
+      
     }
-    dispatch(actions.userLogin(payload));
   };
 
   return (

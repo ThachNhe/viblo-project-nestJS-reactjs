@@ -1,8 +1,8 @@
-const MenuItem = ({ onclick, label, Icon }) => {
-  console.log("Icon: ", Icon);
+const MenuItem = ({ label, onClick }) => {
+  
   return (
     <div
-      onClick={onclick}
+     onClick={onClick}
       className="
         px-4
         py-3

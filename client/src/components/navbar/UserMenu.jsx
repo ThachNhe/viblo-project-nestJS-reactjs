@@ -1,38 +1,53 @@
 import Avatar from "./Avatar";
 import MenuItem from "./MenuItem";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IoPerson } from "react-icons/io5";
 import { MdContentPaste } from "react-icons/md";
 import { MdHistory } from "react-icons/md";
 import { GrOrganization } from "react-icons/gr";
 import { IoMdSettings } from "react-icons/io";
-const menuItem = [
-  {
-    label: "Trang cá nhân",
-    icon: <IoPerson />,
-  },
-  {
-    label: "Quản lý nội dung",
-    icon: <MdContentPaste />,
-  },
-  {
-    label: "Lịch sử hoạt động",
-    icon: <MdHistory />,
-  },
-  {
-    label: "Tổ chức",
-    icon: <GrOrganization />,
-  },
-  {
-    label: "Tuỳ chình",
-    icon: <IoMdSettings />,
-  },
-];
+import { useDispatch } from "react-redux";
+import * as actions from "../../redux/action/index";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigator = useNavigate();
+    const isLogin = useSelector((state) => state?.auth?.isLogin);
+  const dispatch = useDispatch();
+  const handlerLogout = () => {
+    // alert("Logout");
+    dispatch(actions.logout());
+  };
+
+
+
+  useEffect(()=> {
+    console.log("isLogin", isLogin);  
+    if (!isLogin) {
+      navigator("/login");
+    }
+  }, [isLogin])
+
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
+
+  const menuItems = [
+    { label: "Trang cá nhân", action: () => console.log("Trang cá nhân") },
+    {
+      label: "Quản lý nội dung",
+      action: () => console.log("Quản lý nội dung"),
+    },
+    {
+      label: "Lịch sử hoạt động",
+      action: () => console.log("Lịch sử hoạt động"),
+    },
+    { label: "Tổ chức", action: () => console.log("Tổ chức") },
+    { label: "Tuỳ chỉnh", action: () => console.log("Tuỳ chỉnh") },
+    { label: "Đăng xuất", action: handlerLogout },
+  ];
+
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
@@ -53,7 +68,7 @@ const UserMenu = () => {
         
         </div> */}
         <div onClick={toggleOpen} className="p-2">
-          <Avatar  />
+          <Avatar />
         </div>
       </div>
 
@@ -72,24 +87,9 @@ const UserMenu = () => {
             "
         >
           <div className="flex flex-col cursor-pointer">
-            {/* {menuItem.map((item, index) => (
-                        <MenuItem
-                            key={index}
-                            label={item.label}
-                            // Icon={item.icon}
-                        />
-                    ))} */}
-
-            <MenuItem
-              label={"Trang cá nhân"}
-              // Icon={item.icon}
-            />
-            <MenuItem label={"Quản lý nội dung"} />
-            <MenuItem label={"Lịch sử hoạt động"} />
-            <MenuItem label={"Tổ chức"} />
-            <MenuItem label={"Tuỳ chỉnh"} />
-            <span className="border-t-2"></span>
-            <MenuItem label={"Đăng xuất"} />
+            {menuItems.map((item, index) => (
+              <MenuItem key={index} label={item.label} onClick={item.action} />
+            ))}
           </div>
         </div>
       )}

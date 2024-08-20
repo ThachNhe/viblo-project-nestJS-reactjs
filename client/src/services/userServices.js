@@ -9,4 +9,9 @@ const userLoginService = (body) => {
 const userRegisterService = (body) => {
   return axios.post("/auth/register", body);
 };
-export { getUsers, userLoginService, userRegisterService };
+
+const userLogoutService = () => {
+  return axios.post("/auth/logout");
+};
+
+export { getUsers, userLoginService, userRegisterService, userLogoutService };

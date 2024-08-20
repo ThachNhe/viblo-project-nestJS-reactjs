@@ -28,6 +28,10 @@ function authReducer(state = initialState, action) {
       state.isLogin = false;
       return { ...state };
 
+    case actionTypes.USER_LOGOUT_SUCCESS:
+      state.userInfo = action.payload;
+      state.isLogin = false;
+      return { ...state };
     default:
       return state;
   }

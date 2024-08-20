@@ -1,17 +1,21 @@
 // Action Creators
 import actionType from "./actionType";
 import * as services from "../../services/index";
-
+import toast from "react-hot-toast";
 export const userLogin = (body) => {
   return async (dispatch) => {
     try {
       const users = await services.userLoginService(body);
+      if (users.success) {
+        toast.success("Login success!!!");
+      }
       dispatch({
         type: actionType.USER_LOGIN_SUCCESS,
         payload: users,
       });
     } catch (error) {
       console.error("Err from user Login!!!:", error);
+      toast.error("Login information is not correct!!");
       dispatch({
         type: actionType.USER_LOGIN_FAILURE,
         payload: error,
@@ -29,7 +33,6 @@ export const userRegister = (body) => {
         payload: res,
       });
     } catch (error) {
-      console.error("err from user register!!!:", error);
       dispatch({
         type: actionType.USER_REGISTER_FAILURE,
         payload: error,
@@ -48,6 +51,25 @@ export const getAllUserAction = () => {
       });
     } catch (error) {
       console.error("err from get all users:", error);
+    }
+  };
+};
+
+export const logout = () => {
+  return async (dispatch) => {
+    try {
+      const users = await services.userLogoutService();
+      console.log("come here!!");
+      dispatch({
+        type: actionType.USER_LOGOUT_SUCCESS,
+        payload: null,
+      });
+    } catch (error) {
+      console.error("Err from user logout:", error);
+      dispatch({
+        type: actionType.USER_LOGOUT_FAILURE,
+        payload: error,
+      });
     }
   };
 };
