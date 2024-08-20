@@ -40,6 +40,8 @@ export class Answer {
   @ManyToOne(() => User, (user) => user.answers)
   respondent: User;
 
+  respondentId: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

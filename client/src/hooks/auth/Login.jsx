@@ -20,9 +20,22 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (userInfo?.success && isLogin) {
+    if (
+      userInfo?.success &&
+      isLogin &&
+      userInfo?.data?.user?.roles === "ADMIN"
+    ) {
+      navigate("/admin");
+    } 
+
+    if (
+      userInfo?.success &&
+      isLogin &&
+      userInfo?.data?.user?.roles !== "ADMIN"
+    ) {
       navigate("/");
-    }
+    } 
+    
   }, [userInfo]);
 
   //submit login form
@@ -42,9 +55,7 @@ const Login = () => {
         };
       }
       dispatch(actions.userLogin(payload));
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
 
   return (

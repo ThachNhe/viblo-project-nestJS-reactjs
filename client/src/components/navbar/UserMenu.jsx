@@ -13,21 +13,20 @@ import { useNavigate } from "react-router-dom";
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigator = useNavigate();
-    const isLogin = useSelector((state) => state?.auth?.isLogin);
+  const isLogin = useSelector((state) => state?.auth?.isLogin);
   const dispatch = useDispatch();
-  const handlerLogout = () => {
+  const handlerLogout = (e) => {
     // alert("Logout");
+    e.preventDefault();
     dispatch(actions.logout());
   };
 
-
-
-  useEffect(()=> {
-    console.log("isLogin", isLogin);  
+  useEffect(() => {
+    console.log("isLogin", isLogin);
     if (!isLogin) {
       navigator("/login");
     }
-  }, [isLogin])
+  }, [isLogin]);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);

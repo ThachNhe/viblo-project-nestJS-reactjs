@@ -21,8 +21,8 @@ const Navbar = () => {
 
   console.log("check login L ", isLogin);
   return (
-    <div className="fixed w-full bg-white z-10 shadow-sm">
-      <div className=" py-1 border-b-[1px]">
+    <div className="sticky w-full bg-white z-10 shadow-md top-0 h-[60px]">
+      <div className=" py-1">
         <Container>
           <div
             className="
@@ -38,7 +38,7 @@ const Navbar = () => {
               <Logo />
               <MainMenu />
             </div>
-            <div className="flex flex-row gap-5  items-center">
+            <div className="flex flex-row gap-5 items-center">
               <Search />
               <Notification isLogin={true} />
               <Auth isLogin={true} />
