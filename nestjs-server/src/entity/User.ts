@@ -40,7 +40,7 @@ export class User {
   })
   roles: Role[];
 
-  @Column()
+  @Column({ nullable: true })
   avatar: string;
 
   @Column({ default: 0 })

@@ -17,6 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
+
   // user register service
   async registerService(body: AuthDTORegister) {
     let hashedPassword = await argon2.hash(body.password);
@@ -26,18 +27,22 @@ export class AuthService {
     user.password = hashedPassword;
     user.userName = body.userName;
     user.fullName = body.fullName;
-    user.avatar = body.avatar;
+    // user.avatar = body.avatar;
     try {
       await userRepository.save(user);
       delete user.password;
       delete user.avatar;
       return {
-        errCode: 0,
+        statusCode: 200,
+        err: null,
+        success: true,
+        data: {
+          user: user,
+        },
         msg: 'Register success!',
-        user: user,
       };
     } catch (error) {
-      throw new InternalServerErrorException('User has been existed!');
+      throw new InternalServerErrorException();
     }
   }
 
@@ -56,7 +61,7 @@ export class AuthService {
         'roles',
       ],
     });
-    // console.log('check user : ', user);
+
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -161,6 +166,19 @@ export class AuthService {
       statusCode: 200,
       data: {
         accessToken: newAccessToken,
+      },
+    };
+  }
+
+  // logout service
+
+  async logout(req: Request) {
+    req.cookies.refreshToken = null;
+    return {
+      success: true,
+      statusCode: 200,
+      data: {
+        message: 'Logout success!',
       },
     };
   }

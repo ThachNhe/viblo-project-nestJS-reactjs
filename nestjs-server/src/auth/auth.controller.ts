@@ -15,6 +15,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('register')
   register(@Body() body: AuthDTORegister) {
+    console.log('check body : ', body);
     return this.authService.registerService(body);
   }
 
@@ -38,4 +39,9 @@ export class AuthController {
 
   @Get('test-authorize')
   authorize() {}
+
+  @Post('logout')
+  logout(@Req() req: Request) {
+    return this.authService.logout(req);
+  }
 }

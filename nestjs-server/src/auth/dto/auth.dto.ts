@@ -1,30 +1,30 @@
-import { IsEmail, IsNotEmpty, IsString, ValidateIf } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
 
 export class AuthDTORegister {
   @IsEmail()
   @IsNotEmpty()
-  email: string
+  email: string;
 
   @IsNotEmpty()
   @IsString()
-  password: string
+  password: string;
 
   @IsNotEmpty()
-  fullName: string
+  fullName: string;
 
   @IsNotEmpty()
-  userName: string
+  userName: string;
 
-  avatar: string
+  avatar: string;
 }
 
 export class AuthDTOLogin {
-  @ValidateIf(o => !o.userName)
+  @ValidateIf((o) => !o.userName)
   @IsEmail()
   @IsNotEmpty()
   email?: string;
 
-  @ValidateIf(o => !o.email)
+  @ValidateIf((o) => !o.email)
   @IsNotEmpty()
   @IsString()
   userName?: string;
