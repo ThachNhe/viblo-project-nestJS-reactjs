@@ -5,6 +5,10 @@ import ArticleStats from "../../components/ArticleStats";
 import Posts from "../../components/Posts";
 import CarInfo from "../../components/CardInfo";
 import PostSection from "./PostSection";
+import PostInfo from "../../components/PostInfo";
+import CommentForm from "../../components/CommentForm";
+import Comment from "../../components/Comment";
+import Footer from "./Footer";
 const data = [
   {
     title: "How to push code to github repository",
@@ -123,13 +127,14 @@ Node.js được thiết kế dựa trên kiến trúc sự kiện bất đồng
 Một trong những đặc điểm nổi bật nhất của Node.js là "event loop" – vòng lặp sự kiện. Đây là một vòng lặp liên tục kiểm tra các sự kiện cần xử lý. Nếu có sự kiện nào cần xử lý, nó sẽ kích hoạt callback tương ứng. Nếu không, nó sẽ tiếp tục chờ đợi các sự kiện khác.
 
 `;
+
 function homepage() {
   return (
     <>
       <Navbar />
       <div className="flex flex-col min-h-screen border">
         {/* Banner */}
-        <div class="flex items-center justify-center">
+        <div class="flex items-center justify-center mb-10">
           <img
             src="/images/banner.png"
             alt="Banner Image"
@@ -141,32 +146,31 @@ function homepage() {
         <div class="container mx-auto my-8 px-4 lg:px-40">
           <div class="flex">
             {/* <!-- Nội dung chính --> */}
-            <div class=" flex-1 pr-4 lg:pr-8">
-              <div className="flex gap-2 items-center justify-between">
-                <UserInfo
-                  fullName={"dinhvanthach"}
-                  userName={"thachdinh"}
-                  starNumber={100}
-                  followerNumber={50}
-                  postNumber={20}
-                />
+            <div className="flex gap-4">
+              <PostInfo />
+              <div class=" flex-1 pr-4 lg:pr-8">
+                <div className="flex gap-2 items-center justify-between">
+                  <UserInfo
+                    fullName={"dinhvanthach"}
+                    userName={"thachdinh"}
+                    starNumber={100}
+                    followerNumber={50}
+                    postNumber={20}
+                  />
 
-                <div className="flex flex-col gap-2">
-                  <span>Đã đăng vào thg 8 6, 3:22 CH trong 13 phút đọc</span>
-                  <div className=" float-right">
-                    <ArticleStats
-                      viewNumber={20}
-                      commentNumber={50}
-                      bookmarkNumber={34}
-                    />
+                  <div className="flex flex-col gap-2">
+                    <span>Đã đăng vào thg 8 6, 3:22 CH trong 13 phút đọc</span>
+                    <div className=" float-right">
+                      <ArticleStats
+                        viewNumber={20}
+                        commentNumber={50}
+                        bookmarkNumber={34}
+                      />
+                    </div>
                   </div>
                 </div>
+                <Posts data={markdown} />
               </div>
-
-
-              <Posts
-              data = {markdown}
-              />
             </div>
 
             {/* <!-- Sidebar bên phải --> */}
@@ -185,9 +189,32 @@ function homepage() {
             data={data}
             sectionName={"Bài viết khác của văn Thạch"}
           />
+          <CommentForm title={"Bình luận"} />
+          <Comment
+            isAnswer={true}
+            fullName={"Dinh Van Thach"}
+            userName={"thachdinh"}
+            date={"thg 7 27, 2021 1:20 CH"}
+            content={`Chào bạn, Cảm ơn bạn đã chia sẻ. Cho mình hỏi việc quy ước là không
+            nên dùng camelCase mà dùng snake_case, kebab-case, bạn tham khảo ở
+            đâu, hay dẫn chứng ở đâu mà ghi nó là "best practice" vậy? Bạn đang
+            viết về Rest API hay Restful API vậy?`}
+            submitComment={() => console.log("submit comment")}
+          />
+          <Comment
+            isAnswer={false}
+            fullName={"Cao Thang"}
+            userName={"thangtiencao"}
+            date={"thg 7 27, 2021 1:20 CH"}
+            content={`Chào bạn, Cảm ơn bạn đã chia sẻ. Cho mình hỏi việc quy ước là không
+            nên dùng camelCase mà dùng snake_case, kebab-case, bạn tham khảo ở
+            đâu, hay dẫn chứng ở đâu mà ghi nó là "best practice" vậy? Bạn đang
+            viết về Rest API hay Restful API vậy?`}
+            submitComment={() => console.log("submit comment")}
+          />
         </div>
       </div>
-      <footer></footer>
+     <Footer/>
     </>
   );
 }
