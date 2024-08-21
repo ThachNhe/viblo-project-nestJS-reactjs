@@ -19,9 +19,9 @@ const Navbar = () => {
     }
   }, []);
 
-  console.log("check login L ", isLogin);
+  // console.log("check login L ", isLogin);
   return (
-    <div className="sticky w-full bg-white z-10 shadow-md top-0 h-[60px]">
+    <div className="sticky w-full bg-white z-10 shadow-md top-0 h-[60px] ">
       <div className=" py-1">
         <Container>
           <div

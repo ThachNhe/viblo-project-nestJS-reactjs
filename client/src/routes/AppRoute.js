@@ -14,11 +14,12 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {isLogin && userInfo?.data.user.roles === "ADMIN" && (
-        <Route exact path="/admin" element={<AdminRoute />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Route>
-      )}
+      {/* {isLogin && userInfo?.data.user.roles === "ADMIN" && (
+       
+      )} */}
+      <Route exact path="/admin" element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Route>
 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
