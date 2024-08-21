@@ -12,10 +12,10 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
           <Avatar />
           <div className="flex flex-col gap-1">
             <div className="flex gap-2 items-center">
-              <span className="font-medium text-md text-blue-400 hover:text-blue-600 hover:underline">
+              <span className="font-medium text-md text-blue-400 hover:text-blue-600 hover:underline cursor-pointer">
                 {fullName}
               </span>
-              <span className="font-md text-gray-400 font-medium hover:underline">
+              <span className="font-md text-gray-400 font-medium hover:underline cursor-pointer">
                 @{userName}
               </span>
             </div>
@@ -34,7 +34,7 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
 
         <div className="flex gap-1 items-center ">
           <div class="relative flex items-center group">
-            <FaAngleUp className="text-gray-400" />
+            <FaAngleUp className="text-gray-400 cursor-pointer" />
             <div
               class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-lg opacity-0 
@@ -47,7 +47,7 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
           <span className="text-gray-400">1</span>
 
           <div class="relative flex items-center group">
-            <FaAngleDown className="text-gray-400" />
+            <FaAngleDown className="text-gray-400 cursor-pointer" />
 
             <div
               class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
@@ -61,7 +61,7 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
           <PiLineVertical className="text-gray-400" />
 
           <div class="relative flex items-center group mr-3">
-            <span className="text-blue-400 font-medium text-sm hover:underline">
+            <span className="text-blue-400 font-medium text-sm hover:underline cursor-pointer">
               Trả lời
             </span>
             <div
@@ -74,7 +74,7 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
           </div>
 
           <div class="relative flex items-center group mr-3">
-            <span className="text-gray-400 font-medium text-sm">Chia sẻ</span>
+            <span className="text-gray-400 font-medium text-sm cursor-pointer">Chia sẻ</span>
             <div
               class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-lg opacity-0 
@@ -85,7 +85,7 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
           </div>
 
           <div>
-            <BsThreeDots className="text-gray-400" />
+            <BsThreeDots className="text-gray-400 cursor-pointer" />
           </div>
         </div>
         {isAnswer && <CommentForm submitComment={submitComment} />}
