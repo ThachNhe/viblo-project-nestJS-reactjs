@@ -1,6 +1,6 @@
 import { IoInformation } from "react-icons/io5";
 import { FaRegBell } from "react-icons/fa";
-import { CiEdit } from "react-icons/ci";
+import React from "react";
 const Notification = ({ isLogin }) => {
   return (
     <div className="flex flex-row gap-3 items-center">
@@ -8,8 +8,7 @@ const Notification = ({ isLogin }) => {
       {isLogin && (
         <FaRegBell className="text-xl font-extrabold text-gray-400 cursor-pointer: hover:text-gray-900" />
       )}
-      <CiEdit className="text-2xl font-extrabold text-gray-400 cursor-pointer: hover:text-gray-900"/>
     </div>
   );
 };
-export default Notification;
+export default React.memo(Notification);

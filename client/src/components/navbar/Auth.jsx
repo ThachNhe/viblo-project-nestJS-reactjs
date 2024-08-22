@@ -1,6 +1,7 @@
 import { IoExitOutline } from "react-icons/io5";
 import Avatar from "./Avatar";
 import UserMenu from "./UserMenu";
+import React from "react";
 const Auth = ({ isLogin }) => {
   return (
     <>
@@ -15,4 +16,4 @@ const Auth = ({ isLogin }) => {
     </>
   );
 };
-export default Auth;
+export default React.memo(Auth);

@@ -1,57 +1,47 @@
 import Avatar from "./Avatar";
 import MenuItem from "./MenuItem";
 import { useCallback, useEffect, useState } from "react";
-import { IoPerson } from "react-icons/io5";
-import { MdContentPaste } from "react-icons/md";
-import { MdHistory } from "react-icons/md";
-import { GrOrganization } from "react-icons/gr";
-import { IoMdSettings } from "react-icons/io";
 import { useDispatch } from "react-redux";
 import * as actions from "../../redux/action/index";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-const UserMenu = () => {
+import React from "react";
+import { CiEdit } from "react-icons/ci";
+const WriteMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
   const dispatch = useDispatch();
   const handlerLogout = (e) => {
-    // alert("Logout");
-    e.preventDefault()
+    e.preventDefault();
     dispatch(actions.logout());
   };
 
   useEffect(() => {
-    console.log("isLogin", isLogin);
-    if (!isLogin) {
-      navigator("/login");
-    }
-  }, [isLogin]);
+  
+  }, []);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
 
   const menuItems = [
-    { label: "Trang cá nhân", action: () => console.log("Trang cá nhân") },
+    { label: "Viết bài", action: navigator("/publish/post") },
     {
-      label: "Quản lý nội dung",
-      action: () => console.log("Quản lý nội dung"),
+      label: "Series mới",
+      action: () => console.log("Series mới"),
     },
     {
-      label: "Lịch sử hoạt động",
-      action: () => console.log("Lịch sử hoạt động"),
+      label: "Đặt câu hỏi",
+      action: () => console.log("Series mới"),
     },
-    { label: "Tổ chức", action: () => console.log("Tổ chức") },
-    { label: "Tuỳ chỉnh", action: () => console.log("Tuỳ chỉnh") },
-    { label: "Đăng xuất", action: handlerLogout },
   ];
 
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
-        <div onClick={toggleOpen} className="p-2 ">
-          <Avatar />
+       <div onClick={()=> toggleOpen()} className="p-2">
+          <CiEdit className="text-2xl font-extrabold text-gray-400 cursor-pointer: hover:text-gray-900" />
         </div>
       </div>
 
@@ -61,7 +51,7 @@ const UserMenu = () => {
             absolute
             rounded-xl
             shadow-md
-            min-w-[250px]
+            min-w-[150px]
             bg-white
             overflow-hidden
             right-0
@@ -80,4 +70,4 @@ const UserMenu = () => {
   );
 };
 
-export default UserMenu;
+export default React.memo(WriteMenu);

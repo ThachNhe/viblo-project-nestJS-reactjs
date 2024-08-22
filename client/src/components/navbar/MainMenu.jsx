@@ -1,4 +1,5 @@
 
+import React from "react";
 const MainMenu = () => {
   return (
     <ul className="flex flex-row gap-10">
@@ -29,4 +30,4 @@ const MainMenu = () => {
     </ul>
   );
 };
-export default MainMenu;
+export default React.memo(MainMenu);

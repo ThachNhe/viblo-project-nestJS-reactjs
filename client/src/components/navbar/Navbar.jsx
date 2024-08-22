@@ -8,8 +8,8 @@ import Notification from "./Notification";
 import Auth from "./Auth";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-const Navbar = () => {
+import WriteMenu from "./WriteMenu";
+const Navbar = ({ isHomePage }) => {
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth);
 
@@ -17,13 +17,13 @@ const Navbar = () => {
     if (!isLogin) {
       navigator("/login");
     }
-  }, []);
+  }, [navigator, isLogin]);
 
   // console.log("check login L ", isLogin);
   return (
     <div className="sticky w-full bg-white z-10 shadow-md top-0 h-[60px] ">
       <div className=" py-1">
-        <Container>
+        <Container isHomePage={isHomePage}>
           <div
             className="
                     flex
@@ -34,13 +34,14 @@ const Navbar = () => {
                     md:gap-0
                    "
           >
-            <div className="flex flex-row gap-10">
+            <div className="flex flex-row gap-10 ">
               <Logo />
               <MainMenu />
             </div>
             <div className="flex flex-row gap-5 items-center">
-              <Search />
+              {isHomePage && <Search />}
               <Notification isLogin={true} />
+              <WriteMenu />
               <Auth isLogin={true} />
             </div>
           </div>

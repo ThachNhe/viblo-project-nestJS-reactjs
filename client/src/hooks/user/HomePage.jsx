@@ -1,5 +1,6 @@
 import Navbar from "../../components/navbar/Navbar";
-import Container from "../../components/Container";
+import { useRef } from "react";
+import TestMarkdown from "../TestMarkdown";
 import UserInfo from "../../components/UserInfo";
 import ArticleStats from "../../components/ArticleStats";
 import Posts from "../../components/Posts";
@@ -8,7 +9,13 @@ import PostSection from "./PostSection";
 import PostInfo from "../../components/PostInfo";
 import CommentForm from "../../components/CommentForm";
 import Comment from "../../components/Comment";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import Footer from "./Footer";
+import ProposedCourse from "../../components/ProposedCourse";
+// var toc = require("markdown-toc");
+// import markdownToc from "markdown-toc";
+
 const data = [
   {
     title: "How to push code to github repository",
@@ -109,7 +116,7 @@ const data = [
     point: 10,
   },
 ];
-const markdown = `
+const markdownContent = `
 # Giới thiệu về Node.js
 
 Node.js là một môi trường chạy JavaScript phía server dựa trên V8 engine, được phát triển bởi Google. Được phát hành lần đầu tiên vào năm 2009 bởi Ryan Dahl, Node.js đã nhanh chóng trở thành một trong những công nghệ phổ biến nhất trong phát triển web.
@@ -127,11 +134,31 @@ Node.js được thiết kế dựa trên kiến trúc sự kiện bất đồng
 Một trong những đặc điểm nổi bật nhất của Node.js là "event loop" – vòng lặp sự kiện. Đây là một vòng lặp liên tục kiểm tra các sự kiện cần xử lý. Nếu có sự kiện nào cần xử lý, nó sẽ kích hoạt callback tương ứng. Nếu không, nó sẽ tiếp tục chờ đợi các sự kiện khác.
 
 `;
+// const toc = markdownToc(markdownContent).content;
+const options = {
+  wheelSpeed: 1, // Tăng hoặc giảm tốc độ cuộn
+  swipeEasing: true, // Bật easing cho cuộn
+  suppressScrollX: true, // Tắt cuộn ngang nếu không cần thiết
+};
 
-function homepage() {
+function Homepage() {
+  const scrollbarRef = useRef(null);
+  const handleYReachEnd = () => {
+    const scrollContainer = scrollbarRef.current._container;
+
+    // Tạo một sự kiện cuộn mới cho phần tử cha để tiếp tục cuộn
+    const scrollEvent = new WheelEvent("wheel", {
+      bubbles: true,
+      cancelable: true,
+      deltaY: 1, // Có thể chỉnh deltaY để xác định mức độ cuộn
+    });
+
+    scrollContainer.parentElement.dispatchEvent(scrollEvent);
+  };
+
   return (
     <>
-      <Navbar />
+      <Navbar isHomePage={true} />
       <div className="flex flex-col min-h-screen border">
         {/* Banner */}
         <div class="flex items-center justify-center mb-10">
@@ -148,40 +175,84 @@ function homepage() {
             {/* <!-- Nội dung chính --> */}
             <div className="flex gap-4">
               <PostInfo />
-              <div class=" flex-1 pr-4 lg:pr-8">
-                <div className="flex gap-2 items-center justify-between">
-                  <UserInfo
-                    fullName={"dinhvanthach"}
-                    userName={"thachdinh"}
-                    starNumber={100}
-                    followerNumber={50}
-                    postNumber={20}
-                  />
+              <div class="flex-1 pr-4 lg:pr-2">
+                <div style={{ height: "1000px", padding: "10px" }}>
+                  <PerfectScrollbar
+                  // ref={scrollbarRef}
+                  // onYReachEnd={handleYReachEnd}
+                  // options={{
+                  //   wheelSpeed: 0.35, // Điều chỉnh tốc độ cuộn, giảm giá trị để cuộn mượt hơn
+                  //   swipeEasing: true, // Bật easing khi cuộn
+                  //   suppressScrollX: false, // Tắt cuộn ngang nếu không cần thiết
+                  // }}
+                  >
+                    <div>
+                      <div className="flex gap-2 items-center justify-between">
+                        <UserInfo
+                          fullName={"dinhvanthach"}
+                          userName={"thachdinh"}
+                          starNumber={100}
+                          followerNumber={50}
+                          postNumber={20}
+                        />
 
-                  <div className="flex flex-col gap-2">
-                    <span>Đã đăng vào thg 8 6, 3:22 CH trong 13 phút đọc</span>
-                    <div className=" float-right">
-                      <ArticleStats
-                        viewNumber={20}
-                        commentNumber={50}
-                        bookmarkNumber={34}
-                      />
+                        <div className="flex flex-col gap-2">
+                          <span>
+                            Đã đăng vào thg 8 6, 3:22 CH trong 13 phút đọc
+                          </span>
+                          <div className=" float-right">
+                            <ArticleStats
+                              viewNumber={20}
+                              commentNumber={50}
+                              bookmarkNumber={34}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <Posts data={markdownContent} />
+                      {/* <TestMarkdown /> */}
                     </div>
-                  </div>
+                  </PerfectScrollbar>
                 </div>
-                <Posts data={markdown} />
               </div>
             </div>
 
             {/* <!-- Sidebar bên phải --> */}
-            <div class="w-64  bg-gray-50 p-6 shadow-md rounded-lg">
-              <h2 class="text-xl font-semibold mb-4">Mục lục</h2>
-              <ul class="list-disc pl-4 text-gray-700">
-                <li>Hiểu rõ về toán tử OR (||)</li>
-                <li>Hiểu rõ về toán tử nullish (??)</li>
-                <li>...</li>
-              </ul>
-            </div>
+            <PerfectScrollbar style={{ height: "700px", padding: "10px" }}>
+              <div class="flex-grow p-1 bg-zinc-50 rounded-md flex flex-col gap-10 py-2">
+                <div>
+                  <div className="flex gap-4">
+                    <h4 class="text-md mb-4 uppercase font-medium">Mục lục</h4>
+                    <hr className="flex-grow text-red-full text-red-900 mt-4" />
+                  </div>
+                  <ul class="list-disc pl-4 text-gray-700">
+                    <li>Hiểu rõ về toán tử OR (||)</li>
+                    <li>Hiểu rõ về toán tử nullish (??)</li>
+                    <li>Hiểu rõ về toán tử OR (||)</li>
+                    <li>Hiểu rõ về toán tử nullish (??)</li>
+                    <li>Hiểu rõ về toán tử OR (||)</li>
+                    <li>Hiểu rõ về toán tử nullish (??)</li>
+                    <li>Hiểu rõ về toán tử OR (||)</li>
+                    <li>Hiểu rõ về toán tử nullish (??)</li>
+                    <li>...</li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="flex gap-4">
+                    <h4 class="text-md mb-4 uppercase text-blue-600 hover:underline font-medium">
+                      Câu đố đề xuất
+                    </h4>
+                    <hr className="flex-grow text-red-full text-red-900 mt-4" />
+                  </div>
+                  <div>
+                    <ProposedCourse />
+                    <ProposedCourse />
+                    <ProposedCourse />
+                    <ProposedCourse />
+                  </div>
+                </div>
+              </div>
+            </PerfectScrollbar>
           </div>
 
           <PostSection data={data} sectionName={"Bài viết liên quan"} />
@@ -214,9 +285,9 @@ function homepage() {
           />
         </div>
       </div>
-     <Footer/>
+      <Footer />
     </>
   );
 }
 
-export default homepage;
+export default Homepage;
