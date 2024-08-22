@@ -100,6 +100,7 @@ export class AuthService {
       },
     };
   }
+
   // get access token for user
   async getAccessToken(email: string, userId: number, role: Role[]) {
     const payload = {

@@ -4,12 +4,14 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { LoggerMiddleware } from './utils/logger.middleware';
+import { PostModule } from './post/post.module';
 @Module({
   imports: [
     AuthModule,
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     FileUploadModule,
+    PostModule,
   ],
 })
 export class AppModule implements NestModule {

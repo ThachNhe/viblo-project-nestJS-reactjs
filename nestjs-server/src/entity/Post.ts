@@ -23,8 +23,8 @@ export class Post {
   @Column({ type: 'text' })
   content_markdown: string;
 
-  @Column({ type: 'text' })
-  table_content: string;
+  // @Column({ type: 'text', nullable: true })
+  // table_content: string;
 
   @Column({ nullable: true })
   tags_array: string;

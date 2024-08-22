@@ -15,7 +15,6 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('register')
   register(@Body() body: AuthDTORegister) {
-    console.log('check body : ', body);
     return this.authService.registerService(body);
   }
 
