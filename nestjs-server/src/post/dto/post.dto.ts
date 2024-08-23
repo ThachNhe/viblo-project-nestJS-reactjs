@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class PostDTO {
-  // @IsNotEmpty()
-  // @IsNumber()
-  // authorId: number;
+  @IsNotEmpty()
+  @IsNumber()
+  authorId: number;
 
   @IsNotEmpty()
   @IsString()
@@ -13,6 +13,5 @@ export class PostDTO {
   @IsString()
   title: string;
 
-  @IsString()
-  tagArray: string;
+  tagArray: string[];
 }

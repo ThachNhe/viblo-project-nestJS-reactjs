@@ -5,8 +5,10 @@ import { ConfigModule } from '@nestjs/config';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { LoggerMiddleware } from './utils/logger.middleware';
 import { PostModule } from './post/post.module';
+// import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [
+    // TypeOrmModule.forRoot(),
     AuthModule,
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),

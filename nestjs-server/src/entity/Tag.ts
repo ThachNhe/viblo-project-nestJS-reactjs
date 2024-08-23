@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
@@ -18,7 +17,7 @@ export class Tag {
   id: number;
 
   @Column()
-  title: string;
+  name: string;
 
   @Column({ default: 0 })
   view_number: number;

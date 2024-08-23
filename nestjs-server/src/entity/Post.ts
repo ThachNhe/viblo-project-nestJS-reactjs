@@ -26,8 +26,8 @@ export class Post {
   // @Column({ type: 'text', nullable: true })
   // table_content: string;
 
-  @Column({ nullable: true })
-  tags_array: string;
+  @Column({ type: 'json', nullable: true })
+  tags_array: string[];
 
   @Column({ default: 0 })
   view_number: number;
