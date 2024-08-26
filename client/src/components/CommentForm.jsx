@@ -1,6 +1,32 @@
+import { useState } from "react";
 
+function CommentForm({
+  title,
+  onCreateComment,
+  postId,
+  userId,
+  parentId,
+  parentName,
+}) {
+  const [content, setContent] = useState("");
 
-function CommentForm({title}) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let payLoad = {
+      content: content,
+      postId: +postId,
+      userId: +userId,
+      parentId: +parentId,
+      parentName,
+    };
+    try {
+      await onCreateComment(payLoad);
+      setContent(""); 
+    } catch (error) {
+      console.error("Error creating comment:", error);
+    }
+  };
+
   return (
     <form className="flex flex-col gap-3">
       <span className="font-semibold text-xl">{title}</span>
@@ -15,12 +41,16 @@ function CommentForm({title}) {
             className="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
             placeholder="Write a comment..."
             required
+            onChange={(e) => setContent(e.target.value)}
+            value={content}
           ></textarea>
         </div>
         <div className="flex items-center justify-between px-3 py-2 border-t dark:border-gray-600">
           <button
             type="submit"
-            className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+            className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-600 
+            hover:bg-blue-500 rounded-md"
+            onClick={handleSubmit}
           >
             Post comment
           </button>

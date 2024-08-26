@@ -7,6 +7,7 @@ import { LoggerMiddleware } from './utils/logger.middleware';
 import { PostModule } from './post/post.module';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagModule } from './tag/tag.module';
+import { CommentModule } from './comment/comment.module';
 @Module({
   imports: [
     // TypeOrmModule.forRoot(),
@@ -16,7 +17,10 @@ import { TagModule } from './tag/tag.module';
     FileUploadModule,
     PostModule,
     TagModule,
+    CommentModule,
   ],
+  providers: [],
+  controllers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

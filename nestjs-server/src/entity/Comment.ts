@@ -17,6 +17,9 @@ export class Comment {
   @Column({ type: 'text' })
   content: string;
 
+  @Column({ type: 'bigint' })
+  parentId: number;
+
   @Column({ nullable: true })
   parentName: string;
 
