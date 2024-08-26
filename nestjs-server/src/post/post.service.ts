@@ -33,7 +33,7 @@ export class PostService {
     post.content_markdown = body.contentMarkdown;
     post.tags_array = tags.map((tag) => tag.name);
     post.author = user;
-
+    post.tags = tags;
     await postRepository.save(post);
 
     delete post.author;

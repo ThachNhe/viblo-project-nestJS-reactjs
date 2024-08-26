@@ -6,6 +6,7 @@ import { FileUploadModule } from './file-upload/file-upload.module';
 import { LoggerMiddleware } from './utils/logger.middleware';
 import { PostModule } from './post/post.module';
 // import { TypeOrmModule } from '@nestjs/typeorm';
+import { TagModule } from './tag/tag.module';
 @Module({
   imports: [
     // TypeOrmModule.forRoot(),
@@ -14,6 +15,7 @@ import { PostModule } from './post/post.module';
     ConfigModule.forRoot({ isGlobal: true }),
     FileUploadModule,
     PostModule,
+    TagModule,
   ],
 })
 export class AppModule implements NestModule {

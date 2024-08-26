@@ -6,6 +6,7 @@ export const userLogin = (body) => {
   return async (dispatch) => {
     try {
       const users = await services.userLoginService(body);
+      console.log("users : ", users);
       if (users.success) {
         toast.success("Login success!!!");
       }

@@ -7,11 +7,12 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { User } from './User';
 import { Comment } from './Comment';
 import { Tag } from './Tag';
-
+import { Status } from 'src/enums/status.enum';
 @Entity({ name: 'posts' })
 export class Post {
   @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -28,6 +29,13 @@ export class Post {
 
   @Column({ type: 'json', nullable: true })
   tags_array: string[];
+
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.Publish,
+  })
+  status: Status[];
 
   @Column({ default: 0 })
   view_number: number;
@@ -61,6 +69,9 @@ export class Post {
   comments: Comment[];
 
   @ManyToMany(() => Tag, (tag) => tag.posts)
+  @JoinTable({
+    name: 'post_tags',
+  })
   tags: Tag[];
 
   @ManyToMany(() => User, (user) => user.bookmarked_posts)

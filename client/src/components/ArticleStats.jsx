@@ -3,7 +3,6 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import { TbCaretUpDown } from "react-icons/tb";
 function ArticleStats({ viewNumber, commentNumber, bookmarkNumber, point }) {
-  console.log("check point : ", point);
   return (
     <div
       class={`flex items-center space-x-4 text-gray-400 

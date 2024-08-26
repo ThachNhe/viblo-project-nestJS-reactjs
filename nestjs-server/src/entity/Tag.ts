@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  Unique,
 } from 'typeorm';
 import { Post } from './Post';
 import { User } from './User';
@@ -16,7 +17,7 @@ export class Tag {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column({ default: 0 })
@@ -32,9 +33,6 @@ export class Tag {
   follower_number: number;
 
   @ManyToMany(() => Post, (post) => post.tags)
-  @JoinTable({
-    name: 'post_tags',
-  })
   posts: Post[];
 
   @ManyToMany(() => User, (user) => user.tags)

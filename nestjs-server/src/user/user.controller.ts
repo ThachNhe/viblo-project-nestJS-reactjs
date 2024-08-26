@@ -8,6 +8,7 @@ import { Roles } from '../auth/strategy/roles.decorator';
 @UseGuards(AuthGuard('jwt'))
 export class UserController {
   constructor(private userService: UserService) {}
+
   @Get('users')
   async getUsers() {
     return this.userService.getUsersService();
@@ -17,5 +18,10 @@ export class UserController {
   @Roles(Role.User)
   async authorize() {
     return 'authorize';
+  }
+
+  @Get('/test')
+  async test() {
+    return 'test';
   }
 }

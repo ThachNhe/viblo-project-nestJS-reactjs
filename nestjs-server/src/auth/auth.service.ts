@@ -72,6 +72,9 @@ export class AuthService {
     }
 
     delete user.password;
+    delete user.posts;
+    delete user.email;
+
     const accessToken = await this.getAccessToken(
       user.email,
       user.id,
@@ -94,9 +97,9 @@ export class AuthService {
       statusCode: 200,
       success: true,
       error: null,
+      accessToken: accessToken,
       data: {
         user,
-        accessToken: accessToken,
       },
     };
   }

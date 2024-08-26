@@ -11,5 +11,9 @@ const actionTypes = Object.freeze({
   USER_LOGOUT_FAILURE: "USER_LOGOUT_FAILURE",
 
   GET_ALL_USER: "GET_ALL_USER",
+
+  // TAG
+  GET_TAGS_SUCCESS: "GET_TAG_SUCCESS",
+  GET_TAGS_FAILURE: "GET_TAG_FAILURE",
 });
 export default actionTypes;
