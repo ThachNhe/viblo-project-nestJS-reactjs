@@ -2,7 +2,7 @@ const Container = ({ children, isHomePage }) => {
   return (
     <div
       className={`   
-        max-w-[2520px]
+        
         mx-auto
         ${isHomePage ? " xl:px-[12rem]" : "xl:px-[2rem]"}
         md:px-10

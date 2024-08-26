@@ -15,5 +15,9 @@ const actionTypes = Object.freeze({
   // TAG
   GET_TAGS_SUCCESS: "GET_TAG_SUCCESS",
   GET_TAGS_FAILURE: "GET_TAG_FAILURE",
+
+  // POST
+  GET_POST_ID_SUCCESS: "GET_POST_ID_SUCCESS",
+  GET_POST_ID_FAILED: "GET_POST_ID_FAILED",
 });
 export default actionTypes;

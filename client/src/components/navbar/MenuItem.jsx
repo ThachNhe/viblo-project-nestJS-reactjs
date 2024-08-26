@@ -1,4 +1,4 @@
-const MenuItem = ({ label, onClick }) => {
+const MenuItem = ({ label, onClick, icon }) => {
   
   return (
     <div
@@ -8,10 +8,16 @@ const MenuItem = ({ label, onClick }) => {
         py-3
         hover:bg-neutral-100
         transition
-        font-semibold"
+        font-semibold
+      "
     >
-      {/* <Icon /> */}
-      <span>{label}</span>
+      <div className="flex items-center gap-3 ">
+        <span className="text-gray-500 text-lg">
+          {icon}
+        </span>
+      <span className="text-gray-700">{label}</span>
+      </div>
+      
     </div>
   );
 };

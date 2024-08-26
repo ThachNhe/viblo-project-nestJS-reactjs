@@ -1,6 +1,5 @@
 import Navbar from "../../components/navbar/Navbar";
-import { useRef } from "react";
-import TestMarkdown from "../TestMarkdown";
+import { useEffect, useRef } from "react";
 import UserInfo from "../../components/UserInfo";
 import ArticleStats from "../../components/ArticleStats";
 import Posts from "../../components/Posts";
@@ -13,6 +12,9 @@ import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Footer from "./Footer";
 import ProposedCourse from "../../components/ProposedCourse";
+import { useDispatch, useSelector } from "react-redux";
+import * as actions from "../../redux/action/index";
+
 // var toc = require("markdown-toc");
 // import markdownToc from "markdown-toc";
 
@@ -134,28 +136,17 @@ Node.js được thiết kế dựa trên kiến trúc sự kiện bất đồng
 Một trong những đặc điểm nổi bật nhất của Node.js là "event loop" – vòng lặp sự kiện. Đây là một vòng lặp liên tục kiểm tra các sự kiện cần xử lý. Nếu có sự kiện nào cần xử lý, nó sẽ kích hoạt callback tương ứng. Nếu không, nó sẽ tiếp tục chờ đợi các sự kiện khác.
 
 `;
-// const toc = markdownToc(markdownContent).content;
-const options = {
-  wheelSpeed: 1, // Tăng hoặc giảm tốc độ cuộn
-  swipeEasing: true, // Bật easing cho cuộn
-  suppressScrollX: true, // Tắt cuộn ngang nếu không cần thiết
-};
 
 function Homepage() {
   const scrollbarRef = useRef(null);
-  const handleYReachEnd = () => {
-    const scrollContainer = scrollbarRef.current._container;
-
-    // Tạo một sự kiện cuộn mới cho phần tử cha để tiếp tục cuộn
-    const scrollEvent = new WheelEvent("wheel", {
-      bubbles: true,
-      cancelable: true,
-      deltaY: 1, // Có thể chỉnh deltaY để xác định mức độ cuộn
-    });
-
-    scrollContainer.parentElement.dispatchEvent(scrollEvent);
-  };
-
+  const dispatch = useDispatch();
+  const post = useSelector((state) => state.post.post);
+  useEffect(() => {
+    dispatch(actions.getPostById(17));
+  }, []);
+  useEffect(() => {
+    console.log("post : ", post);
+  }, [post]);
   return (
     <>
       <Navbar isHomePage={true} />
@@ -209,7 +200,10 @@ function Homepage() {
                           </div>
                         </div>
                       </div>
-                      <Posts data={markdownContent} />
+                      <Posts
+                        data={post?.data?.content_markdown}
+                        tags={post?.data?.tags_array}
+                      />
                       {/* <TestMarkdown /> */}
                     </div>
                   </PerfectScrollbar>
@@ -222,7 +216,9 @@ function Homepage() {
               <div className="flex-grow p-1 bg-zinc-50 rounded-md flex flex-col gap-10 py-2">
                 <div>
                   <div className="flex gap-4">
-                    <h4 className="text-md mb-4 uppercase font-medium">Mục lục</h4>
+                    <h4 className="text-md mb-4 uppercase font-medium">
+                      Mục lục
+                    </h4>
                     <hr className="flex-grow text-red-full text-red-900 mt-4" />
                   </div>
                   <ul className="list-disc pl-4 text-gray-700">

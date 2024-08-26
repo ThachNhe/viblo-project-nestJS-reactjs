@@ -7,40 +7,41 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { CiEdit } from "react-icons/ci";
+import { PiListDashesBold } from "react-icons/pi";
+import { FaRegQuestionCircle } from "react-icons/fa";
+
+
 const WriteMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
   const dispatch = useDispatch();
-  const handlerLogout = (e) => {
-    e.preventDefault();
-    dispatch(actions.logout());
-  };
-
-  useEffect(() => {
-  
-  }, [navigator]);
+  useEffect(() => {}, [navigator]);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
 
+  const handlerToPublishPage = useCallback(() => {
+    navigator("/publish/post");
+  });
+
   const menuItems = [
-    { label: "Viết bài", action: navigator("/publish/post") },
+    { label: "Viết bài", action: handlerToPublishPage, icon: <CiEdit /> },
     {
       label: "Series mới",
-      action: () => console.log("Series mới"),
+      action: () => console.log("Series mới"), icon: <PiListDashesBold />
     },
     {
       label: "Đặt câu hỏi",
-      action: () => console.log("Series mới"),
-    },
+      action: () => console.log("Series mới"), icon: <FaRegQuestionCircle/>
+    }
   ];
 
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
-       <div onClick={()=> toggleOpen()} className="p-2">
+        <div onClick={() => toggleOpen()} className="p-2">
           <CiEdit className="text-2xl font-extrabold text-gray-400 cursor-pointer: hover:text-gray-900" />
         </div>
       </div>
@@ -49,7 +50,7 @@ const WriteMenu = () => {
         <div
           className="
             absolute
-            rounded-xl
+            rounded-md
             shadow-md
             min-w-[150px]
             bg-white
@@ -61,7 +62,7 @@ const WriteMenu = () => {
         >
           <div className="flex flex-col cursor-pointer">
             {menuItems.map((item, index) => (
-              <MenuItem key={index} label={item.label} onClick={item.action} />
+              <MenuItem key={index} label={item.label} onClick={item.action}  icon={item.icon}/>
             ))}
           </div>
         </div>

@@ -14,7 +14,7 @@ function PostInfo() {
           <div className="relative flex items-center gap-2 group ">
             <FaCaretUp className="text-5xl hover:text-gray-800 cursor-pointer" />
             <div
-              className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+              className="absolute z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 font-semibold"
             >
@@ -29,7 +29,7 @@ function PostInfo() {
             <div
               className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
-              group-hover:opacity-100 transition-opacity duration-300 font-semibold"
+              group-hover:opacity-100 transition-opacity duration-300 font-semibold z-10"
             >
               Upvote
             </div>
@@ -45,7 +45,7 @@ function PostInfo() {
           </div>
 
           <div
-            className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+            className="absolute  z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 font-semibold"
           >
@@ -63,7 +63,7 @@ function PostInfo() {
           </div>
 
           <div
-            className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+            className="absolute z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 min-w-36 font-semibold"
           >
@@ -81,7 +81,7 @@ function PostInfo() {
           </div>
 
           <div
-            className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+            className="absolute z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 min-w-36 font-semibold"
           >

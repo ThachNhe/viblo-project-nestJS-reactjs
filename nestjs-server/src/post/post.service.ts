@@ -1,4 +1,4 @@
-import { Injectable, Body } from '@nestjs/common';
+import { Injectable, Body, NotFoundException } from '@nestjs/common';
 import { PostDTO } from './dto/post.dto';
 import { AppDataSource } from '../index';
 import { Post, User, Tag } from '../entity';
@@ -37,6 +37,26 @@ export class PostService {
     await postRepository.save(post);
 
     delete post.author;
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: post,
+    };
+  }
+
+  async getId(id: any) {
+    console.log('id', id);
+    const postRepository = AppDataSource.getRepository(Post);
+    const post = await postRepository.findOne({ where: { id: +id } });
+
+    post.view_number += 1;
+    await postRepository.save(post);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
 
     return {
       success: true,

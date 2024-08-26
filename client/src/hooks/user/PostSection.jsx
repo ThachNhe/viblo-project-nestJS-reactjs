@@ -21,7 +21,7 @@ function PostSection({ sectionName, data }) {
           data.map((item, index) => {
             return (
               <CarInfo
-              index={index}
+                index={index}
                 title={item.title}
                 author={item.author}
                 readTime={item.readTime}

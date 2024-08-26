@@ -1,7 +1,15 @@
 import axios from "../axios";
 
 const createPost = (body) => {
-  return axios.post("post", body);
+  return axios.post("/post", body);
 };
 
-export { createPost };
+const getPostById = (id) => {
+  return axios.get("/post", {
+    params: {
+      id: id,
+    },
+  });
+};
+
+export { createPost, getPostById };

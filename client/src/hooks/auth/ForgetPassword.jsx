@@ -34,7 +34,7 @@ const ForgetPassword = () => {
         </span>
         <div className="mb-6 ">
           <label
-            for="default-input"
+            htmlFor="default-input"
             className=" mb-2 text-sm font-medium text-gray-900 dark:text-white flex gap-2"
           >
             <span className="text-red-500">*</span>
