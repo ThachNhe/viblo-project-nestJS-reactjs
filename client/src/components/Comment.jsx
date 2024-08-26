@@ -33,10 +33,10 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
         </div>
 
         <div className="flex gap-1 items-center ">
-          <div class="relative flex items-center group">
+          <div className="relative flex items-center group">
             <FaAngleUp className="text-gray-400 cursor-pointer" />
             <div
-              class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
+              className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-lg opacity-0 
               group-hover:opacity-100 transition-opacity duration-300"
             >
@@ -46,11 +46,11 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
 
           <span className="text-gray-400">1</span>
 
-          <div class="relative flex items-center group">
+          <div className="relative flex items-center group">
             <FaAngleDown className="text-gray-400 cursor-pointer" />
 
             <div
-              class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
+              className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-lg opacity-0 
               group-hover:opacity-100 transition-opacity duration-300"
             >
@@ -60,12 +60,12 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
 
           <PiLineVertical className="text-gray-400" />
 
-          <div class="relative flex items-center group mr-3">
+          <div className="relative flex items-center group mr-3">
             <span className="text-blue-400 font-medium text-sm hover:underline cursor-pointer">
               Trả lời
             </span>
             <div
-              class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
+              className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-lg opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 min-w-20 items-center font-medium "
             >
@@ -73,10 +73,10 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
             </div>
           </div>
 
-          <div class="relative flex items-center group mr-3">
+          <div className="relative flex items-center group mr-3">
             <span className="text-gray-400 font-medium text-sm cursor-pointer">Chia sẻ</span>
             <div
-              class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
+              className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-lg opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 min-w-20 items-center font-medium "
             >

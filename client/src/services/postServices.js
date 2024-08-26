@@ -1,7 +1,7 @@
 import axios from "../axios";
 
 const createPost = (body) => {
-  return axios.get("/tag/all", body);
+  return axios.post("post", body);
 };
 
-export { getAllTag };
+export { createPost };

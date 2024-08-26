@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import { FaLock } from "react-icons/fa";
 import * as services from "../../services/index";
-import { store } from "../../redux/store";
+import toast from "react-hot-toast";
 
 const checkboxSelect = [
   { id: "PUBLIC", type: "checkbox", label: "Công khai" },
@@ -21,7 +21,7 @@ function PublishPost() {
   const [title, setTitle] = useState("");
   const [tagInputs, setTags] = useState("");
   const [markdownText, setMarkdownText] = useState("**Hello world!**");
-
+  const UserInfo = useSelector((state) => state.auth.userInfo);
   useEffect(() => {
     dispatch(actions.getAllTag());
   }, []);
@@ -37,11 +37,24 @@ function PublishPost() {
   const handlerCreatePost = async () => {
     let payload = {
       title: title,
-      content: markdownText,
-      tags: tagInputs,
+      contentMarkdown: markdownText,
+      tagArray: [tagInputs],
       status: status,
+      authorId: +UserInfo?.data?.user?.id,
     };
-    console.log("payload : ", payload);
+
+    try {
+      const post = await services.createPost(payload);
+      toast.success("Tạo bài viết thành công!!");
+      setMarkdownText("");
+      setTitle("");
+      setTags("");
+      console.log("post : ", post);
+    } catch (e) {
+      console.log("error : ", e);
+      toast.error("Tạo bài viết thất bại!!");
+    }
+
     // const user = await services.getUsers();
     // console.log("user : ", user);
   };
@@ -55,7 +68,7 @@ function PublishPost() {
             type="text"
             id="default-input"
             placeholder="Tiêu đề  "
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none
             block w-full p-2.5 
             focus:ring-1 focus:border-blue-50 "
             onChange={(e) => setTitle(e.target.value)}
@@ -67,15 +80,16 @@ function PublishPost() {
             type="text"
             id="default-input"
             placeholder="Gắn thẻ bài viết của bạn. Tối đa 5 thẻ. Ít nhất 1 thẻ!"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md  focus:outline-none 
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md  focus:outline-none 
             block p-2.5 
             focus:ring-1 focus:border-blue-50  w-4/6  "
+            onChange={(e) => setTags(e.target.value)}
           />
           <input
             type="text"
             id="default-input"
             placeholder="Thay đổi ảnh thu nhỏ"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none
             block p-2.5 
             focus:ring-1 focus:border-blue-50 w-1/6"
           />
@@ -85,14 +99,14 @@ function PublishPost() {
               id="dropdownHoverButton"
               data-dropdown-toggle="dropdownHover"
               data-dropdown-trigger="hover"
-              class="text-gray-500 border hover:bg-blue-100 focus:border-blue-500 focus:outline-none 
+              className="text-gray-500 border hover:bg-blue-100 focus:border-blue-500 focus:outline-none 
               focus:text-blue-400 hover:text-blue-400  font-medium 
               rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center w-full  justify-center"
               type="button"
             >
               Dropdown
               <svg
-                class="w-2.5 h-2.5 ms-3"
+                className="w-2.5 h-2.5 ms-3"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -100,9 +114,9 @@ function PublishPost() {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="m1 1 4 4 4-4"
                 />
               </svg>
@@ -111,7 +125,7 @@ function PublishPost() {
             {/* <!-- Dropdown menu --> */}
             <div
               id="dropdownHover"
-              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-44 dark:bg-gray-700 min-w-80 p-4"
+              className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-44 dark:bg-gray-700 min-w-80 p-4"
             >
               <div className="flex flex-col gap-2 ">
                 <span>Xuất bản bài viết của bạn </span>
@@ -129,6 +143,7 @@ function PublishPost() {
                     return (
                       <div className="flex items-center me-4" key={index}>
                         <input
+                          value={item.id}
                           id={item.id}
                           type={item.type}
                           checked={status === `${item.id}`}
@@ -147,6 +162,7 @@ function PublishPost() {
                 </div>
               </div>
               <hr className="border-t w-full" />
+
               <div className="flex flex-col gap-2">
                 <div className="flex text-xs items-center gap-1">
                   <FaLock className="text-xs text-gray-400" />

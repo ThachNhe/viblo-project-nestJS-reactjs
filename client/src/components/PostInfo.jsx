@@ -11,10 +11,10 @@ function PostInfo() {
         {/* VOTE */}
         <div className="flex flex-col gap-0">
           {/* UP VOTE */}
-          <div class="relative flex items-center gap-2 group ">
+          <div className="relative flex items-center gap-2 group ">
             <FaCaretUp className="text-5xl hover:text-gray-800 cursor-pointer" />
             <div
-              class="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+              className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 font-semibold"
             >
@@ -24,10 +24,10 @@ function PostInfo() {
 
           <span className="text-2xl font-medium"> +3 </span>
           {/* DOWN VOTE */}
-          <div class="relative flex items-center gap-2 group">
+          <div className="relative flex items-center gap-2 group">
             <FaCaretDown className="text-5xl hover:text-gray-800 cursor-pointer" />
             <div
-              class="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+              className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 font-semibold"
             >
@@ -36,7 +36,7 @@ function PostInfo() {
           </div>
         </div>
         {/* BOOKMARK */}
-        <div class="relative flex items-center gap-2 group">
+        <div className="relative flex items-center gap-2 group">
           <div
             className="border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
          ring-gray-400 hover:ring-blue-500 group shadow-md"
@@ -45,7 +45,7 @@ function PostInfo() {
           </div>
 
           <div
-            class="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+            className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 font-semibold"
           >
@@ -54,7 +54,7 @@ function PostInfo() {
         </div>
 
         {/* FACEBOOK */}
-        <div class="relative flex items-center gap-2 group">
+        <div className="relative flex items-center gap-2 group">
           <div
             className="border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
          ring-gray-400 hover:ring-blue-300 group shadow-md"
@@ -63,7 +63,7 @@ function PostInfo() {
           </div>
 
           <div
-            class="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+            className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 min-w-36 font-semibold"
           >
@@ -72,7 +72,7 @@ function PostInfo() {
         </div>
 
         {/* TWITTER */}
-        <div class="relative flex items-center gap-2 group">
+        <div className="relative flex items-center gap-2 group">
           <div
             className="border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
          ring-gray-300 hover:ring-blue-300 group shadow-md"
@@ -81,7 +81,7 @@ function PostInfo() {
           </div>
 
           <div
-            class="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
+            className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
               group-hover:opacity-100 transition-opacity duration-300 min-w-36 font-semibold"
           >

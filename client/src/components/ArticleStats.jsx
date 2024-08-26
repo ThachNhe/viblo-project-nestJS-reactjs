@@ -5,15 +5,15 @@ import { TbCaretUpDown } from "react-icons/tb";
 function ArticleStats({ viewNumber, commentNumber, bookmarkNumber, point }) {
   return (
     <div
-      class={`flex items-center space-x-4 text-gray-400 
+      className={`flex items-center space-x-4 text-gray-400 
     ${point !== undefined} ? 'justify-end' : 'justify-start' `}
     >
       {/* <!-- Tooltip for view --> */}
-      <div class="relative flex items-center gap-2 group">
+      <div className="relative flex items-center gap-2 group">
         <FaEye />
-        <span class="">{viewNumber}</span>
+        <span className="">{viewNumber}</span>
         <div
-          class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 
+          className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 
         group-hover:opacity-100 transition-opacity duration-300"
         >
           {viewNumber} Lượt xem
@@ -21,11 +21,11 @@ function ArticleStats({ viewNumber, commentNumber, bookmarkNumber, point }) {
       </div>
 
       {/* <!-- Tooltip for comment --> */}
-      <div class="relative flex items-center gap-1 group">
+      <div className="relative flex items-center gap-1 group">
         <FaRegCommentDots />
-        <span class="">{commentNumber}</span>
+        <span className="">{commentNumber}</span>
         <div
-          class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg 
+          className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg 
         opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
           {commentNumber} Bình luận
@@ -33,22 +33,22 @@ function ArticleStats({ viewNumber, commentNumber, bookmarkNumber, point }) {
       </div>
 
       {/* <!-- Tooltip for bookmark --> */}
-      <div class="relative flex items-center gap-1 group">
+      <div className="relative flex items-center gap-1 group">
         <FaBookmark />
-        <span class="">{bookmarkNumber}</span>
+        <span className="">{bookmarkNumber}</span>
         <div
-          class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg 
+          className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg 
         opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
           {bookmarkNumber} Đánh dấu
         </div>
       </div>
       {point !== undefined && (
-        <div class="relative flex items-center gap-1 group">
+        <div className="relative flex items-center gap-1 group">
           <TbCaretUpDown />
-          <span class="">{point}</span>
+          <span className="">{point}</span>
           <div
-            class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg 
+            className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg 
         opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           >
             {point} Điểm

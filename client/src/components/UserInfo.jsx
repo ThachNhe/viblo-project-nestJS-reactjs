@@ -32,30 +32,30 @@ function UserInfo({
           </div>
         </div>
 
-        <div class="flex items-center space-x-4 text-gray-400 justify-start">
+        <div className="flex items-center space-x-4 text-gray-400 justify-start">
           {/* <!-- Tooltip for view --> */}
-          <div class="relative flex items-center gap-2 group">
+          <div className="relative flex items-center gap-2 group">
             <FaStar />
-            <span class="">{starNumber}</span>
-            <div class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="">{starNumber}</span>
+            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {starNumber} Lượt xem
             </div>
           </div>
 
           {/* <!-- Tooltip for comment --> */}
-          <div class="relative flex items-center gap-1 group">
+          <div className="relative flex items-center gap-1 group">
             <FaUserPlus />
-            <span class="">{followerNumber}</span>
-            <div class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="">{followerNumber}</span>
+            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {followerNumber} Bình luận
             </div>
           </div>
 
           {/* <!-- Tooltip for bookmark --> */}
-          <div class="relative flex items-center gap-1 group">
+          <div className="relative flex items-center gap-1 group">
             <MdEdit />
-            <span class="">{postNumber}</span>
-            <div class="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="">{postNumber}</span>
+            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {postNumber} Đánh dấu
             </div>
           </div>

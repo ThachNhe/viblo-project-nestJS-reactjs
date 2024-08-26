@@ -161,21 +161,21 @@ function Homepage() {
       <Navbar isHomePage={true} />
       <div className="flex flex-col min-h-screen border">
         {/* Banner */}
-        <div class="flex items-center justify-center mb-10">
+        <div className="flex items-center justify-center mb-10">
           <img
             src="/images/banner.png"
             alt="Banner Image"
-            class="max-w-full h-auto rounded-lg"
+            className="max-w-full h-auto rounded-lg"
           />
         </div>
 
         {/* Content */}
-        <div class="container mx-auto my-8 px-4 lg:px-40">
-          <div class="flex">
+        <div className="container mx-auto my-8 px-4 lg:px-40">
+          <div className="flex">
             {/* <!-- Nội dung chính --> */}
             <div className="flex gap-4">
               <PostInfo />
-              <div class="flex-1 pr-4 lg:pr-2">
+              <div className="flex-1 pr-4 lg:pr-2">
                 <div style={{ height: "1000px", padding: "10px" }}>
                   <PerfectScrollbar
                   // ref={scrollbarRef}
@@ -219,13 +219,13 @@ function Homepage() {
 
             {/* <!-- Sidebar bên phải --> */}
             <PerfectScrollbar style={{ height: "700px", padding: "10px" }}>
-              <div class="flex-grow p-1 bg-zinc-50 rounded-md flex flex-col gap-10 py-2">
+              <div className="flex-grow p-1 bg-zinc-50 rounded-md flex flex-col gap-10 py-2">
                 <div>
                   <div className="flex gap-4">
-                    <h4 class="text-md mb-4 uppercase font-medium">Mục lục</h4>
+                    <h4 className="text-md mb-4 uppercase font-medium">Mục lục</h4>
                     <hr className="flex-grow text-red-full text-red-900 mt-4" />
                   </div>
-                  <ul class="list-disc pl-4 text-gray-700">
+                  <ul className="list-disc pl-4 text-gray-700">
                     <li>Hiểu rõ về toán tử OR (||)</li>
                     <li>Hiểu rõ về toán tử nullish (??)</li>
                     <li>Hiểu rõ về toán tử OR (||)</li>
@@ -239,7 +239,7 @@ function Homepage() {
                 </div>
                 <div>
                   <div className="flex gap-4">
-                    <h4 class="text-md mb-4 uppercase text-blue-600 hover:underline font-medium">
+                    <h4 className="text-md mb-4 uppercase text-blue-600 hover:underline font-medium">
                       Câu đố đề xuất
                     </h4>
                     <hr className="flex-grow text-red-full text-red-900 mt-4" />

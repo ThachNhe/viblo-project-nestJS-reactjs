@@ -19,7 +19,7 @@ const WriteMenu = () => {
 
   useEffect(() => {
   
-  }, []);
+  }, [navigator]);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
