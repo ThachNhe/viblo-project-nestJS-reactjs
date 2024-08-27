@@ -38,7 +38,7 @@ function UserInfo({
             <FaStar />
             <span className="">{starNumber}</span>
             <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {starNumber} Lượt xem
+              Reputations: {starNumber} 
             </div>
           </div>
 
@@ -47,7 +47,7 @@ function UserInfo({
             <FaUserPlus />
             <span className="">{followerNumber}</span>
             <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {followerNumber} Bình luận
+              {followerNumber} Người theo dõi 
             </div>
           </div>
 
@@ -56,7 +56,7 @@ function UserInfo({
             <MdEdit />
             <span className="">{postNumber}</span>
             <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {postNumber} Đánh dấu
+              {postNumber} Bài viết
             </div>
           </div>
         </div>

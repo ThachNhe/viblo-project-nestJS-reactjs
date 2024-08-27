@@ -46,6 +46,11 @@ export class User {
   @Column({ default: 0 })
   follower_number: number;
 
+  @Column({ default: 0 })
+  star_number: number;
+
+  @Column({ default: 0 })
+  post_number: number;
   @OneToMany(() => Post, (post) => post.author, {
     cascade: true,
     eager: true,

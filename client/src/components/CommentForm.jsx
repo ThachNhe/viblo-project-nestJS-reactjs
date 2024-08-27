@@ -9,6 +9,8 @@ function CommentForm({
   parentName,
 }) {
   const [content, setContent] = useState("");
+  
+  const [replyToCommentId, setReplyToCommentId] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,9 +21,12 @@ function CommentForm({
       parentId: +parentId,
       parentName,
     };
+    console.log("payLoad : ", payLoad);
     try {
-      await onCreateComment(payLoad);
-      setContent(""); 
+      const res = await onCreateComment(payLoad);
+      if (res.success) {
+        setContent("");
+      }
     } catch (error) {
       console.error("Error creating comment:", error);
     }
@@ -38,7 +43,7 @@ function CommentForm({
           <textarea
             id="comment"
             rows="4"
-            className="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
+            className="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400 placeholder:font-serif font-medium"
             placeholder="Write a comment..."
             required
             onChange={(e) => setContent(e.target.value)}

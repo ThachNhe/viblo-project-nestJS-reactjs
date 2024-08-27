@@ -47,7 +47,7 @@ export class Post {
   bookmark_number: number;
 
   @Column({ default: 0 })
-  number_comment: number;
+  comment_number: number;
 
   @Column({ default: false })
   isPublished: boolean;

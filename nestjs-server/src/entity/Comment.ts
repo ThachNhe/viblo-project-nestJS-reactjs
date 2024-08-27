@@ -23,6 +23,9 @@ export class Comment {
   @Column({ nullable: true })
   parentName: string;
 
+  @Column({ type: 'bigint', default: 0 })
+  row_number: number;
+
   @ManyToOne(() => User, (user) => user.comments)
   user: User;
 

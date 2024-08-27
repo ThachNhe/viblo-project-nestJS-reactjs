@@ -4,10 +4,40 @@ import { FaAngleDown } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { PiLineVertical } from "react-icons/pi";
 import CommentForm from "./CommentForm";
-function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }) {
+import { useState } from "react";
+
+function Comment({
+  fullName,
+  userName,
+  date,
+  content,
+  submitComment,
+  handlerOpenResponseForm,
+  commentId,
+  handlerOpenResToResForm,
+}) {
+  // console.log("====================================");
+  // console.log(
+  //   "comment check  handlerOpenResponseForm:",
+  //   handlerOpenResponseForm
+  // );
+  // console.log("====================================");
+
+  // const [replyToCommentId, setReplyToCommentId] = useState(null);
+
+  const handlerResponse = () => {
+    try {
+      // setReplyToCommentId(commentId);
+      handlerOpenResponseForm(commentId);
+      handlerOpenResToResForm(commentId);
+    } catch (error) {
+      console.log("error:", error);
+    }
+  };
+
   return (
     <>
-      <div className="flex flex-col gap-2 border p-5 rounded-md my-5">
+      <div className="flex flex-col gap-2 rounded-md p-2">
         <div className="flex items-center gap-2">
           <Avatar />
           <div className="flex flex-col gap-1">
@@ -20,16 +50,12 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
               </span>
             </div>
 
-            <span className="text-md text-gray-400 ">
-              {date}
-            </span>
+            <span className="text-md text-gray-400 ">{date}</span>
           </div>
         </div>
 
         <div className="text-lg">
-          <span>
-            {content}
-          </span>
+          <span>{content}</span>
         </div>
 
         <div className="flex gap-1 items-center ">
@@ -61,7 +87,10 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
           <PiLineVertical className="text-gray-400" />
 
           <div className="relative flex items-center group mr-3">
-            <span className="text-blue-400 font-medium text-sm hover:underline cursor-pointer">
+            <span
+              className="text-blue-400 font-medium text-sm hover:underline cursor-pointer"
+              onClick={() => handlerResponse()}
+            >
               Trả lời
             </span>
             <div
@@ -74,7 +103,9 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
           </div>
 
           <div className="relative flex items-center group mr-3">
-            <span className="text-gray-400 font-medium text-sm cursor-pointer">Chia sẻ</span>
+            <span className="text-gray-400 font-medium text-sm cursor-pointer">
+              Chia sẻ
+            </span>
             <div
               className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-lg opacity-0 
@@ -88,10 +119,7 @@ function Comment({ isAnswer ,fullName, userName, date, content,  submitComment }
             <BsThreeDots className="text-gray-400 cursor-pointer" />
           </div>
         </div>
-        {isAnswer && <CommentForm submitComment={submitComment} />}
-       
       </div>
-      
     </>
   );
 }

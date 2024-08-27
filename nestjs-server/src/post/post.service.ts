@@ -2,6 +2,7 @@ import { Injectable, Body, NotFoundException } from '@nestjs/common';
 import { PostDTO } from './dto/post.dto';
 import { AppDataSource } from '../index';
 import { Post, User, Tag } from '../entity';
+import { formatVietnameseDate } from '../utils/common.function';
 @Injectable()
 export class PostService {
   constructor() {}
@@ -49,11 +50,22 @@ export class PostService {
   async getId(id: any) {
     console.log('id', id);
     const postRepository = AppDataSource.getRepository(Post);
-    const post = await postRepository.findOne({ where: { id: +id } });
+    const post = await postRepository.findOne({
+      where: { id: +id },
+      relations: ['author'],
+    });
+
+    delete post?.author?.password;
+    delete post?.author?.email;
+    delete post?.author?.posts;
 
     post.view_number += 1;
     await postRepository.save(post);
 
+    const updatedPost = {
+      ...post,
+      createdDate: formatVietnameseDate(`${post.created_at}`),
+    };
     if (!post) {
       throw new NotFoundException('Post not found');
     }
@@ -62,7 +74,7 @@ export class PostService {
       success: true,
       statusCode: 200,
       error: null,
-      data: post,
+      data: updatedPost,
     };
   }
 }

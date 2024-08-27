@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import UserInfo from "../../components/UserInfo";
 import ArticleStats from "../../components/ArticleStats";
 import Posts from "../../components/Posts";
-import CarInfo from "../../components/CardInfo";
 import PostSection from "./PostSection";
 import PostInfo from "../../components/PostInfo";
 import CommentForm from "../../components/CommentForm";
@@ -15,7 +14,7 @@ import ProposedCourse from "../../components/ProposedCourse";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../redux/action/index";
 import * as services from "../../services/index";
-
+import CommentSection from "./CommentSection.";
 // var toc = require("markdown-toc");
 // import markdownToc from "markdown-toc";
 
@@ -120,30 +119,111 @@ const data = [
   },
 ];
 
+const commentData = [
+  {
+    id: "1",
+    content: "Bài viết quá hay OKOKOO!!",
+    parentId: "0",
+    parentName: "",
+    row_number: "0",
+    date: "thg 8 26, 2024 8:29 SA",
+    user: {
+      id: "3",
+      fullName: "dinh van thach",
+      userName: "thachdinh001",
+    },
+    comments: [
+      {
+        id: "2",
+        content: "Đúng vậy!!",
+        parentId: "1",
+        parentName: "Dinh Van Thach",
+        date: "thg 8 26, 2024 8:29 SA",
+
+        user: {
+          id: "3",
+          fullName: "dinh van thach",
+          userName: "thachdinh001",
+        },
+      },
+      {
+        id: "3",
+        content: "Cam on ban ve bai viet!!",
+        parentId: "1",
+        parentName: "Khan Tra",
+        date: "thg 8 26, 2024 8:29 SA",
+
+        user: {
+          id: "3",
+          fullName: "dinh van thach",
+          userName: "thachdinh001",
+        },
+      },
+    ],
+  },
+  {
+    id: "4",
+    content: "Bài viết quá hay!!",
+    parentId: "0",
+    parentName: "",
+    date: "thg 8 26, 2024 8:29 SA",
+
+    user: {
+      id: "3",
+      fullName: "dinh van thach",
+      userName: "thachdinh001",
+    },
+    comments: [
+      {
+        id: "5",
+        content: "Đúng vậy!!",
+        parentId: "1",
+        parentName: "Dinh Van Thach",
+        date: "thg 8 26, 2024 8:29 SA",
+
+        user: {
+          id: "3",
+          fullName: "dinh van thach",
+          userName: "thachdinh001",
+        },
+      },
+    ],
+  },
+];
+
 function Homepage() {
   const scrollbarRef = useRef(null);
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post.post);
+  const comments = useSelector((state) => state.comment.commentByPostId);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [parentId, setParentId] = useState(0);
+  const [responseId, setResponseId] = useState(0);
 
   const handleCreateComment = async (newComment) => {
     try {
       const commentInfo = await services.createComment(newComment);
+      dispatch(actions.getCommentByPostId(post?.data?.id));
       return commentInfo;
     } catch (err) {
       console.log("err : ", err);
     }
   };
 
-  useEffect(() => {
-    dispatch(actions.getPostById(17));
-  }, []);
+  const handlerOpenResponseForm = (commentId) => {
+    console.log("hg commentId : ", commentId);
+    setResponseId(commentId);
+  };
 
   useEffect(() => {
-    console.log("post : ", post);
-  }, [post]);
-  
+    dispatch(actions.getPostById(17));
+    dispatch(actions.getCommentByPostId(post?.data?.id));
+  }, []);
+
+  // useEffect(() => {
+  //   console.log("post : ", post);
+  // }, [post]);
+
   return (
     <>
       <Navbar isHomePage={true} />
@@ -165,34 +245,24 @@ function Homepage() {
               <PostInfo />
               <div className="flex-1 pr-4 lg:pr-2">
                 <div style={{ height: "1000px", padding: "10px" }}>
-                  <PerfectScrollbar
-                  // ref={scrollbarRef}
-                  // onYReachEnd={handleYReachEnd}
-                  // options={{
-                  //   wheelSpeed: 0.35, // Điều chỉnh tốc độ cuộn, giảm giá trị để cuộn mượt hơn
-                  //   swipeEasing: true, // Bật easing khi cuộn
-                  //   suppressScrollX: false, // Tắt cuộn ngang nếu không cần thiết
-                  // }}
-                  >
+                  <PerfectScrollbar>
                     <div>
                       <div className="flex gap-2 items-center justify-between">
                         <UserInfo
-                          fullName={"dinhvanthach"}
-                          userName={"thachdinh"}
-                          starNumber={100}
-                          followerNumber={50}
-                          postNumber={20}
+                          fullName={post?.data?.author?.fullName}
+                          userName={post?.data?.author?.userName}
+                          starNumber={post.data.author?.star_number}
+                          followerNumber={post?.data?.author?.follower_number}
+                          postNumber={post?.data?.author?.post_number}
                         />
 
                         <div className="flex flex-col gap-2">
-                          <span>
-                            Đã đăng vào thg 8 6, 3:22 CH trong 13 phút đọc
-                          </span>
+                          <span>Đã đăng vào {post?.data.createdDate}</span>
                           <div className=" float-right">
                             <ArticleStats
-                              viewNumber={20}
-                              commentNumber={50}
-                              bookmarkNumber={34}
+                              viewNumber={post?.data?.view_number}
+                              commentNumber={post?.data?.comments.length}
+                              bookmarkNumber={post?.data?.bookmark_number}
                             />
                           </div>
                         </div>
@@ -201,7 +271,7 @@ function Homepage() {
                         data={post?.data?.content_markdown}
                         tags={post?.data?.tags_array}
                       />
-                      {/* <TestMarkdown /> */}
+                     
                     </div>
                   </PerfectScrollbar>
                 </div>
@@ -249,43 +319,48 @@ function Homepage() {
           </div>
 
           <PostSection data={data} sectionName={"Bài viết liên quan"} />
-          <PostSection
+          {/* <PostSection
             data={data}
             sectionName={"Bài viết khác của văn Thạch"}
-          />
+          /> */}
 
           <CommentForm
             title={"Bình luận"}
-            postId={17}
-            userId={1}
+            postId={post.data.id}
+            userId={userInfo?.data?.user?.id}
             parentId={0}
             parentName={""}
             onCreateComment={handleCreateComment}
           />
 
-          <Comment
-            isAnswer={true}
-            fullName={"Dinh Van Thach"}
-            userName={"thachdinh"}
-            date={"thg 7 27, 2021 1:20 CH"}
-            content={`Chào bạn, Cảm ơn bạn đã chia sẻ. Cho mình hỏi việc quy ước là không
-            nên dùng camelCase mà dùng snake_case, kebab-case, bạn tham khảo ở
-            đâu, hay dẫn chứng ở đâu mà ghi nó là "best practice" vậy? Bạn đang
-            viết về Rest API hay Restful API vậy?`}
-            submitComment={() => console.log("submit comment")}
-          />
-
-          <Comment
-            isAnswer={false}
-            fullName={"Cao Thang"}
-            userName={"thangtiencao"}
-            date={"thg 7 27, 2021 1:20 CH"}
-            content={`Chào bạn, Cảm ơn bạn đã chia sẻ. Cho mình hỏi việc quy ước là không
-            nên dùng camelCase mà dùng snake_case, kebab-case, bạn tham khảo ở
-            đâu, hay dẫn chứng ở đâu mà ghi nó là "best practice" vậy? Bạn đang
-            viết về Rest API hay Restful API vậy?`}
-            submitComment={() => console.log("submit comment")}
-          />
+          {/* {comments?.data &&
+            comments?.data.length > 0 &&
+            comments.data.map((comment, index) => {
+              return (
+                <Comment
+                  isAnswer={false}
+                  fullName={comment.user.fullName}
+                  userName={comment.user.userName}
+                  date={comment.date}
+                  content={comment.content}
+                  submitComment={() => console.log("submit comment")}
+                />
+              );
+            })} */}
+          {commentData.map((comment, index) => {
+            return (
+              <div key={index}>
+                <CommentSection
+                  comment={comment}
+                  key={index}
+                  handlerOpenResponseForm={handlerOpenResponseForm}
+                  responseId={responseId}
+                  commentId={+comment.id}
+                />
+              </div>
+            );
+          })}
+         
         </div>
       </div>
       <Footer />

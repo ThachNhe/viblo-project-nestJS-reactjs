@@ -20,16 +20,18 @@ function PostSection({ sectionName, data }) {
           data.length > 0 &&
           data.map((item, index) => {
             return (
-              <CarInfo
-                index={index}
-                title={item.title}
-                author={item.author}
-                readTime={item.readTime}
-                viewNumber={item.viewNumber}
-                commentNumber={item.commentNumber}
-                bookmarkNumber={item.bookmarkNumber}
-                point={10}
-              />
+              <div key={index}>
+                <CarInfo
+                  index={index}
+                  title={item.title}
+                  author={item.author}
+                  readTime={item.readTime}
+                  viewNumber={item.viewNumber}
+                  commentNumber={item.commentNumber}
+                  bookmarkNumber={item.bookmarkNumber}
+                  point={10}
+                />
+              </div>
             );
           })}
       </Slider>

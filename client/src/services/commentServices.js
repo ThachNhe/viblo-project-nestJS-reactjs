@@ -4,12 +4,12 @@ const createComment = (body) => {
   return axios.post("/comment", body);
 };
 
-// const getPostById = (id) => {
-//   return axios.get("/post", {
-//     params: {
-//       id: id,
-//     },
-//   });
-// };
+const getCommentByPostId = (postId) => {
+  return axios.get("/comment", {
+    params: {
+      postId: postId,
+    },
+  });
+};
 
-export { createComment };
+export { createComment, getCommentByPostId };
