@@ -139,7 +139,6 @@ const commentData = [
         parentId: "1",
         parentName: "Dinh Van Thach",
         date: "thg 8 26, 2024 8:29 SA",
-
         user: {
           id: "3",
           fullName: "dinh van thach",

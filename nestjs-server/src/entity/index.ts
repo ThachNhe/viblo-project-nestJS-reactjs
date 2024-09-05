@@ -7,3 +7,4 @@ export * from './Question';
 export * from './Series';
 export * from './Tag';
 export * from './User';
+export * from './User_Vote';

@@ -49,7 +49,10 @@ function CommentSection({
               />
               {resId === comment.id && (
                 <div className="px-5">
-                  <CommentForm />
+                  <CommentForm
+                    parentId={comment.id}
+                    parentUserName={comment.user.userName}
+                  />
                 </div>
               )}
             </div>

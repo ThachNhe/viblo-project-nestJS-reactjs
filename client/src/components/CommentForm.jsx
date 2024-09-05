@@ -7,10 +7,14 @@ function CommentForm({
   userId,
   parentId,
   parentName,
+  parentUserName
 }) {
-  const [content, setContent] = useState("");
-  
-  const [replyToCommentId, setReplyToCommentId] = useState(null);
+  const [content, setContent] = useState(parentUserName ? `@${parentUserName} ` : "");
+
+
+  console.log("check parentId:", parentId);
+  console.log("check parentName:", parentUserName); 
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,8 +47,8 @@ function CommentForm({
           <textarea
             id="comment"
             rows="4"
-            className="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400 placeholder:font-serif font-medium"
-            placeholder="Write a comment..."
+            className="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400  font-medium"
+            placeholder="Viết bình luận..."
             required
             onChange={(e) => setContent(e.target.value)}
             value={content}

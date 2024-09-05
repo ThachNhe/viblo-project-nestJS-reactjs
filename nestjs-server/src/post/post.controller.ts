@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -24,5 +25,11 @@ export class PostController {
   getId(@Query() params: any) {
     console.log('params', params);
     return this.PostService.getId(params.id);
+  }
+
+  @Post('/upvote')
+  @UseGuards(AuthGuard('jwt'))
+  upvotePost(@Body() body: any) {
+    return this.PostService.vote(body.postId, body.userId, body.voteType);
   }
 }

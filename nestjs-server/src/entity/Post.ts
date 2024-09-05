@@ -9,10 +9,8 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { User } from './User';
-import { Comment } from './Comment';
-import { Tag } from './Tag';
-import { Status } from 'src/enums/status.enum';
+import { User, UserPost, Comment, Tag } from './index';
+import { Status } from '../enums/status.enum';
 @Entity({ name: 'posts' })
 export class Post {
   @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -77,8 +75,13 @@ export class Post {
   @ManyToMany(() => User, (user) => user.bookmarked_posts)
   bookmarkers: User[];
 
-  @ManyToMany(() => User, (user) => user.voted_posts)
-  voters: User[];
+  // @ManyToMany(() => User, (user) => user.voted_posts)
+  // @JoinTable({
+  //   name: 'user_votes',
+  // })
+  @OneToMany(() => UserPost, (userPost) => userPost.post)
+  userVotes: UserPost[];
+  // voters: User[];
 
   @CreateDateColumn({
     type: 'timestamp',

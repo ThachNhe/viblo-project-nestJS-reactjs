@@ -8,13 +8,17 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Post } from './Post';
-import { Comment } from './Comment';
-import { Series } from './Series';
-import { Question } from './Question';
-import { Answer } from './Answer';
 import { NotificationDetail } from './NotificationDetail';
-import { Tag } from './Tag';
+import {
+  Tag,
+  UserPost,
+  Answer,
+  Question,
+  Series,
+  Comment,
+  Post,
+} from './index';
+
 import { Role } from '../enums/role.enum';
 @Entity({ name: 'users' })
 export class User {
@@ -90,11 +94,8 @@ export class User {
   })
   bookmarked_posts: Post[];
 
-  @ManyToMany(() => Post, (post) => post.voters)
-  @JoinTable({
-    name: 'user_votes',
-  })
-  voted_posts: Post[];
+  @OneToMany(() => UserPost, (userPost) => userPost.user)
+  userVotes: UserPost[];
 
   @CreateDateColumn({
     type: 'timestamp',

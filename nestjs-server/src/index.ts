@@ -10,6 +10,7 @@ import {
   Series,
   Tag,
   User,
+  UserPost,
 } from './entity';
 
 export const AppDataSource = new DataSource({
@@ -31,6 +32,7 @@ export const AppDataSource = new DataSource({
     Tag,
     Notification,
     NotificationDetail,
+    UserPost,
   ],
   migrations: [],
   subscribers: [],
