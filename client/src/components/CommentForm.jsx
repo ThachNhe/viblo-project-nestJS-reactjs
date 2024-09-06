@@ -6,12 +6,13 @@ function CommentForm({
   postId,
   userId,
   parentId,
-  parentName,
-  parentUserName
+  parentUserName,
+  replyForUserId,
+  replyForUserName,
 }) {
-  const [content, setContent] = useState(parentUserName ? `@${parentUserName} ` : "");
-
-
+  const [content, setContent] = useState(
+    parentUserName ? `@${parentUserName} ` : ""
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +21,8 @@ function CommentForm({
       postId: +postId,
       userId: +userId,
       parentId: +parentId,
-      parentName,
+      replyForUserId: +replyForUserId,
+      replyForUserName: replyForUserName,
     };
     try {
       const res = await onCreateComment(payLoad);

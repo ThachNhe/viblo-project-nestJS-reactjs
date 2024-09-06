@@ -19,7 +19,6 @@ export class CommentService {
     const comment = new Comment();
     comment.content = body.content;
     comment.parentId = body.parentId;
-    comment.parentName = body.parentName;
     comment.replyForUserId = body.replyForUserId;
     comment.replyForUserName = body.replyForUserName;
 
@@ -53,7 +52,7 @@ export class CommentService {
            c."parentId" IS NOT NULL
       )
       SELECT
-          r."id", r."content", r."parentId", r."parentName", r."row_number", r."replyForUserId", r."replyForUserName",r."created_at",
+          r."id", r."content", r."parentId", r."row_number", r."replyForUserId", r."replyForUserName",r."created_at",
           u."id" as "authorId", u."fullName" as authorUserName, u."userName" as authorFullName
       FROM
           replies r

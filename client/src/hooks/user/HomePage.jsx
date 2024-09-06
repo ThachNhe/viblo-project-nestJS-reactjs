@@ -1,22 +1,19 @@
 import Navbar from "../../components/navbar/Navbar";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import UserInfo from "../../components/UserInfo";
 import ArticleStats from "../../components/ArticleStats";
 import Posts from "../../components/Posts";
 import PostSection from "./PostSection";
 import PostInfo from "../../components/PostInfo";
 import CommentForm from "../../components/CommentForm";
-import Comment from "../../components/Comment";
 import "react-perfect-scrollbar/dist/css/styles.css";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import Footer from "./Footer";
 import ProposedCourse from "../../components/ProposedCourse";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../redux/action/index";
 import * as services from "../../services/index";
 import CommentSection from "./CommentSection.";
-// var toc = require("markdown-toc");
-// import markdownToc from "markdown-toc";
+import toast from "react-hot-toast";
 
 const data = [
   {
@@ -119,97 +116,25 @@ const data = [
   },
 ];
 
-const commentData = [
-  {
-    id: "1",
-    content: "Bài viết quá hay OKOKOO!!",
-    parentId: "0",
-    parentName: "",
-    row_number: "0",
-    createdDate: "thg 8 26, 2024 8:29 SA",
-    replyForUserId: "",
-    replyForUserName: "",
-
-    authorId: "3",
-    authorFullName: "dinh van thach",
-    authorUserName: "thachdinh001",
-
-    replies: [
-      {
-        id: "2",
-        content: "Đúng vậy!!",
-        parentId: "1",
-        parentName: "Dinh Van Thach",
-        createdDate: "thg 8 26, 2024 8:29 SA",
-        replyForUserId: "3",
-        replyForUserName: "thachdinh001",
-
-        authorId: "5",
-        authorFullName: "hoang anh",
-        authorUserName: "hoanganh",
-      },
-      {
-        id: "3",
-        content: "Cam on ban ve bai viet!!",
-        parentId: "1",
-        parentName: "Khan Tra",
-        createdDate: "thg 8 26, 2024 8:29 SA",
-        replyForUserId: "5",
-        replyForUserName: "haonganh",
-
-        authorId: "10",
-        authorFullName: "duy chien",
-        authorUserName: "duychien",
-      },
-    ],
-  },
-  {
-    id: "4",
-    content: "Bài viết quá hay!!",
-    parentId: "0",
-    parentName: "",
-    createdDate: "thg 8 26, 2024 8:29 SA",
-    replyForUserId: "",
-    replyForUserName: "",
-
-    authorId: "3",
-    authorFullName: "dinh van thach",
-    authorUserName: "thachdinh001",
-
-    replies: [
-      {
-        id: "5",
-        content: "Đúng vậy!!",
-        parentId: "1",
-        parentName: "Dinh Van Thach",
-        createdDate: "thg 8 26, 2024 8:29 SA",
-        replyForUserId: "5",
-        replyForUserName: "haonganh",
-        authorId: "3",
-        authorFullName: "dinh van thach",
-        authorUserName: "thachdinh001",
-      },
-    ],
-  },
-];
-
 function Homepage() {
-  const scrollbarRef = useRef(null);
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post.post);
   const comments = useSelector((state) => state.comment.commentByPostId);
   const userInfo = useSelector((state) => state.auth.userInfo);
-  const [parentId, setParentId] = useState(0);
   const [responseId, setResponseId] = useState(0);
-  const [userVoteType, setUserVoteType] = useState();
   const [isUpvote, setIsUpvote] = useState(false);
   const [isDownvote, setIsDownvote] = useState(false);
+
   const handleCreateComment = async (newComment) => {
     try {
       const commentInfo = await services.createComment(newComment);
-      dispatch(actions.getCommentByPostId(post?.data?.id));
+      if (commentInfo?.success) {
+          dispatch(actions.getCommentByPostId(post?.data?.id));
+          toast.success("Bình luận thành công!");
+      }
       return commentInfo;
     } catch (err) {
+      toast.error("Bình luận thất bại!");
       console.log("err : ", err);
     }
   };
@@ -218,7 +143,6 @@ function Homepage() {
     dispatch(actions.getPostById(17));
     dispatch(actions.getCommentByPostId(post?.data?.id));
   }, []);
-
 
   const handlerOpenResponseForm = (commentId) => {
     setResponseId(commentId);
@@ -275,8 +199,8 @@ function Homepage() {
         </div>
 
         {/* Content */}
-        <div className="container mx-auto my-8 px-4 lg:px-40">
-          <div className="flex">
+        <div className="container mx-auto my-8 px-4 max-w-[1140px]">
+          <div className="flex gap-5">
             {/* <!-- Nội dung chính --> */}
             <div className="flex gap-4">
               <PostInfo
@@ -290,77 +214,70 @@ function Homepage() {
                 // twitter={true}
               />
               <div className="flex-1 pr-4 lg:pr-2">
-                <div style={{ height: "1000px", padding: "10px" }}>
-                  <PerfectScrollbar>
-                    <div>
-                      <div className="flex gap-2 items-center justify-between">
-                        <UserInfo
-                          fullName={post?.data?.author?.fullName}
-                          userName={post?.data?.author?.userName}
-                          starNumber={post?.data?.author?.star_number}
-                          followerNumber={post?.data?.author?.follower_number}
-                          postNumber={post?.data?.author?.post_number}
-                        />
+                <div>
+                  <div>
+                    <div className="flex gap-2 items-center justify-between">
+                      <UserInfo
+                        fullName={post?.data?.author?.fullName}
+                        userName={post?.data?.author?.userName}
+                        starNumber={post?.data?.author?.star_number}
+                        followerNumber={post?.data?.author?.follower_number}
+                        postNumber={post?.data?.author?.post_number}
+                      />
 
-                        <div className="flex flex-col gap-2">
-                          <span>Đã đăng vào {post?.data?.createdDate}</span>
-                          <div className=" float-right">
-                            <ArticleStats
-                              viewNumber={post?.data?.view_number}
-                              commentNumber={post?.data?.comments?.length}
-                              bookmarkNumber={post?.data?.bookmark_number}
-                            />
-                          </div>
+                      <div className="flex flex-col gap-2">
+                        <span>Đã đăng vào {post?.data?.createdDate}</span>
+                        <div className=" float-right">
+                          <ArticleStats
+                            viewNumber={post?.data?.view_number}
+                            commentNumber={post?.data?.comments?.length}
+                            bookmarkNumber={post?.data?.bookmark_number}
+                          />
                         </div>
                       </div>
-                      <Posts
-                        data={post?.data?.content_markdown}
-                        tags={post?.data?.tags_array}
-                      />
                     </div>
-                  </PerfectScrollbar>
+                    <Posts
+                      data={post?.data?.content_markdown}
+                      tags={post?.data?.tags_array}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* <!-- Sidebar bên phải --> */}
-            <PerfectScrollbar style={{ height: "700px", padding: "10px" }}>
-              <div className="flex-grow p-1rounded-md flex flex-col gap-10 py-2">
-                <div>
-                  <div className="flex gap-4">
-                    <h4 className="text-md mb-4 uppercase font-medium">
-                      Mục lục
-                    </h4>
-                    <hr className="flex-grow text-red-full text-red-900 mt-4" />
-                  </div>
-                  <ul className="list-disc pl-4 text-gray-700">
-                    <li>Hiểu rõ về toán tử OR (||)</li>
-                    <li>Hiểu rõ về toán tử nullish (??)</li>
-                    <li>Hiểu rõ về toán tử OR (||)</li>
-                    <li>Hiểu rõ về toán tử nullish (??)</li>
-                    <li>Hiểu rõ về toán tử OR (||)</li>
-                    <li>Hiểu rõ về toán tử nullish (??)</li>
-                    <li>Hiểu rõ về toán tử OR (||)</li>
-                    <li>Hiểu rõ về toán tử nullish (??)</li>
-                    <li>...</li>
-                  </ul>
+
+            <div className="flex-grow p-1rounded-md flex flex-col gap-10 py-2">
+              <div>
+                <div className="flex gap-4">
+                  <h4 className="text-md mb-4 uppercase font-medium">
+                    Mục lục
+                  </h4>
+                  <hr className="flex-grow text-red-full text-red-900 mt-4" />
+                </div>
+                <ul className="list-disc pl-4 text-gray-700">
+                  <li>Hiểu rõ về toán tử OR (||)</li>
+                  <li>Hiểu rõ về toán tử nullish (??)</li>
+                  <li>Hiểu rõ về toán tử OR (||)</li>
+                  <li>Hiểu rõ về toán tử nullish (??)</li>
+                  <li>Hiểu rõ về toán tử OR (||)</li>
+                </ul>
+              </div>
+              <div>
+                <div className="flex gap-4">
+                  <h4 className="text-md mb-4 uppercase text-blue-600 hover:underline font-medium">
+                    Câu đố đề xuất
+                  </h4>
+                  <hr className="flex-grow text-red-full text-red-900 mt-4" />
                 </div>
                 <div>
-                  <div className="flex gap-4">
-                    <h4 className="text-md mb-4 uppercase text-blue-600 hover:underline font-medium">
-                      Câu đố đề xuất
-                    </h4>
-                    <hr className="flex-grow text-red-full text-red-900 mt-4" />
-                  </div>
-                  <div>
-                    <ProposedCourse />
-                    <ProposedCourse />
-                    <ProposedCourse />
-                    <ProposedCourse />
-                  </div>
+                  <ProposedCourse />
+                  <ProposedCourse />
+                  <ProposedCourse />
+                  <ProposedCourse />
                 </div>
               </div>
-            </PerfectScrollbar>
+            </div>
           </div>
 
           <PostSection data={data} sectionName={"Bài viết liên quan"} />
@@ -374,24 +291,11 @@ function Homepage() {
             postId={post?.data?.id}
             userId={userInfo?.data?.user?.id}
             parentId={0}
-            parentName={""}
             onCreateComment={handleCreateComment}
+            replyForUserId={""}
+            replyForUserName={""}
           />
 
-          {/* {comments?.data &&
-            comments?.data.length > 0 &&
-            comments.data.map((comment, index) => {
-              return (
-                <Comment
-                  isAnswer={false}
-                  fullName={comment.user.fullName}
-                  userName={comment.user.userName}
-                  date={comment.date}
-                  content={comment.content}
-                  submitComment={() => console.log("submit comment")}
-                />
-              );
-            })} */}
           {comments?.map((comment, index) => {
             return (
               <div key={index}>

@@ -20,9 +20,6 @@ export class Comment {
   @Column({ type: 'bigint' })
   parentId: number;
 
-  @Column({ nullable: true })
-  parentName: string;
-
   @Column({ default: 0 })
   row_number: number;
 

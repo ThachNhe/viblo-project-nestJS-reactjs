@@ -27,7 +27,4 @@ export class CommentDTO {
 
   @IsString()
   replyForUserName: string;
-
-  @IsString()
-  parentName: string;
 }
