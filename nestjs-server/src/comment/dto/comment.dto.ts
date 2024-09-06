@@ -23,6 +23,11 @@ export class CommentDTO {
   @IsNumber()
   parentId: number;
 
+  replyForUserId: number;
+
+  @IsString()
+  replyForUserName: string;
+
   @IsString()
   parentName: string;
 }

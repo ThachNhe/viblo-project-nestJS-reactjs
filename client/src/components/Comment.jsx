@@ -3,8 +3,6 @@ import { FaAngleUp } from "react-icons/fa";
 import { FaAngleDown } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { PiLineVertical } from "react-icons/pi";
-import CommentForm from "./CommentForm";
-import { useState } from "react";
 
 function Comment({
   fullName,
@@ -15,15 +13,9 @@ function Comment({
   handlerOpenResponseForm,
   commentId,
   handlerOpenResToResForm,
+  replyForUserName,
+  replyForUserId
 }) {
-  // console.log("====================================");
-  // console.log(
-  //   "comment check  handlerOpenResponseForm:",
-  //   handlerOpenResponseForm
-  // );
-  // console.log("====================================");
-
-  // const [replyToCommentId, setReplyToCommentId] = useState(null);
 
   const handlerResponse = () => {
     try {
@@ -55,7 +47,10 @@ function Comment({
         </div>
 
         <div className="text-lg">
-          <span>{content}</span>
+          <span>
+            <span className="text-blue-500 hover:underline pr-2">{replyForUserName ?  '@' : ""}{replyForUserName}</span>
+            {content}
+          </span>
         </div>
 
         <div className="flex gap-1 items-center ">

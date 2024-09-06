@@ -27,6 +27,7 @@ function PostInfo({
                                 ${upvote ? "text-cyan-700" : ""}`}
               onClick={handlerUpvote}
             />
+            
             <div
               className="absolute z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 

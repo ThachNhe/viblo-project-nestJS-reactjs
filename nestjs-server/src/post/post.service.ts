@@ -76,53 +76,50 @@ export class PostService {
     let userPost = await userPostRepository.findOne({
       where: { user: { id: +userId }, post: { id: +postId } },
     });
+    if (userPost) {
+      if (userPost?.voteType === voteType) {
+        if (voteType === 'UPVOTE') {
+          post.vote_number -= 1;
+          await userPostRepository.remove(userPost);
+          await postRepository.save(post);
+        }
 
-    await AppDataSource.transaction(async (transactionalEntityManager) => {
-      if (userPost) {
-        if (userPost?.voteType === voteType) {
-          if (voteType === 'UPVOTE') {
-            post.vote_number -= 1;
-            await transactionalEntityManager.remove(UserPost, userPost);
-            await transactionalEntityManager.save(Post, post);
-          }
-
-          if (voteType === 'DOWNVOTE') {
-            post.vote_number += 1;
-            await transactionalEntityManager.remove(UserPost, userPost);
-            await transactionalEntityManager.save(Post, post);
-          }
-        } else {
-          if (voteType === 'UPVOTE') {
-            post.vote_number += 2;
-            transactionalEntityManager.save(UserPost, {
-              ...userPost,
-              voteType,
-            });
-          }
-
-          if (voteType === 'DOWNVOTE') {
-            post.vote_number -= 2;
-            transactionalEntityManager.save(UserPost, {
-              ...userPost,
-              voteType,
-            });
-          }
-
-          await transactionalEntityManager.save(Post, post);
+        if (voteType === 'DOWNVOTE') {
+          post.vote_number += 1;
+          await userPostRepository.remove(userPost);
+          await postRepository.save(post);
         }
       } else {
-        post.vote_number =
-          voteType === 'DOWNVOTE' ? post.vote_number - 1 : post.vote_number + 1;
+        if (voteType === 'UPVOTE') {
+          post.vote_number += 2;
+          userPostRepository.save({
+            ...userPost,
+            voteType,
+          });
+        }
 
-        const newUserPost = new UserPost();
-        newUserPost.user = user;
-        newUserPost.post = post;
-        newUserPost.voteType = voteType;
+        if (voteType === 'DOWNVOTE') {
+          post.vote_number -= 2;
+          userPostRepository.save({
+            ...userPost,
+            voteType,
+          });
+        }
 
-        await transactionalEntityManager.save(UserPost, newUserPost);
-        await transactionalEntityManager.save(Post, post);
+        await postRepository.save(post);
       }
-    });
+    } else {
+      post.vote_number =
+        voteType === 'DOWNVOTE' ? post.vote_number - 1 : post.vote_number + 1;
+
+      const newUserPost = new UserPost();
+      newUserPost.user = user;
+      newUserPost.post = post;
+      newUserPost.voteType = voteType;
+
+      await userPostRepository.save(newUserPost);
+      await postRepository.save(post);
+    }
 
     delete post.comments;
 
@@ -143,6 +140,7 @@ export class PostService {
       .leftJoin('userVote.user', 'user') // Nối với bảng user nhưng không lấy toàn bộ
       .addSelect(['user.id']) // Chỉ lấy trường user.id
       .leftJoinAndSelect('post.comments', 'comments') // Nối với bảng comments để lấy tất cả comments
+      .leftJoinAndSelect('post.author', 'author') // Nối với bảng comments để lấy tất cả comments
       .where('post.id = :id', { id })
       .getOne();
 

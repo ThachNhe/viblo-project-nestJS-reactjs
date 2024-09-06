@@ -26,6 +26,12 @@ export class Comment {
   @Column({ default: 0 })
   row_number: number;
 
+  @Column({ nullable: true })
+  replyForUserId: number;
+
+  @Column({ nullable: true })
+  replyForUserName: string;
+
   @ManyToOne(() => User, (user) => user.comments)
   user: User;
 

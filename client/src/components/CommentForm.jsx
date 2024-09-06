@@ -22,7 +22,6 @@ function CommentForm({
       parentId: +parentId,
       parentName,
     };
-    console.log("payLoad : ", payLoad);
     try {
       const res = await onCreateComment(payLoad);
       if (res.success) {

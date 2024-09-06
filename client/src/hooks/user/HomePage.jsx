@@ -126,37 +126,40 @@ const commentData = [
     parentId: "0",
     parentName: "",
     row_number: "0",
-    date: "thg 8 26, 2024 8:29 SA",
-    user: {
-      id: "3",
-      fullName: "dinh van thach",
-      userName: "thachdinh001",
-    },
-    comments: [
+    createdDate: "thg 8 26, 2024 8:29 SA",
+    replyForUserId: "",
+    replyForUserName: "",
+
+    authorId: "3",
+    authorFullName: "dinh van thach",
+    authorUserName: "thachdinh001",
+
+    replies: [
       {
         id: "2",
         content: "Đúng vậy!!",
         parentId: "1",
         parentName: "Dinh Van Thach",
-        date: "thg 8 26, 2024 8:29 SA",
-        user: {
-          id: "3",
-          fullName: "dinh van thach",
-          userName: "thachdinh001",
-        },
+        createdDate: "thg 8 26, 2024 8:29 SA",
+        replyForUserId: "3",
+        replyForUserName: "thachdinh001",
+
+        authorId: "5",
+        authorFullName: "hoang anh",
+        authorUserName: "hoanganh",
       },
       {
         id: "3",
         content: "Cam on ban ve bai viet!!",
         parentId: "1",
         parentName: "Khan Tra",
-        date: "thg 8 26, 2024 8:29 SA",
+        createdDate: "thg 8 26, 2024 8:29 SA",
+        replyForUserId: "5",
+        replyForUserName: "haonganh",
 
-        user: {
-          id: "3",
-          fullName: "dinh van thach",
-          userName: "thachdinh001",
-        },
+        authorId: "10",
+        authorFullName: "duy chien",
+        authorUserName: "duychien",
       },
     ],
   },
@@ -165,26 +168,26 @@ const commentData = [
     content: "Bài viết quá hay!!",
     parentId: "0",
     parentName: "",
-    date: "thg 8 26, 2024 8:29 SA",
+    createdDate: "thg 8 26, 2024 8:29 SA",
+    replyForUserId: "",
+    replyForUserName: "",
 
-    user: {
-      id: "3",
-      fullName: "dinh van thach",
-      userName: "thachdinh001",
-    },
-    comments: [
+    authorId: "3",
+    authorFullName: "dinh van thach",
+    authorUserName: "thachdinh001",
+
+    replies: [
       {
         id: "5",
         content: "Đúng vậy!!",
         parentId: "1",
         parentName: "Dinh Van Thach",
-        date: "thg 8 26, 2024 8:29 SA",
-
-        user: {
-          id: "3",
-          fullName: "dinh van thach",
-          userName: "thachdinh001",
-        },
+        createdDate: "thg 8 26, 2024 8:29 SA",
+        replyForUserId: "5",
+        replyForUserName: "haonganh",
+        authorId: "3",
+        authorFullName: "dinh van thach",
+        authorUserName: "thachdinh001",
       },
     ],
   },
@@ -216,12 +219,12 @@ function Homepage() {
     dispatch(actions.getCommentByPostId(post?.data?.id));
   }, []);
 
+
   const handlerOpenResponseForm = (commentId) => {
     setResponseId(commentId);
   };
 
   useEffect(() => {
-   
     const user = post?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
     );
@@ -322,7 +325,7 @@ function Homepage() {
 
             {/* <!-- Sidebar bên phải --> */}
             <PerfectScrollbar style={{ height: "700px", padding: "10px" }}>
-              <div className="flex-grow p-1 bg-zinc-50 rounded-md flex flex-col gap-10 py-2">
+              <div className="flex-grow p-1rounded-md flex flex-col gap-10 py-2">
                 <div>
                   <div className="flex gap-4">
                     <h4 className="text-md mb-4 uppercase font-medium">
@@ -361,10 +364,10 @@ function Homepage() {
           </div>
 
           <PostSection data={data} sectionName={"Bài viết liên quan"} />
-          {/* <PostSection
+          <PostSection
             data={data}
             sectionName={"Bài viết khác của văn Thạch"}
-          /> */}
+          />
 
           <CommentForm
             title={"Bình luận"}
@@ -389,7 +392,7 @@ function Homepage() {
                 />
               );
             })} */}
-          {commentData.map((comment, index) => {
+          {comments?.map((comment, index) => {
             return (
               <div key={index}>
                 <CommentSection

@@ -50,8 +50,6 @@ function PublishPost() {
       setTags("");
       setStatus("PUBLIC");
       toast.success("Tạo bài viết thành công!!");
-
-      console.log("post : ", post);
     } catch (e) {
       console.log("error : ", e);
       toast.error("Tạo bài viết thất bại!!");
