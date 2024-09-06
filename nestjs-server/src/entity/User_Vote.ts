@@ -8,9 +8,9 @@ export class UserPost {
 
   @Column({
     type: 'enum',
-    enum: ['upvote', 'downvote'],
+    enum: ['UPVOTE', 'DOWNVOTE'],
   })
-  voteType: 'upvote' | 'downvote';
+  voteType: 'UPVOTE' | 'DOWNVOTE';
 
   @ManyToOne(() => User, (user) => user.userVotes)
   user: User;

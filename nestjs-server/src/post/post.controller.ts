@@ -23,7 +23,6 @@ export class PostController {
 
   @Get()
   getId(@Query() params: any) {
-    console.log('params', params);
     return this.PostService.getId(params.id);
   }
 

@@ -8,7 +8,7 @@ import { PostDTO } from './dto/post.dto';
 import { AppDataSource } from '../index';
 import { Post, User, Tag, UserPost } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
-import { de } from 'date-fns/locale';
+
 @Injectable()
 export class PostService {
   constructor() {}
@@ -53,7 +53,7 @@ export class PostService {
     };
   }
 
-  async vote(postId: any, userId: any, voteType: 'upvote' | 'downvote') {
+  async vote(postId: any, userId: any, voteType: 'UPVOTE' | 'DOWNVOTE') {
     const postRepository = AppDataSource.getRepository(Post);
     const userPostRepository = AppDataSource.getRepository(UserPost);
 
@@ -77,39 +77,55 @@ export class PostService {
       where: { user: { id: +userId }, post: { id: +postId } },
     });
 
-    // if post is already voted by user
-    if (userPost) {
-      if (userPost?.voteType === voteType) {
-        throw new BadRequestException(
-          `You have already ${voteType}d this post`,
-        );
+    await AppDataSource.transaction(async (transactionalEntityManager) => {
+      if (userPost) {
+        if (userPost?.voteType === voteType) {
+          if (voteType === 'UPVOTE') {
+            post.vote_number -= 1;
+            await transactionalEntityManager.remove(UserPost, userPost);
+            await transactionalEntityManager.save(Post, post);
+          }
+
+          if (voteType === 'DOWNVOTE') {
+            post.vote_number += 1;
+            await transactionalEntityManager.remove(UserPost, userPost);
+            await transactionalEntityManager.save(Post, post);
+          }
+        } else {
+          if (voteType === 'UPVOTE') {
+            post.vote_number += 2;
+            transactionalEntityManager.save(UserPost, {
+              ...userPost,
+              voteType,
+            });
+          }
+
+          if (voteType === 'DOWNVOTE') {
+            post.vote_number -= 2;
+            transactionalEntityManager.save(UserPost, {
+              ...userPost,
+              voteType,
+            });
+          }
+
+          await transactionalEntityManager.save(Post, post);
+        }
       } else {
-        if (voteType === 'upvote') {
-          post.vote_number += 2;
-          userPostRepository.save({
-            ...userPost,
-            voteType,
-          });
-        }
+        post.vote_number =
+          voteType === 'DOWNVOTE' ? post.vote_number - 1 : post.vote_number + 1;
 
-        if (voteType === 'downvote') {
-          post.vote_number -= 2;
-          userPostRepository.save({
-            ...userPost,
-            voteType,
-          });
-        }
+        const newUserPost = new UserPost();
+        newUserPost.user = user;
+        newUserPost.post = post;
+        newUserPost.voteType = voteType;
 
-        await postRepository.save(post);
+        await transactionalEntityManager.save(UserPost, newUserPost);
+        await transactionalEntityManager.save(Post, post);
       }
-    } else {
-      post.vote_number =
-        voteType === 'downvote' ? post.vote_number - 1 : post.vote_number + 1;
-      userPost = userPostRepository.create({ user, post, voteType });
-      await userPostRepository.save(userPost);
-      await postRepository.save(post);
-    }
+    });
+
     delete post.comments;
+
     return {
       success: true,
       statusCode: 200,
@@ -119,12 +135,16 @@ export class PostService {
   }
 
   async getId(id: any) {
-    console.log('id', id);
     const postRepository = AppDataSource.getRepository(Post);
-    const post = await postRepository.findOne({
-      where: { id: +id },
-      relations: ['author'],
-    });
+
+    const post = await postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.userVotes', 'userVote') // Nối với bảng userVotes
+      .leftJoin('userVote.user', 'user') // Nối với bảng user nhưng không lấy toàn bộ
+      .addSelect(['user.id']) // Chỉ lấy trường user.id
+      .leftJoinAndSelect('post.comments', 'comments') // Nối với bảng comments để lấy tất cả comments
+      .where('post.id = :id', { id })
+      .getOne();
 
     delete post?.author?.password;
     delete post?.author?.email;

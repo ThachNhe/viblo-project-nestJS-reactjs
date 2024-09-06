@@ -5,7 +5,9 @@ import toast from "react-hot-toast";
 export const getPostById = (id) => {
   return async (dispatch) => {
     try {
+      console.log("OKOKOKOOOOKKOKOKOOKKO");
       const post = await services.getPostById(id);
+      console.log("Post from get post!!!:", post);
       dispatch({
         type: actionType.GET_POST_ID_SUCCESS,
         payload: post,

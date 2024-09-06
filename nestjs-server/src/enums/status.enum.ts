@@ -3,3 +3,9 @@ export enum Status {
   Private = 'PRIVATE',
   Link = 'LINK',
 }
+
+export enum VoteStatus {
+  Upvote = 'UPVOTE',
+  Downvote = 'DOWNVOTE',
+  NONE = 'NONE',
+}

@@ -19,7 +19,7 @@ import {
   Post,
 } from './index';
 
-import { Role } from '../enums/role.enum';
+import { Role } from '../enums/index';
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -55,6 +55,14 @@ export class User {
 
   @Column({ default: 0 })
   post_number: number;
+
+  // @Column({
+  //   type: 'enum',
+  //   enum: VoteStatus,
+  //   default: VoteStatus.NONE,
+  // })
+  // voter_status: VoteStatus[];
+
   @OneToMany(() => Post, (post) => post.author, {
     cascade: true,
     eager: true,

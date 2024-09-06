@@ -12,4 +12,8 @@ const getPostById = (id) => {
   });
 };
 
-export { createPost, getPostById };
+const votePost = (body) => {
+  return axios.post("/post/upvote", body);
+};
+
+export { createPost, getPostById, votePost };

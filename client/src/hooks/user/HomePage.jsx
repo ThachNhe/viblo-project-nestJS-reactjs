@@ -198,7 +198,9 @@ function Homepage() {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [parentId, setParentId] = useState(0);
   const [responseId, setResponseId] = useState(0);
-
+  const [userVoteType, setUserVoteType] = useState();
+  const [isUpvote, setIsUpvote] = useState(false);
+  const [isDownvote, setIsDownvote] = useState(false);
   const handleCreateComment = async (newComment) => {
     try {
       const commentInfo = await services.createComment(newComment);
@@ -209,19 +211,52 @@ function Homepage() {
     }
   };
 
-  const handlerOpenResponseForm = (commentId) => {
-    console.log("hg commentId : ", commentId);
-    setResponseId(commentId);
-  };
-
   useEffect(() => {
     dispatch(actions.getPostById(17));
     dispatch(actions.getCommentByPostId(post?.data?.id));
   }, []);
 
-  // useEffect(() => {
-  //   console.log("post : ", post);
-  // }, [post]);
+  const handlerOpenResponseForm = (commentId) => {
+    setResponseId(commentId);
+  };
+
+  useEffect(() => {
+   
+    const user = post?.data?.userVotes.find(
+      (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
+    );
+    if (user?.voteType === "UPVOTE") {
+      setIsUpvote(true);
+      setIsDownvote(false);
+    }
+    if (user?.voteType === "DOWNVOTE") {
+      setIsUpvote(false);
+      setIsDownvote(true);
+    }
+    if (!user) {
+      setIsUpvote(false);
+      setIsDownvote(false);
+    }
+  }, [post]);
+
+  const handlerSubmitvote = async (voteType) => {
+    const payload = {
+      userId: userInfo?.data?.user?.id,
+      postId: post?.data?.id,
+      voteType: voteType,
+    };
+
+    try {
+      const voteInfo = await services.votePost(payload);
+      voteInfo.success && dispatch(actions.getPostById(post?.data?.id));
+    } catch (error) {
+      console.log("error : ", error);
+    }
+  };
+
+  const handlerBookmark = () => {
+    console.log("bookmark");
+  };
 
   return (
     <>
@@ -241,7 +276,16 @@ function Homepage() {
           <div className="flex">
             {/* <!-- Nội dung chính --> */}
             <div className="flex gap-4">
-              <PostInfo />
+              <PostInfo
+                upvote={isUpvote}
+                downvote={isDownvote}
+                voteNumber={post?.data?.vote_number}
+                handlerUpvote={() => handlerSubmitvote("UPVOTE")}
+                handlerDownvote={() => handlerSubmitvote("DOWNVOTE")}
+                handlerBookmark={handlerBookmark}
+                // facebook={true}
+                // twitter={true}
+              />
               <div className="flex-1 pr-4 lg:pr-2">
                 <div style={{ height: "1000px", padding: "10px" }}>
                   <PerfectScrollbar>
@@ -250,17 +294,17 @@ function Homepage() {
                         <UserInfo
                           fullName={post?.data?.author?.fullName}
                           userName={post?.data?.author?.userName}
-                          starNumber={post.data.author?.star_number}
+                          starNumber={post?.data?.author?.star_number}
                           followerNumber={post?.data?.author?.follower_number}
                           postNumber={post?.data?.author?.post_number}
                         />
 
                         <div className="flex flex-col gap-2">
-                          <span>Đã đăng vào {post?.data.createdDate}</span>
+                          <span>Đã đăng vào {post?.data?.createdDate}</span>
                           <div className=" float-right">
                             <ArticleStats
                               viewNumber={post?.data?.view_number}
-                              commentNumber={post?.data?.comments.length}
+                              commentNumber={post?.data?.comments?.length}
                               bookmarkNumber={post?.data?.bookmark_number}
                             />
                           </div>
@@ -270,7 +314,6 @@ function Homepage() {
                         data={post?.data?.content_markdown}
                         tags={post?.data?.tags_array}
                       />
-                     
                     </div>
                   </PerfectScrollbar>
                 </div>
@@ -325,7 +368,7 @@ function Homepage() {
 
           <CommentForm
             title={"Bình luận"}
-            postId={post.data.id}
+            postId={post?.data?.id}
             userId={userInfo?.data?.user?.id}
             parentId={0}
             parentName={""}
@@ -359,7 +402,6 @@ function Homepage() {
               </div>
             );
           })}
-         
         </div>
       </div>
       <Footer />

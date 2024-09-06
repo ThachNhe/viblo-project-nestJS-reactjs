@@ -8,6 +8,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  VersionColumn,
 } from 'typeorm';
 import { User, UserPost, Comment, Tag } from './index';
 import { Status } from '../enums/status.enum';
@@ -95,4 +96,7 @@ export class Post {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updated_at: Date;
+
+  // @VersionColumn()
+  // version: number;
 }

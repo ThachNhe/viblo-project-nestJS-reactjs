@@ -12,9 +12,6 @@ function CommentForm({
   const [content, setContent] = useState(parentUserName ? `@${parentUserName} ` : "");
 
 
-  console.log("check parentId:", parentId);
-  console.log("check parentName:", parentUserName); 
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
