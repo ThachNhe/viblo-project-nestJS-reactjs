@@ -24,8 +24,10 @@ export class PostController {
   }
 
   @Get(':id')
-  getId(@Param('id') id: number) {
-    return this.PostService.getId(id);
+  getId(@Param('id') postId: any) {
+    return postId
+      ? this.PostService.getId(postId)
+      : this.PostService.getRadomId();
   }
 
   @Post(':id/vote')

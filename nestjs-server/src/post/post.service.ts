@@ -94,9 +94,7 @@ export class PostService {
             .set({ vote_number: () => 'vote_number + 1' })
             .where('id = :id', { id: postId })
             .execute();
-
           await userPostRepository.remove(userPost);
-          await postRepository.save(post);
         }
       } else {
         if (voteType === 'UPVOTE') {
@@ -152,7 +150,7 @@ export class PostService {
     };
   }
 
-  async getId(id: any) {
+  async getId(id: number) {
     const postRepository = AppDataSource.getRepository(Post);
 
     const post = await postRepository
@@ -171,7 +169,61 @@ export class PostService {
     delete post?.author?.email;
     delete post?.author?.posts;
 
-    post.view_number += 1;
+    // post.view_number += 1;
+    postRepository
+      .createQueryBuilder()
+      .update(Post)
+      .set({ view_number: () => 'view_number + 1' })
+      .where('id = :id', { id })
+      .execute();
+
+    await postRepository.save(post);
+
+    const updatedPost = {
+      ...post,
+      createdDate: formatVietnameseDate(`${post.created_at}`),
+    };
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: updatedPost,
+    };
+  }
+
+  async getRadomId() {
+    const postRepository = AppDataSource.getRepository(Post);
+
+    const post = await postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.userVotes', 'userVote') // Nối với bảng userVotes
+      .leftJoin('userVote.user', 'user') // Nối với bảng user nhưng không lấy toàn bộ
+      .addSelect(['user.id']) // Chỉ lấy trường user.id
+      .leftJoinAndSelect('post.comments', 'comments') // Nối với bảng comments để lấy tất cả comments
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoin('post.bookmarkers', 'bookmarkers')
+      .addSelect(['bookmarkers.id'])
+      .orderBy('RANDOM()')
+      .limit(1)
+      .getOne();
+
+    delete post?.author?.password;
+    delete post?.author?.email;
+    delete post?.author?.posts;
+
+    // post.view_number += 1;
+    const id = post?.id;
+
+    postRepository
+      .createQueryBuilder()
+      .update(Post)
+      .set({ view_number: () => 'view_number + 1' })
+      .where('id = :id', { id })
+      .execute();
     await postRepository.save(post);
 
     const updatedPost = {

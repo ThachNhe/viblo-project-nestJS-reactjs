@@ -48,7 +48,7 @@ export class CommentService {
         FROM
             "comments" c
         WHERE
-           c."parentId" IS NOT NULL
+           c."parentId" IS NOT NULL AND c."postId" = ${postId}
       )
       SELECT
           r."id", r."content", r."parentId", r."row_number", r."replyForUserId", r."replyForUserName",r."created_at",
@@ -58,14 +58,25 @@ export class CommentService {
       LEFT JOIN "users" u ON r."userId" = u."id"
     `);
 
-    results = results.map((comment: any) => {
+    console.log('results', postId, results);
+
+    if (!results) {
+      return {
+        success: true,
+        statusCode: 200,
+        error: null,
+        data: [],
+      };
+    }
+
+    results = results?.map((comment: any) => {
       return {
         ...comment,
         createdDate: formatVietnameseDate(comment.created_at),
       };
     });
 
-    const groupedById = results.reduce((acc: any, obj: any) => {
+    const groupedById = results?.reduce((acc: any, obj: any) => {
       // Nếu chưa có nhóm nào cho id này, tạo nhóm mới
       if (!acc[obj.parentId]) {
         acc[obj.parentId] = [];
@@ -77,10 +88,15 @@ export class CommentService {
 
     const firstLevelComments = groupedById['0'];
 
-    const finalComments = firstLevelComments.map((comment: any) => {
+    const finalComments = firstLevelComments?.map((comment: any) => {
       return { ...comment, replies: groupedById[comment.id] };
     });
 
-    return finalComments;
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: finalComments,
+    };
   }
 }
