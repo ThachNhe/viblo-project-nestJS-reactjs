@@ -169,12 +169,11 @@ function Homepage() {
   const handlerSubmitvote = async (voteType) => {
     const payload = {
       userId: userInfo?.data?.user?.id,
-      postId: post?.data?.id,
       voteType: voteType,
     };
 
     try {
-      const voteInfo = await services.votePost(payload);
+      const voteInfo = await services.votePost(payload, post?.data?.id);
       voteInfo.success && dispatch(actions.getPostById(post?.data?.id));
     } catch (error) {
       console.log("error : ", error);
@@ -281,10 +280,10 @@ function Homepage() {
           </div>
 
           <PostSection data={data} sectionName={"Bài viết liên quan"} />
-          <PostSection
+          {/* <PostSection
             data={data}
             sectionName={"Bài viết khác của văn Thạch"}
-          />
+          /> */}
 
           <CommentForm
             title={"Bình luận"}
@@ -301,10 +300,14 @@ function Homepage() {
               <div key={index}>
                 <CommentSection
                   comment={comment}
+                  parentId={comment.id}
+                  postId= {post?.data?.id}
+                  userId={userInfo?.data?.user?.id}
                   key={index}
                   handlerOpenResponseForm={handlerOpenResponseForm}
                   responseId={responseId}
                   commentId={+comment.id}
+                  onCreateComment={handleCreateComment}
                 />
               </div>
             );

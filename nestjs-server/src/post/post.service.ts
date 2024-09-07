@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Body,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PostDTO } from './dto/post.dto';
 import { AppDataSource } from '../index';
 import { Post, User, Tag, UserPost } from '../entity';
@@ -76,22 +71,43 @@ export class PostService {
     let userPost = await userPostRepository.findOne({
       where: { user: { id: +userId }, post: { id: +postId } },
     });
+
     if (userPost) {
       if (userPost?.voteType === voteType) {
         if (voteType === 'UPVOTE') {
-          post.vote_number -= 1;
+          // post.vote_number -= 1;
+          postRepository
+            .createQueryBuilder()
+            .update(Post)
+            .set({ vote_number: () => 'vote_number - 1' })
+            .where('id = :id', { id: postId })
+            .execute();
+
           await userPostRepository.remove(userPost);
-          await postRepository.save(post);
         }
 
         if (voteType === 'DOWNVOTE') {
-          post.vote_number += 1;
+          // post.vote_number += 1;
+          postRepository
+            .createQueryBuilder()
+            .update(Post)
+            .set({ vote_number: () => 'vote_number + 1' })
+            .where('id = :id', { id: postId })
+            .execute();
+
           await userPostRepository.remove(userPost);
           await postRepository.save(post);
         }
       } else {
         if (voteType === 'UPVOTE') {
-          post.vote_number += 2;
+          // post.vote_number += 2;
+          postRepository
+            .createQueryBuilder()
+            .update(Post)
+            .set({ vote_number: () => 'vote_number + 2' })
+            .where('id = :id', { id: postId })
+            .execute();
+
           userPostRepository.save({
             ...userPost,
             voteType,
@@ -99,7 +115,12 @@ export class PostService {
         }
 
         if (voteType === 'DOWNVOTE') {
-          post.vote_number -= 2;
+          postRepository
+            .createQueryBuilder()
+            .update(Post)
+            .set({ vote_number: () => 'vote_number - 2' })
+            .where('id = :id', { id: postId })
+            .execute();
           userPostRepository.save({
             ...userPost,
             voteType,

@@ -5,14 +5,19 @@ import { useState } from "react";
 function CommentSection({
   comment,
   handlerOpenResponseForm,
+  postId,
+  userId,
   commentId,
   responseId,
+  onCreateComment,
+  parentId,
 }) {
   const [resId, setResId] = useState();
 
   const handlerOpenResToResForm = (commentId) => {
     setResId(commentId);
   };
+
   return (
     <div className="flex flex-col gap-1 border p-2 mt-3">
       <div>
@@ -24,11 +29,19 @@ function CommentSection({
           isAnswer={true}
           handlerOpenResponseForm={handlerOpenResponseForm}
           commentId={commentId}
+
           // submitComment={submitComment}
         />
         {responseId === commentId && (
           <div className="px-5">
-            <CommentForm />
+            <CommentForm
+              onCreateComment={onCreateComment}
+              postId={postId}
+              userId={userId}
+              parentId={parentId}
+              replyForUserId={""}
+              replyForUserName={comment.authorusername}
+            />
           </div>
         )}
       </div>
@@ -51,8 +64,12 @@ function CommentSection({
               {resId === comment.id && (
                 <div className="px-5">
                   <CommentForm
-                    parentId={comment.id}
-                    parentUserName={comment.authorusername}
+                    parentId={parentId}
+                    onCreateComment={onCreateComment}
+                    postId={postId}
+                    userId={userId}
+                    replyForUserId={comment.authorId}
+                    replyForUserName={comment.authorusername}
                   />
                 </div>
               )}

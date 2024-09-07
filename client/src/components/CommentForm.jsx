@@ -6,14 +6,10 @@ function CommentForm({
   postId,
   userId,
   parentId,
-  parentUserName,
   replyForUserId,
   replyForUserName,
 }) {
-  const [content, setContent] = useState(
-    parentUserName ? `@${parentUserName} ` : ""
-  );
-
+  const [content, setContent] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     let payLoad = {

@@ -13,13 +13,12 @@ function PostInfo({
   handlerDownvote,
   handlerBookmark,
 }) {
-
   // console.log('upvote : ', upvote);
   return (
     <>
       <div className="flex flex-col items-center gap-8 text-gray-400 mt-20">
         {/* VOTE */}
-        <div className="flex flex-col gap-0">
+        <div className="flex flex-col gap-0 ">
           {/* UP VOTE */}
           <div className="relative flex items-center gap-2 group ">
             <FaCaretUp
@@ -27,7 +26,6 @@ function PostInfo({
                                 ${upvote ? "text-cyan-700" : ""}`}
               onClick={handlerUpvote}
             />
-            
             <div
               className="absolute z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-sm opacity-0 
@@ -37,9 +35,13 @@ function PostInfo({
             </div>
           </div>
 
-          <span className={`text-2xl font-medium
+          <span
+            className={`text-2xl font-medium leading-3
             ${upvote || downvote ? "text-cyan-700" : "text-gray-400"}
-            `}> +{voteNumber} </span>
+            `}
+          >
+            +{voteNumber}
+          </span>
           {/* DOWN VOTE */}
           <div className="relative flex items-center gap-2 group">
             <FaCaretDown
@@ -63,8 +65,9 @@ function PostInfo({
             className="border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
          ring-gray-400 hover:ring-blue-500 group shadow-md"
           >
-            <IoBookmark className="text-2xl group-hover:text-blue-500 cursor-pointer" 
-            onClick={handlerBookmark}
+            <IoBookmark
+              className="text-2xl group-hover:text-blue-500 cursor-pointer"
+              onClick={handlerBookmark}
             />
           </div>
 

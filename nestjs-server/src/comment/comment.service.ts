@@ -24,8 +24,7 @@ export class CommentService {
 
     comment.user = user;
     comment.post = post;
-    // comment.row_number = parseInt(comment.row_number) + 1;
-    // console.log('type of : ', comment.row_number);
+
     await commentRepository.save(comment);
 
     delete comment?.post;
@@ -53,12 +52,10 @@ export class CommentService {
       )
       SELECT
           r."id", r."content", r."parentId", r."row_number", r."replyForUserId", r."replyForUserName",r."created_at",
-          u."id" as "authorId", u."fullName" as authorUserName, u."userName" as authorFullName
+          u."id" as "authorId", u."fullName" as authorfullname, u."userName" as authoruserName, u."avatar" as authorAvatar
       FROM
           replies r
       LEFT JOIN "users" u ON r."userId" = u."id"
-      WHERE
-          rn BETWEEN 1 AND 5;
     `);
 
     results = results.map((comment: any) => {
@@ -67,14 +64,6 @@ export class CommentService {
         createdDate: formatVietnameseDate(comment.created_at),
       };
     });
-    const data = [
-      { id: 1, name: 'Item 1' },
-      { id: 2, name: 'Item 2' },
-      { id: 1, name: 'Item 3' },
-      { id: 3, name: 'Item 4' },
-      { id: 2, name: 'Item 5' },
-      { id: 1, name: 'Item 6' },
-    ];
 
     const groupedById = results.reduce((acc: any, obj: any) => {
       // Nếu chưa có nhóm nào cho id này, tạo nhóm mới
@@ -86,7 +75,6 @@ export class CommentService {
       return acc;
     }, {});
 
-    // console.log(groupedById);
     const firstLevelComments = groupedById['0'];
 
     const finalComments = firstLevelComments.map((comment: any) => {

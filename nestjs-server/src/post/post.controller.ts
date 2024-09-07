@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PostDTO } from './dto/post.dto';
-@Controller('post')
+@Controller('posts')
 export class PostController {
   constructor(private readonly PostService: PostService) {}
 
@@ -21,14 +21,15 @@ export class PostController {
     return this.PostService.createPost(body);
   }
 
-  @Get()
-  getId(@Query() params: any) {
-    return this.PostService.getId(params.id);
+  @Get(':id')
+  getId(@Param('id') id: number) {
+    return this.PostService.getId(id);
   }
 
-  @Post('/upvote')
+  @Post(':id/vote')
   @UseGuards(AuthGuard('jwt'))
-  upvotePost(@Body() body: any) {
-    return this.PostService.vote(body.postId, body.userId, body.voteType);
+  vote(@Body() body: any, @Param('id') id: number) {
+    console.log(body, id);
+    return this.PostService.vote(id, body.userId, body.voteType);
   }
 }
