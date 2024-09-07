@@ -14,7 +14,6 @@ function PostInfo({
   handlerDownvote,
   handlerBookmark,
 }) {
-  // console.log('upvote : ', upvote);
   return (
     <>
       <div className="flex flex-col items-center gap-8 text-gray-400 mt-20">
@@ -64,13 +63,13 @@ function PostInfo({
         <div className="relative flex items-center gap-2 group">
           <div
             className={`border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
-         ring-gray-400 hover:ring-blue-500 group shadow-md
-              ${isBookmark ? "ring-blue-500" : "ring-gray-400"}
+         ring-gray-400  group shadow-md
+            ${isBookmark ? 'ring-blue-500 ' : 'hover:bg-white'}
          `}
           >
             <IoBookmark
               className={`text-2xl group-hover:text-blue-500 cursor-pointer
-                ${isBookmark ? "text-blue-500" : "text-gray-400"}
+                ${isBookmark ? "text-blue-500 " : "group-hover:text-gray-400"}
                 `}
               onClick={handlerBookmark}
             />

@@ -6,7 +6,6 @@ export const getPostById = (id) => {
   return async (dispatch) => {
     try {
       const post = await services.getPostById(id);
-      console.log("Post from get post!!!:", post);
       dispatch({
         type: actionType.GET_POST_ID_SUCCESS,
         payload: post,

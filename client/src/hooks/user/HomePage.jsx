@@ -125,6 +125,7 @@ function Homepage() {
   const [isUpvote, setIsUpvote] = useState(false);
   const [isDownvote, setIsDownvote] = useState(false);
   const [isBookmark, setIsBookmark] = useState(false);
+  // const [defaultPostId, setDefaultPostId] = useState(postId || post);
 
   const handleCreateComment = async (newComment) => {
     try {
@@ -156,18 +157,27 @@ function Homepage() {
 
     const bookmark = post?.data?.bookmarkers.find(
       (bookmarker) => +bookmarker?.id === +userInfo?.data?.user?.id
-    )
+    );
 
-    bookmark ? setIsBookmark(true) : setIsBookmark(false); 
+    if (+bookmark?.id === +userInfo?.data?.user?.id) {
+      setIsBookmark(true);
+    }
+    // console.log("isbookmark : ", isBookmark);
+
+    if (+bookmark?.id !== +userInfo?.data?.user?.id) {
+      setIsBookmark(false);
+    }
 
     if (user?.voteType === "UPVOTE") {
       setIsUpvote(true);
       setIsDownvote(false);
     }
+
     if (user?.voteType === "DOWNVOTE") {
       setIsUpvote(false);
       setIsDownvote(true);
     }
+
     if (!user) {
       setIsUpvote(false);
       setIsDownvote(false);
@@ -187,8 +197,28 @@ function Homepage() {
     }
   };
 
-  const handlerBookmark = () => {
-    console.log("bookmark");
+  const handlerBookmark = async () => {
+    try {
+      if (isBookmark) {
+        const res = await services.unbookmark(post?.data?.id);
+        if (res?.success) {
+          // setIsBookmark(false);
+          dispatch(actions.getPostById(post?.data?.id));
+        }
+      }
+
+      if (!isBookmark) {
+        const res = await services.bookmark(post?.data?.id);
+        if (res?.success) {
+          // setIsBookmark(true);
+          dispatch(actions.getPostById(post?.data?.id));
+        }
+      }
+
+      
+    } catch (error) {
+      console.log("error : ", error);
+    }
   };
 
   return (

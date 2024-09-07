@@ -12,4 +12,12 @@ const votePost = (body, id) => {
   return axios.post(`/posts/${id}/vote`, body);
 };
 
-export { createPost, getPostById, votePost };
+const bookmark = (postId) => {
+  return axios.post(`/posts/${postId}/bookmark`);
+};
+
+const unbookmark = (postId) => {
+  return axios.delete(`/posts/${postId}/bookmark`);
+};
+
+export { createPost, getPostById, votePost, bookmark, unbookmark };
