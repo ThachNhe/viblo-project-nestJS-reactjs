@@ -161,7 +161,9 @@ export class PostService {
       .leftJoin('userVote.user', 'user') // Nối với bảng user nhưng không lấy toàn bộ
       .addSelect(['user.id']) // Chỉ lấy trường user.id
       .leftJoinAndSelect('post.comments', 'comments') // Nối với bảng comments để lấy tất cả comments
-      .leftJoinAndSelect('post.author', 'author') // Nối với bảng comments để lấy tất cả comments
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoin('post.bookmarkers', 'bookmarkers')
+      .addSelect(['bookmarkers.id'])
       .where('post.id = :id', { id })
       .getOne();
 
@@ -185,6 +187,83 @@ export class PostService {
       statusCode: 200,
       error: null,
       data: updatedPost,
+    };
+  }
+
+  async bookmarkService(postId: number, userId: number) {
+    const postRepository = AppDataSource.getRepository(Post);
+    const user = await AppDataSource.getRepository(User).findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const post = await postRepository.findOne({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    post.bookmarkers = [user];
+
+    postRepository
+      .createQueryBuilder()
+      .update(Post)
+      .set({ bookmark_number: () => 'bookmark_number + 1' })
+      .where('id = :id', { id: postId })
+      .execute();
+
+    await postRepository.save(post);
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: user,
+    };
+  }
+
+  async deleteBookmark(postId: number, userId: number) {
+    const postRepository = AppDataSource.getRepository(Post);
+    const userRepository = AppDataSource.getRepository(User);
+
+    const user = await userRepository.findOne({
+      where: { id: +userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const post = await postRepository.findOne({
+      relations: ['bookmarkers'],
+      where: { id: +postId },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    post.bookmarkers = post.bookmarkers.filter((item) => item.id !== userId);
+
+    await postRepository.save(post);
+
+    postRepository
+      .createQueryBuilder()
+      .update(Post)
+      .set({ bookmark_number: () => 'bookmark_number - 1' })
+      .where('id = :id', { id: postId })
+      .execute();
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: null,
     };
   }
 }

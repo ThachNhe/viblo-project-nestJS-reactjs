@@ -23,9 +23,6 @@ export class Post {
   @Column({ type: 'text' })
   content_markdown: string;
 
-  // @Column({ type: 'text', nullable: true })
-  // table_content: string;
-
   @Column({ type: 'json', nullable: true })
   tags_array: string[];
 
@@ -74,6 +71,9 @@ export class Post {
   tags: Tag[];
 
   @ManyToMany(() => User, (user) => user.bookmarked_posts)
+  @JoinTable({
+    name: 'user_bookmarks',
+  })
   bookmarkers: User[];
 
   // @ManyToMany(() => User, (user) => user.voted_posts)

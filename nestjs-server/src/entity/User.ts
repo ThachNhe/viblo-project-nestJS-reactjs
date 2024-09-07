@@ -97,9 +97,6 @@ export class User {
   followers: User[];
 
   @ManyToMany(() => Post, (post) => post.bookmarkers)
-  @JoinTable({
-    name: 'user_bookmarks',
-  })
   bookmarked_posts: Post[];
 
   @OneToMany(() => UserPost, (userPost) => userPost.user)

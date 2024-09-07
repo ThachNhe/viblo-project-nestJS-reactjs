@@ -124,13 +124,14 @@ function Homepage() {
   const [responseId, setResponseId] = useState(0);
   const [isUpvote, setIsUpvote] = useState(false);
   const [isDownvote, setIsDownvote] = useState(false);
+  const [isBookmark, setIsBookmark] = useState(false);
 
   const handleCreateComment = async (newComment) => {
     try {
       const commentInfo = await services.createComment(newComment);
       if (commentInfo?.success) {
-          dispatch(actions.getCommentByPostId(post?.data?.id));
-          toast.success("Bình luận thành công!");
+        dispatch(actions.getCommentByPostId(post?.data?.id));
+        toast.success("Bình luận thành công!");
       }
       return commentInfo;
     } catch (err) {
@@ -152,6 +153,13 @@ function Homepage() {
     const user = post?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
     );
+
+    const bookmark = post?.data?.bookmarkers.find(
+      (bookmarker) => +bookmarker?.id === +userInfo?.data?.user?.id
+    )
+
+    bookmark ? setIsBookmark(true) : setIsBookmark(false); 
+
     if (user?.voteType === "UPVOTE") {
       setIsUpvote(true);
       setIsDownvote(false);
@@ -168,7 +176,6 @@ function Homepage() {
 
   const handlerSubmitvote = async (voteType) => {
     const payload = {
-      userId: userInfo?.data?.user?.id,
       voteType: voteType,
     };
 
@@ -205,6 +212,7 @@ function Homepage() {
               <PostInfo
                 upvote={isUpvote}
                 downvote={isDownvote}
+                isBookmark={isBookmark}
                 voteNumber={post?.data?.vote_number}
                 handlerUpvote={() => handlerSubmitvote("UPVOTE")}
                 handlerDownvote={() => handlerSubmitvote("DOWNVOTE")}
@@ -301,7 +309,7 @@ function Homepage() {
                 <CommentSection
                   comment={comment}
                   parentId={comment.id}
-                  postId= {post?.data?.id}
+                  postId={post?.data?.id}
                   userId={userInfo?.data?.user?.id}
                   key={index}
                   handlerOpenResponseForm={handlerOpenResponseForm}

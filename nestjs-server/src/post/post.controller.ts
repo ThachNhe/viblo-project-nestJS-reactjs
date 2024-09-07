@@ -8,6 +8,8 @@ import {
   Put,
   Query,
   UseGuards,
+  Request,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PostDTO } from './dto/post.dto';
@@ -28,8 +30,22 @@ export class PostController {
 
   @Post(':id/vote')
   @UseGuards(AuthGuard('jwt'))
-  vote(@Body() body: any, @Param('id') id: number) {
-    console.log(body, id);
-    return this.PostService.vote(id, body.userId, body.voteType);
+  vote(@Body() body: any, @Param('id') postId: number, @Request() req: any) {
+    const userId = req.user.userId;
+    return this.PostService.vote(postId, userId, body.voteType);
+  }
+
+  @Post(':id/bookmark')
+  @UseGuards(AuthGuard('jwt'))
+  bookmark(@Request() req: any, @Param('id') postId: number) {
+    const userId = req.user.userId;
+    return this.PostService.bookmarkService(postId, userId);
+  }
+
+  @Delete(':id/bookmark')
+  @UseGuards(AuthGuard('jwt'))
+  deleteBookmark(@Request() req: any, @Param('id') postId: number) {
+    const userId = req.user.userId;
+    return this.PostService.deleteBookmark(postId, userId);
   }
 }
