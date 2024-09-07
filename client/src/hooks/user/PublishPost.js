@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
-import "flowbite";
 import MDEditor from "@uiw/react-md-editor";
 import * as actions from "../../redux/action/index";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +7,16 @@ import React from "react";
 import { FaLock } from "react-icons/fa";
 import * as services from "../../services/index";
 import toast from "react-hot-toast";
+import { RiArrowDropDownLine } from "react-icons/ri";
+import Select from "react-select";
+import { useNavigate } from "react-router-dom";
+import { initFlowbite } from "flowbite";
+
+const options = [
+  { value: "Nodejs", label: "Nodejs" },
+  { value: "Js", label: "Js" },
+  { value: "Java", label: "Java" },
+];
 
 const checkboxSelect = [
   { id: "PUBLIC", type: "checkbox", label: "Công khai" },
@@ -22,7 +31,11 @@ function PublishPost() {
   const [tagInputs, setTags] = useState("");
   const [markdownText, setMarkdownText] = useState("");
   const UserInfo = useSelector((state) => state.auth.userInfo);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const navigator = useNavigate();
+
   useEffect(() => {
+    initFlowbite();
     dispatch(actions.getAllTag());
   }, []);
 
@@ -38,18 +51,21 @@ function PublishPost() {
     let payload = {
       title: title,
       contentMarkdown: markdownText,
-      tagArray: [tagInputs],
+      tagArray: options.map((item) => item.value),
       status: status,
       authorId: +UserInfo?.data?.user?.id,
     };
 
     try {
       const post = await services.createPost(payload);
-      setMarkdownText("");
-      setTitle("");
-      setTags("");
-      setStatus("PUBLIC");
-      toast.success("Tạo bài viết thành công!!");
+      if (post.success) {
+        setMarkdownText("");
+        setTitle("");
+        setTags("");
+        setStatus("PUBLIC");
+        navigator("/", { state: { data: post?.data?.id } });
+        toast.success("Tạo bài viết thành công!!");
+      }
     } catch (e) {
       console.log("error : ", e);
       toast.error("Tạo bài viết thất bại!!");
@@ -74,22 +90,27 @@ function PublishPost() {
         </div>
 
         <div className=" flex gap-5 ">
-          <input
-            type="text"
-            id="default-input"
-            placeholder="Gắn thẻ bài viết của bạn. Tối đa 5 thẻ. Ít nhất 1 thẻ!"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm  focus:outline-none 
-            block p-2.5 
-            focus:ring-1 focus:border-blue-50  w-4/6  placeholder-gray-500 font-medium"
-            onChange={(e) => setTags(e.target.value)}
-            defaultValue={tagInputs}
-          />
+          <div
+            className="  border-gray-300 text-gray-900 text-sm rounded-sm  focus:outline-none 
+             focus:border-blue-50  w-4/6  placeholder-gray-500 font-medium "
+          >
+            <Select
+              defaultValue={selectedOption}
+              onChange={setSelectedOption}
+              options={options}
+              isMulti={true}
+              placeholder={
+                "Gắn thẻ bài viết của bạn. Tối đa 5 thẻ. Ít nhất 1 thẻ!"
+              }
+            />
+          </div>
+
           <input
             type="text"
             id="default-input"
             placeholder="Thay đổi ảnh thu nhỏ"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:outline-none
-            block p-2.5 
+            block p-2
             focus:ring-1 focus:border-blue-50 w-1/6 placeholder-gray-500 font-medium"
             defaultValue={""}
           />
@@ -101,26 +122,12 @@ function PublishPost() {
                 data-dropdown-toggle="dropdownHover"
                 data-dropdown-trigger="hover"
                 type="button"
-                className="text-gray-500 border hover:bg-blue-100 border-gray-400 focus:border-blue-500 focus:outline-none 
+                className=" text-gray-500 border hover:bg-blue-100 border-gray-400 focus:border-blue-500 focus:outline-none 
               focus:text-blue-400 hover:text-blue-400  font-medium 
-              rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center w-full justify-center"
+              rounded-sm text-sm px-5 py-2 text-center inline-flex items-center w-full justify-center"
               >
                 Dropdown
-                <svg
-                  className="w-2.5 h-2.5 ms-3"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 10 6"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 1 4 4 4-4"
-                  />
-                </svg>
+                <RiArrowDropDownLine className="text-2xl" />
               </button>
 
               {/* <!-- Dropdown menu --> */}
@@ -144,6 +151,7 @@ function PublishPost() {
                       return (
                         <div className="flex items-center me-4" key={index}>
                           <input
+                            defaultChecked={status === `${item.id}`}
                             value={item.id}
                             id={item.id}
                             type={item.type}
@@ -173,8 +181,8 @@ function PublishPost() {
                     <button
                       type="button"
                       className="py-1 px-3 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 
-                  focus:outline-none focus:ring-blue-300  border  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
-                text-gray-700 hover:text-blue-400  font-medium text-center gap-2 "
+                                  focus:outline-none focus:ring-blue-300  border  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
+                                text-gray-700 hover:text-blue-400  font-medium text-center gap-2 "
                       onClick={() => handlerCreatePost()}
                     >
                       <span>Xuất bản</span>

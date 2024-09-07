@@ -13,7 +13,7 @@ function PostSection({ sectionName, data }) {
   };
 
   return (
-    <div className="flex flex-col gap-3 py-5">
+    <div className="flex flex-col gap-4 ">
       <span className="text-lg font-medium ">{sectionName}</span>
       <Slider {...settings}>
         {data &&

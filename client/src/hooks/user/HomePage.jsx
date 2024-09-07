@@ -14,6 +14,7 @@ import * as actions from "../../redux/action/index";
 import * as services from "../../services/index";
 import CommentSection from "./CommentSection.";
 import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 const data = [
   {
@@ -125,30 +126,14 @@ function Homepage() {
   const [isUpvote, setIsUpvote] = useState(false);
   const [isDownvote, setIsDownvote] = useState(false);
   const [isBookmark, setIsBookmark] = useState(false);
-  // const [defaultPostId, setDefaultPostId] = useState(postId || post);
+  const location = useLocation();
 
-  const handleCreateComment = async (newComment) => {
-    try {
-      const commentInfo = await services.createComment(newComment);
-      if (commentInfo?.success) {
-        dispatch(actions.getCommentByPostId(post?.data?.id));
-        toast.success("Bình luận thành công!");
-      }
-      return commentInfo;
-    } catch (err) {
-      toast.error("Bình luận thất bại!");
-      console.log("err : ", err);
-    }
-  };
+  const [defaultPostId, setDefaultPostId] = useState(location?.state?.data  ? location?.state?.data : 17);
 
   useEffect(() => {
-    dispatch(actions.getPostById(17));
-    dispatch(actions.getCommentByPostId(post?.data?.id));
+    dispatch(actions.getPostById(defaultPostId));
+    dispatch(actions.getCommentByPostId(defaultPostId));
   }, []);
-
-  const handlerOpenResponseForm = (commentId) => {
-    setResponseId(commentId);
-  };
 
   useEffect(() => {
     const user = post?.data?.userVotes.find(
@@ -184,6 +169,24 @@ function Homepage() {
     }
   }, [post]);
 
+  const handleCreateComment = async (newComment) => {
+    try {
+      const commentInfo = await services.createComment(newComment);
+      if (commentInfo?.success) {
+        dispatch(actions.getCommentByPostId(post?.data?.id));
+        toast.success("Bình luận thành công!");
+      }
+      return commentInfo;
+    } catch (err) {
+      toast.error("Bình luận thất bại!");
+      console.log("err : ", err);
+    }
+  };
+
+  const handlerOpenResponseForm = (commentId) => {
+    setResponseId(commentId);
+  };
+
   const handlerSubmitvote = async (voteType) => {
     const payload = {
       voteType: voteType,
@@ -214,8 +217,6 @@ function Homepage() {
           dispatch(actions.getPostById(post?.data?.id));
         }
       }
-
-      
     } catch (error) {
       console.log("error : ", error);
     }
@@ -238,7 +239,7 @@ function Homepage() {
         <div className="container mx-auto my-8 px-4 max-w-[1140px]">
           <div className="flex gap-5">
             {/* <!-- Nội dung chính --> */}
-            <div className="flex gap-4">
+            <div className="flex gap-4 w-3/4">
               <PostInfo
                 upvote={isUpvote}
                 downvote={isDownvote}
@@ -333,23 +334,25 @@ function Homepage() {
             replyForUserName={""}
           />
 
-          {comments?.map((comment, index) => {
-            return (
-              <div key={index}>
-                <CommentSection
-                  comment={comment}
-                  parentId={comment.id}
-                  postId={post?.data?.id}
-                  userId={userInfo?.data?.user?.id}
-                  key={index}
-                  handlerOpenResponseForm={handlerOpenResponseForm}
-                  responseId={responseId}
-                  commentId={+comment.id}
-                  onCreateComment={handleCreateComment}
-                />
-              </div>
-            );
-          })}
+          {comments &&
+            comments.data?.length > 0 &&
+            comments?.data?.map((comment, index) => {
+              return (
+                <div key={index}>
+                  <CommentSection
+                    comment={comment}
+                    parentId={comment.id}
+                    postId={post?.data?.id}
+                    userId={userInfo?.data?.user?.id}
+                    key={index}
+                    handlerOpenResponseForm={handlerOpenResponseForm}
+                    responseId={responseId}
+                    commentId={+comment.id}
+                    onCreateComment={handleCreateComment}
+                  />
+                </div>
+              );
+            })}
         </div>
       </div>
       <Footer />
