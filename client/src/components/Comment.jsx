@@ -31,7 +31,9 @@ function Comment({
     <>
       <div className="flex flex-col gap-2 rounded-md p-2">
         <div className="flex items-center gap-2">
-          <Avatar />
+          <Avatar
+           imgURL={"/images/avatar.png"} height={37} width={37}
+          />
           <div className="flex flex-col gap-1">
             <div className="flex gap-2 items-center">
               <span className="font-medium text-md text-blue-400 hover:text-blue-600 hover:underline cursor-pointer">

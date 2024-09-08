@@ -73,3 +73,16 @@ export const logout = () => {
     }
   };
 };
+
+export const updateAvatar = (avatarUrl) => {
+  return async (dispatch) => {
+    try {
+      dispatch({
+        type: actionType.UPDATE_USER_AVATAR,
+        payload: avatarUrl,
+      });
+    } catch (error) {
+      console.error("Err from user logout:", error);
+    }
+  };
+};

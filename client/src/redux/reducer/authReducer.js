@@ -32,6 +32,7 @@ function authReducer(state = initialState, action) {
       state.userInfo = action.payload;
       state.isLogin = false;
       return { ...state };
+
     default:
       return state;
   }

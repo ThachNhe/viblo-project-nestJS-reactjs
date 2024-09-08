@@ -1,8 +1,8 @@
 import { IoExitOutline } from "react-icons/io5";
-import Avatar from "./Avatar";
 import UserMenu from "./UserMenu";
 import React from "react";
 const Auth = ({ isLogin }) => {
+
   return (
     <>
       {isLogin ? (

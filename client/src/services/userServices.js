@@ -14,4 +14,14 @@ const userLogoutService = () => {
   return axios.post("/auth/logout");
 };
 
-export { getUsers, userLoginService, userRegisterService, userLogoutService };
+const uploadAvatar = (body) => {
+  return axios.put("/users/avatar", body);
+};
+
+export {
+  getUsers,
+  userLoginService,
+  userRegisterService,
+  userLogoutService,
+  uploadAvatar,
+};

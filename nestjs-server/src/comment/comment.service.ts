@@ -58,8 +58,6 @@ export class CommentService {
       LEFT JOIN "users" u ON r."userId" = u."id"
     `);
 
-    console.log('results', postId, results);
-
     if (!results) {
       return {
         success: true,

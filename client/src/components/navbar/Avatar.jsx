@@ -1,14 +1,13 @@
 
 // import Image from 'next/image';
-const Avatar = () => {
+const Avatar = ({imgURL, height, width}) => {
     return ( 
         <img
-            // height = "37"
-            // width = "37"
+            height = {height}
+            width = {width}
             alt = "avatar"
-            className = "rounded-full align-middle box-border w-[37px] h-[37px] cursor-pointer"
-            // src = '/images/Thach.jpg' 
-            src="/images/avatar.png"
+            className = "rounded-full align-middle box-border  cursor-pointer"
+            src={imgURL}
         />
      );
 }

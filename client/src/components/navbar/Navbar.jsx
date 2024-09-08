@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import WriteMenu from "./WriteMenu";
 const Navbar = ({ isHomePage }) => {
   const navigator = useNavigate();
-  const isLogin = useSelector((state) => state?.auth);
+  const isLogin = useSelector((state) => state?.auth?.isLogin);
 
   useEffect(() => {
     if (!isLogin) {
@@ -19,7 +19,7 @@ const Navbar = ({ isHomePage }) => {
     }
   }, [navigator, isLogin]);
 
-  // console.log("check login L ", isLogin);
+  console.log("check login L ", isLogin);
   return (
     <div className="sticky w-full bg-white z-10 shadow-md top-0 h-[60px] ">
       <div className=" py-1">
@@ -42,7 +42,7 @@ const Navbar = ({ isHomePage }) => {
               {isHomePage && <Search />}
               <Notification isLogin={true} />
               <WriteMenu />
-              <Auth isLogin={true} />
+              <Auth isLogin={isLogin} />
             </div>
           </div>
         </Container>

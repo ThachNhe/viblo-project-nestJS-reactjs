@@ -1,8 +1,6 @@
 import { Provider as StoreProvider } from "react-redux";
 import { store, persistor } from "./redux/store";
 import AppRoutes from "./routes/AppRoute";
-// import TestRedux from "./TestRedux";
-// import MyPage from "./hooks/MyPage";
 import { Toaster } from "react-hot-toast";
 
 import "./App.css";
