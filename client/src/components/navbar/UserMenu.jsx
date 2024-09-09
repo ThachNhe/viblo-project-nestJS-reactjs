@@ -24,9 +24,7 @@ const UserMenu = () => {
   const userAvatar = useSelector((state) => state?.user?.userAvatar);
   const userInfo = useSelector((state) => state?.auth?.userInfo);
   const [avatar, setAvatar] = useState(
-    userAvatar
-      ? userAvatar
-      : "/images/avatar.png"
+    userAvatar ? userAvatar : "/images/avatar.png"
   );
 
   const handleButtonClick = () => {
@@ -105,26 +103,34 @@ const UserMenu = () => {
 
       {isOpen && (
         <div
-          className="
-            absolute
-            rounded-md
-            shadow-md
-            min-w-[250px]
-            bg-white
-            overflow-hidden
-            right-0
-            top-11
-            text-sm
-            mt-3
-            border
-            "
+          className={`
+      absolute
+      rounded-md
+      shadow-md
+      min-w-[250px]
+      bg-white
+      overflow-hidden
+      right-0
+      top-11
+      text-sm
+      mt-3
+      border
+      transform
+      transition-all duration-300
+      ${isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"}
+    `}
+          style={{ visibility: isOpen ? "visible" : "hidden" }} // Ẩn khi không mở
         >
           <div className="flex flex-col cursor-pointer">
             <div className="flex gap-2  items-center justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100">
               <Avatar imgURL={avatar} height={80} width={80} />
               <div className=" flex flex-col gap-1 ">
-                <span className="font-medium text-base">{userInfo?.data?.user?.fullName}</span>
-                <span className="text-gray-500 text-sm">@{userInfo?.data?.user?.userName}</span>
+                <span className="font-medium text-base">
+                  {userInfo?.data?.user?.fullName}
+                </span>
+                <span className="text-gray-500 text-sm">
+                  @{userInfo?.data?.user?.userName}
+                </span>
                 <button
                   type="button"
                   className="py-1 px-3 text-xs  inline-flex items-center rounded-md 

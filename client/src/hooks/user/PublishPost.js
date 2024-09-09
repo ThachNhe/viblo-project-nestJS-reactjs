@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import MDEditor from "@uiw/react-md-editor";
+import { useContext, useEffect, useState, useRef } from "react";
+import MDEditor, { commands } from "@uiw/react-md-editor";
 import * as actions from "../../redux/action/index";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
@@ -11,6 +11,7 @@ import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { initFlowbite } from "flowbite";
 import { AppContext } from "../../contexts/AppContext";
+import { handlerFileUpload } from "../../utils/utils";
 
 const options = [
   { value: "Nodejs", label: "Nodejs" },
@@ -33,6 +34,12 @@ function PublishPost() {
   const UserInfo = useSelector((state) => state.auth.userInfo);
   const [selectedOption, setSelectedOption] = useState(null);
   const navigator = useNavigate();
+  const filteredCommands = commands
+    .getCommands()
+    .filter((cmd) => cmd.name !== "image");
+
+  const fileInputRef = useRef(null);
+
   const ctx = useContext(AppContext);
 
   useEffect(() => {
@@ -43,6 +50,27 @@ function PublishPost() {
       ctx.setIsHomePage(true);
     };
   }, []);
+
+  const title3 = {
+    name: "title3",
+    keyCommand: "title3",
+    buttonProps: { "aria-label": "Insert title3" },
+    icon: (
+      <svg width="12" height="12" viewBox="0 0 520 520">
+        <path
+          fill="currentColor"
+          d="M15.7083333,468 C7.03242448,468 0,462.030833 0,454.666667 L0,421.333333 C0,413.969167 7.03242448,408 15.7083333,408 L361.291667,408 C369.967576,408 377,413.969167 377,421.333333 L377,454.666667 C377,462.030833 369.967576,468 361.291667,468 L15.7083333,468 Z M21.6666667,366 C9.69989583,366 0,359.831861 0,352.222222 L0,317.777778 C0,310.168139 9.69989583,304 21.6666667,304 L498.333333,304 C510.300104,304 520,310.168139 520,317.777778 L520,352.222222 C520,359.831861 510.300104,366 498.333333,366 L21.6666667,366 Z M136.835938,64 L136.835937,126 L107.25,126 L107.25,251 L40.75,251 L40.75,126 L-5.68434189e-14,126 L-5.68434189e-14,64 L136.835938,64 Z M212,64 L212,251 L161.648438,251 L161.648438,64 L212,64 Z M378,64 L378,126 L343.25,126 L343.25,251 L281.75,251 L281.75,126 L238,126 L238,64 L378,64 Z M449.047619,189.550781 L520,189.550781 L520,251 L405,251 L405,64 L449.047619,64 L449.047619,189.550781 Z"
+        />
+      </svg>
+    ),
+    execute: (state, api) => {
+      let modifyText = `### ${state.selectedText}\n`;
+      if (!state.selectedText) {
+        modifyText = `### `;
+      }
+      api.replaceSelection(modifyText);
+    },
+  };
 
   // State to track which checkbox is selected
   const [status, setStatus] = useState("");
@@ -77,9 +105,25 @@ function PublishPost() {
     }
   };
 
+  const handlerUploadImg = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Mở cửa sổ chọn file
+    }
+  };
+
+  const handleFileChange = async (event) => {
+    try {
+      const file = event.target.files[0];
+      const imgURL = await handlerFileUpload(file);
+      const imageUrl = `![${file.name}](${imgURL.imageURL})`;
+      setMarkdownText((prevMarkdown) => `${prevMarkdown}\n${imageUrl}`);
+    } catch (error) {
+      console.log("Error upload Img!! : ", error);
+    }
+  };
+
   return (
     <div className="w-full min-h-full">
-      {/* <Navbar /> */}
       <div className=" flex flex-col gap-5  bg-slate-100 px-10 py-5">
         <div>
           <input
@@ -138,7 +182,20 @@ function PublishPost() {
               {/* <!-- Dropdown menu --> */}
               <div
                 id="dropdownHover"
-                className="z-10 hidden absolute right-0 mr-40 bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-44 dark:bg-gray-700 min-w-80 p-4"
+                className="absolute
+                          rounded-md
+                          shadow-md
+                          min-w-[300px]
+                          overflow-hidden
+                          right-10
+                          top-11
+                          text-sm
+                          mt-3
+                          border
+                          z-10
+                          p-3
+                          bg-white
+                          "
               >
                 <div className="flex flex-col gap-2 ">
                   <span>Xuất bản bài viết của bạn </span>
@@ -206,6 +263,71 @@ function PublishPost() {
             height={500}
             placeholder="Cứ pháp markdown được hỗ trợ"
             className="placeholder-gray-500 font-medium"
+            commands={[
+              ...filteredCommands,
+              title3,
+              commands.group(
+                [
+                  commands.title1,
+                  commands.title2,
+                  commands.title3,
+                  commands.title4,
+                  commands.title5,
+                  commands.title6,
+                ],
+                {
+                  name: "title",
+                  groupName: "title",
+                  buttonProps: { "aria-label": "Insert title" },
+                }
+              ),
+              commands.divider,
+              commands.group([], {
+                name: "update",
+                groupName: "update",
+                icon: (
+                  <svg
+                    fill="#000000"
+                    width="13px"
+                    height="13px"
+                    viewBox="0 0 32 32"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <title>image</title>
+                    <path d="M0 26.016q0 2.496 1.76 4.224t4.256 1.76h20q2.464 0 4.224-1.76t1.76-4.224v-20q0-2.496-1.76-4.256t-4.224-1.76h-20q-2.496 0-4.256 1.76t-1.76 4.256v20zM4 26.016v-20q0-0.832 0.576-1.408t1.44-0.608h20q0.8 0 1.408 0.608t0.576 1.408v20q0 0.832-0.576 1.408t-1.408 0.576h-20q-0.832 0-1.44-0.576t-0.576-1.408zM6.016 24q0 0.832 0.576 1.44t1.408 0.576h16q0.832 0 1.408-0.576t0.608-1.44v-0.928q-0.224-0.448-1.12-2.688t-1.6-3.584-1.28-2.112q-0.544-0.576-1.12-0.608t-1.152 0.384-1.152 1.12-1.184 1.568-1.152 1.696-1.152 1.6-1.088 1.184-1.088 0.448q-0.576 0-1.664-1.44-0.16-0.192-0.48-0.608-1.12-1.504-1.6-1.824-0.768-0.512-1.184 0.352-0.224 0.512-0.928 2.24t-1.056 2.56v0.64zM6.016 9.024q0 1.248 0.864 2.112t2.112 0.864 2.144-0.864 0.864-2.112-0.864-2.144-2.144-0.864-2.112 0.864-0.864 2.144z"></path>
+                  </svg>
+                ),
+                children: () => {
+                  return (
+                    <div className="p-3 flex flex-col gap-3">
+                      <label className="font-medium text-gray-600">
+                        Tải ảnh của bạn lên đây
+                      </label>
+                      <button
+                        type="button"
+                        className="py-1 px-3 text-xs  inline-flex items-center rounded-md 
+                 border bg-blue-400 text-gray-50 font-semibold text-center gap-2 focus:bg-blue-500 max-w-fit "
+                        onClick={handlerUploadImg}
+                      >
+                        <span>Tải lên</span>
+                      </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef} // Gán ref cho input file
+                        style={{ display: "none" }} // Ẩn input file
+                        onChange={handleFileChange} // Lắng nghe sự kiện thay đổi file
+                      />
+                    </div>
+                  );
+                },
+                execute: (state, api) => {
+                  console.log(">>>>>>update>>>>>", state);
+                },
+                buttonProps: { "aria-label": "Insert title" },
+              }),
+            ]}
           />
         </div>
       </div>

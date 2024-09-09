@@ -1,10 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import { FaCaretUp } from "react-icons/fa";
-import { FaCaretDown } from "react-icons/fa";
-import { IoBookmark } from "react-icons/io5";
-import { FaFacebookF } from "react-icons/fa";
-import { FaTwitter } from "react-icons/fa";
+
 function Posts({ data, tags }) {
   return (
     <div className="flex flex-col gap-6 py-5 px-3">

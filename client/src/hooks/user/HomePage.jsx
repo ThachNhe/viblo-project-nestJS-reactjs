@@ -15,7 +15,7 @@ import CommentSection from "./CommentSection.";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import Slider from "react-slick";
-import {extractHeadings} from '../../utils/utils'
+import { extractHeadings } from "../../utils/utils";
 
 const data = [
   {
@@ -235,8 +235,6 @@ function Homepage() {
     }
   };
 
-
-
   return (
     <>
       <div className="flex flex-col min-h-screen border">
@@ -315,7 +313,7 @@ function Homepage() {
                         style={{ marginLeft: (heading.depth - 1) * 20 }}
                         className="font-medium text-gray-600 text-sm"
                       >
-                        <span className="hover:text-cyan-600">
+                        <span className="hover:text-cyan-600 cursor-pointer">
                           {heading.text}
                         </span>
                       </li>
@@ -326,7 +324,7 @@ function Homepage() {
               <div className="w-72">
                 <div className="flex gap-4">
                   <h4 className="text-md mb-4 uppercase text-blue-600 hover:underline font-medium">
-                    Câu đố đề xuất
+                    Khoá học đề xuất
                   </h4>
                   <hr className="flex-grow text-red-full text-red-900 mt-4" />
                 </div>
@@ -335,7 +333,16 @@ function Homepage() {
                     {[1.2].map((item, index) => {
                       return (
                         <div key={index}>
-                          <ProposedCourse />
+                          <ProposedCourse
+                            courseName={"Java"}
+                            time={"thg 8 26, 2024 3:04 SA"}
+                            tags={[ { name: "Abstract" } , {name: "Control Structures"}]}
+                            level={"Cơ bản"}
+                            viewNumber={10}
+                            studentNumber={35}
+                            questionNumber={99}
+                            docNumber={22}
+                          />
                         </div>
                       );
                     })}
@@ -346,10 +353,11 @@ function Homepage() {
           </div>
 
           <PostSection data={data} sectionName={"Bài viết liên quan"} />
-          {/* <PostSection
+
+          <PostSection
             data={data}
             sectionName={"Bài viết khác của văn Thạch"}
-          /> */}
+          />
 
           <CommentForm
             title={"Bình luận"}
