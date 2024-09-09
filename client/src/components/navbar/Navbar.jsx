@@ -4,12 +4,13 @@ import Container from "../Container";
 import Logo from "./Logo";
 import Search from "./Search";
 import MainMenu from "./MainMenu";
-import Notification from "./Notification";
 import Auth from "./Auth";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import WriteMenu from "./WriteMenu";
-const Navbar = ({ isHomePage }) => {
+import DropdownCommonNotification from "./DropdownCommonNotification";
+import DropdownPersonalNotification from "./DropdownPersonalNotification";
+const Navbar = ({ isHomePage}) => {
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
 
@@ -38,9 +39,11 @@ const Navbar = ({ isHomePage }) => {
               <Logo />
               <MainMenu />
             </div>
-            <div className="flex flex-row gap-5 items-center">
+            <div className="flex flex-row gap-2 items-center">
               {isHomePage && <Search />}
-              <Notification isLogin={true} />
+             
+              <DropdownCommonNotification/>
+              <DropdownPersonalNotification/>
               <WriteMenu />
               <Auth isLogin={isLogin} />
             </div>

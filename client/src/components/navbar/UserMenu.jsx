@@ -23,7 +23,6 @@ const UserMenu = () => {
   const fileInputRef = useRef(null);
   const userAvatar = useSelector((state) => state?.user?.userAvatar);
   const userInfo = useSelector((state) => state?.auth?.userInfo);
-  console.log("userAvatar", userAvatar);
   const [avatar, setAvatar] = useState(
     userAvatar
       ? userAvatar

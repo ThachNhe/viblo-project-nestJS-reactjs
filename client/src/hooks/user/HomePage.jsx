@@ -128,7 +128,9 @@ function Homepage() {
   const [isBookmark, setIsBookmark] = useState(false);
   const location = useLocation();
 
-  const [defaultPostId, setDefaultPostId] = useState(location?.state?.data  ? location?.state?.data : 17);
+  const [defaultPostId, setDefaultPostId] = useState(
+    location?.state?.data ? location?.state?.data : 17
+  );
 
   useEffect(() => {
     dispatch(actions.getPostById(defaultPostId));
@@ -222,9 +224,62 @@ function Homepage() {
     }
   };
 
+  // function generateTableOfContents(markdownContent) {
+    
+  //   const lines = markdownContent.split("\n");
+  //   const headings = [];
+
+  //   const headingRegex = /^(#{1,6})\s+(.*)/;
+
+  //   // for (const line of lines) {
+  //   //   const match = line.match(headingRegex);
+  //   //   if (match) {
+  //   //     const level = match[1].length; // Số lượng ký tự '#'
+  //   //     let title = match[2].trim();
+
+  //   //     // Tạo slug cho liên kết
+  //   //     const slug = title
+  //   //       .toLowerCase()
+  //   //       .replace(/[^\w\s-]/g, "") // Loại bỏ ký tự đặc biệt
+  //   //       .replace(/\s+/g, "-"); // Thay khoảng trắng bằng dấu '-');
+
+  //   //     headings.push({ level, title, slug });
+  //   //   }
+  //   // }
+
+  //   // Xây dựng mục lục
+  //   let tableOfContents = "";
+  //   // for (const heading of headings) {
+  //   //   const indent = "  ".repeat(heading.level - 1);
+  //   //   tableOfContents += `${indent}- [${heading.title}](#${heading.slug})\n`;
+  //   // }
+
+  //   return tableOfContents;
+  // }
+
+  // Ví dụ sử dụng
+//   const markdownContent = `
+// # Giới thiệu
+
+// ## Tổng quan
+
+// Nội dung tổng quan.
+
+// ### Chi tiết
+
+// Nội dung chi tiết.
+
+// ## Kết luận
+
+// Nội dung kết luận.
+// `;
+
+//   const toc = generateTableOfContents(post?.data?.content_markdown);
+//   console.log(toc);
+
   return (
     <>
-      <Navbar isHomePage={true} />
+      
       <div className="flex flex-col min-h-screen border">
         {/* Banner */}
         <div className="flex items-center justify-center mb-10">

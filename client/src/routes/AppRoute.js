@@ -9,23 +9,23 @@ import AdminRoute from "./AdminRoute";
 import HomePage from "../hooks/user/HomePage";
 import { useSelector } from "react-redux";
 import PublishPost from "../hooks/user/PublishPost";
+import Following from "../hooks/user/Following";
 function AppRoutes() {
   const isLogin = useSelector((state) => state?.auth?.isLogin);
   const userInfo = useSelector((state) => state?.auth?.userInfo);
 
   return (
     <Routes>
-      {/* {isLogin && userInfo?.data.user.roles === "ADMIN" && (
-       
-      )} */}
       <Route exact path="/admin" element={<AdminRoute />}>
         <Route path="/admin" element={<AdminDashboard />} />
       </Route>
 
+      <Route path="/" element={<HomePage />} />
+      <Route path="/followings" element={<Following />} />
+
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgetPassword />} />
-      <Route path="/" element={<HomePage />} />
       <Route exact path="/publish/post" element={<PrivateRoute />}>
         <Route path="/publish/post" element={<PublishPost />} />
       </Route>

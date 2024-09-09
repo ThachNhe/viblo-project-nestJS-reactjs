@@ -1,7 +1,10 @@
 import actionTypes from "../action/actionType";
+
 const initialState = {
   userAvatar: "",
+  isWriting: "",
 };
+
 function userReducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.UPDATE_USER_AVATAR:

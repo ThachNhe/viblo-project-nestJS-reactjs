@@ -6,7 +6,7 @@ const MainMenu = () => {
       <li>
         <a
           className="font-semibold text-gray-400 hover:text-gray-950"
-          href="#newest"
+          href="/followings"
         >
           Bài viết
         </a>

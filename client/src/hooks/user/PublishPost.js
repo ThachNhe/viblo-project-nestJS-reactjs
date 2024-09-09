@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
 import MDEditor from "@uiw/react-md-editor";
 import * as actions from "../../redux/action/index";
@@ -11,6 +11,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { initFlowbite } from "flowbite";
+import { AppContext } from "../../contexts/AppContext";
 
 const options = [
   { value: "Nodejs", label: "Nodejs" },
@@ -33,10 +34,15 @@ function PublishPost() {
   const UserInfo = useSelector((state) => state.auth.userInfo);
   const [selectedOption, setSelectedOption] = useState(null);
   const navigator = useNavigate();
+  const ctx = useContext(AppContext);
 
   useEffect(() => {
     initFlowbite();
     dispatch(actions.getAllTag());
+    ctx.setIsHomePage(false);
+    return () => {
+      ctx.setIsHomePage(true);
+    };
   }, []);
 
   // State to track which checkbox is selected
@@ -74,7 +80,7 @@ function PublishPost() {
 
   return (
     <div className="w-full min-h-full">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className=" flex flex-col gap-5  bg-slate-100 px-10 py-5">
         <div>
           <input
