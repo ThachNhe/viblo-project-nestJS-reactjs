@@ -13,28 +13,30 @@ function PostSection({ sectionName, data }) {
   };
 
   return (
-    <div className="flex flex-col gap-4 ">
+    <div className="flex flex-col gap-4 py-4 ">
       <span className="text-lg font-medium ">{sectionName}</span>
-      <Slider {...settings}>
-        {data &&
-          data.length > 0 &&
-          data.map((item, index) => {
-            return (
-              <div key={index}>
-                <CarInfo
-                  index={index}
-                  title={item.title}
-                  author={item.author}
-                  readTime={item.readTime}
-                  viewNumber={item.viewNumber}
-                  commentNumber={item.commentNumber}
-                  bookmarkNumber={item.bookmarkNumber}
-                  point={10}
-                />
-              </div>
-            );
-          })}
-      </Slider>
+      <div className="py-2">
+        <Slider {...settings}>
+          {data &&
+            data.length > 0 &&
+            data.map((item, index) => {
+              return (
+                <div key={index}>
+                  <CarInfo
+                    index={index}
+                    title={item.title}
+                    author={item.author}
+                    readTime={item.readTime}
+                    viewNumber={item.viewNumber}
+                    commentNumber={item.commentNumber}
+                    bookmarkNumber={item.bookmarkNumber}
+                    point={10}
+                  />
+                </div>
+              );
+            })}
+        </Slider>
+      </div>
     </div>
   );
 }

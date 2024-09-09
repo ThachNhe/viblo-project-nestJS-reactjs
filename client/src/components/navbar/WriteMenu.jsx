@@ -58,6 +58,7 @@ const WriteMenu = () => {
             right-0
             top-12
             text-sm
+            border
             "
         >
           <div className="flex flex-col cursor-pointer">

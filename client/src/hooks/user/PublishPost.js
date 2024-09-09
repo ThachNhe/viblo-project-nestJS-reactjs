@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import Navbar from "../../components/navbar/Navbar";
 import MDEditor from "@uiw/react-md-editor";
 import * as actions from "../../redux/action/index";
 import { useDispatch, useSelector } from "react-redux";

@@ -4,28 +4,36 @@ import * as actions from "../../redux/action/index";
 import { FaRegBell } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import React from "react";
-import { CiEdit } from "react-icons/ci";
-import { PiListDashesBold } from "react-icons/pi";
-import { FaRegQuestionCircle } from "react-icons/fa";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { AppContext } from "../../contexts/AppContext";
 
 const DropdownPersonalNotification = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const ctx = useContext(AppContext);
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
+  const [isOpenDropdown, setIsOpenDropdown] = useState(
+    ctx.isOpenDropdownPersonalNotification
+  );
+
   const dispatch = useDispatch();
   useEffect(() => {}, [navigator]);
 
-  const toggleOpen = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
-
-  // const handlerToPublishPage = useCallback(() => {
-  //   navigator("/publish/post");
-  // });
-
+  const toggleOpen = () => {
+    let isOpenDropdownPersonalNotification =
+      ctx.isOpenDropdownPersonalNotification;
+    ctx.setIsOpenDropdownPersonalNotification(
+      !isOpenDropdownPersonalNotification
+    );
+    setIsOpenDropdown(!isOpenDropdownPersonalNotification);
+    if (isOpenDropdown) {
+      ctx.setIsOpenDropdownCommonNotification(false);
+      ctx.setIsOpenDropdownWriteMenu(false);
+      ctx.setIsOpenDropdownUserMenu(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -43,14 +51,12 @@ const DropdownPersonalNotification = () => {
         </div>
       </div>
 
-      {isOpen && (
+      {isOpenDropdown && (
         <div
           className={`absolute right-0 mt-2.5 top-10 flex h-96  min-w-80 flex-col rounded-md border border-stroke bg-white shadow-md`}
         >
           <div className="px-4 py-3">
-            <h5 className="text-sm font-medium text-bodydark2">
-              Thông báo
-            </h5>
+            <h5 className="text-sm font-medium text-bodydark2">Thông báo</h5>
           </div>
           <PerfectScrollbar>
             <ul className="flex flex-col h-96 font-medium text-gray-500">
@@ -146,4 +152,4 @@ const DropdownPersonalNotification = () => {
   );
 };
 
-export default React.memo(DropdownPersonalNotification);
+export default DropdownPersonalNotification;

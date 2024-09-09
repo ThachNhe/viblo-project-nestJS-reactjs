@@ -113,9 +113,10 @@ const UserMenu = () => {
             bg-white
             overflow-hidden
             right-0
-            top-12
+            top-11
             text-sm
             mt-3
+            border
             "
         >
           <div className="flex flex-col cursor-pointer">

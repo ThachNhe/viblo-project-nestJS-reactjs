@@ -1,4 +1,3 @@
-import Navbar from "../../components/navbar/Navbar";
 import { useEffect, useState } from "react";
 import UserInfo from "../../components/UserInfo";
 import ArticleStats from "../../components/ArticleStats";
@@ -15,6 +14,8 @@ import * as services from "../../services/index";
 import CommentSection from "./CommentSection.";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
+import Slider from "react-slick";
+import {extractHeadings} from '../../utils/utils'
 
 const data = [
   {
@@ -116,6 +117,13 @@ const data = [
     point: 10,
   },
 ];
+const settings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+};
 
 function Homepage() {
   const dispatch = useDispatch();
@@ -127,6 +135,7 @@ function Homepage() {
   const [isDownvote, setIsDownvote] = useState(false);
   const [isBookmark, setIsBookmark] = useState(false);
   const location = useLocation();
+  const [toc, setToc] = useState([]);
 
   const [defaultPostId, setDefaultPostId] = useState(
     location?.state?.data ? location?.state?.data : 17
@@ -146,10 +155,12 @@ function Homepage() {
       (bookmarker) => +bookmarker?.id === +userInfo?.data?.user?.id
     );
 
+    const headings = extractHeadings(post?.data?.content_markdown);
+    setToc(headings);
+
     if (+bookmark?.id === +userInfo?.data?.user?.id) {
       setIsBookmark(true);
     }
-    // console.log("isbookmark : ", isBookmark);
 
     if (+bookmark?.id !== +userInfo?.data?.user?.id) {
       setIsBookmark(false);
@@ -224,62 +235,10 @@ function Homepage() {
     }
   };
 
-  // function generateTableOfContents(markdownContent) {
-    
-  //   const lines = markdownContent.split("\n");
-  //   const headings = [];
 
-  //   const headingRegex = /^(#{1,6})\s+(.*)/;
-
-  //   // for (const line of lines) {
-  //   //   const match = line.match(headingRegex);
-  //   //   if (match) {
-  //   //     const level = match[1].length; // Số lượng ký tự '#'
-  //   //     let title = match[2].trim();
-
-  //   //     // Tạo slug cho liên kết
-  //   //     const slug = title
-  //   //       .toLowerCase()
-  //   //       .replace(/[^\w\s-]/g, "") // Loại bỏ ký tự đặc biệt
-  //   //       .replace(/\s+/g, "-"); // Thay khoảng trắng bằng dấu '-');
-
-  //   //     headings.push({ level, title, slug });
-  //   //   }
-  //   // }
-
-  //   // Xây dựng mục lục
-  //   let tableOfContents = "";
-  //   // for (const heading of headings) {
-  //   //   const indent = "  ".repeat(heading.level - 1);
-  //   //   tableOfContents += `${indent}- [${heading.title}](#${heading.slug})\n`;
-  //   // }
-
-  //   return tableOfContents;
-  // }
-
-  // Ví dụ sử dụng
-//   const markdownContent = `
-// # Giới thiệu
-
-// ## Tổng quan
-
-// Nội dung tổng quan.
-
-// ### Chi tiết
-
-// Nội dung chi tiết.
-
-// ## Kết luận
-
-// Nội dung kết luận.
-// `;
-
-//   const toc = generateTableOfContents(post?.data?.content_markdown);
-//   console.log(toc);
 
   return (
     <>
-      
       <div className="flex flex-col min-h-screen border">
         {/* Banner */}
         <div className="flex items-center justify-center mb-10">
@@ -340,7 +299,7 @@ function Homepage() {
 
             {/* <!-- Sidebar bên phải --> */}
 
-            <div className="flex-grow p-1rounded-md flex flex-col gap-10 py-2">
+            <div className="flex-grow p-1 rounded-md flex flex-col gap-10 py-2">
               <div>
                 <div className="flex gap-4">
                   <h4 className="text-md mb-4 uppercase font-medium">
@@ -348,26 +307,39 @@ function Homepage() {
                   </h4>
                   <hr className="flex-grow text-red-full text-red-900 mt-4" />
                 </div>
-                <ul className="list-disc pl-4 text-gray-700">
-                  <li>Hiểu rõ về toán tử OR (||)</li>
-                  <li>Hiểu rõ về toán tử nullish (??)</li>
-                  <li>Hiểu rõ về toán tử OR (||)</li>
-                  <li>Hiểu rõ về toán tử nullish (??)</li>
-                  <li>Hiểu rõ về toán tử OR (||)</li>
-                </ul>
+                <div>
+                  <ul>
+                    {toc.map((heading, index) => (
+                      <li
+                        key={index}
+                        style={{ marginLeft: (heading.depth - 1) * 20 }}
+                        className="font-medium text-gray-600 text-sm"
+                      >
+                        <span className="hover:text-cyan-600">
+                          {heading.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <div>
+              <div className="w-72">
                 <div className="flex gap-4">
                   <h4 className="text-md mb-4 uppercase text-blue-600 hover:underline font-medium">
                     Câu đố đề xuất
                   </h4>
                   <hr className="flex-grow text-red-full text-red-900 mt-4" />
                 </div>
-                <div>
-                  <ProposedCourse />
-                  <ProposedCourse />
-                  <ProposedCourse />
-                  <ProposedCourse />
+                <div className="flex">
+                  <Slider {...settings}>
+                    {[1.2].map((item, index) => {
+                      return (
+                        <div key={index}>
+                          <ProposedCourse />
+                        </div>
+                      );
+                    })}
+                  </Slider>
                 </div>
               </div>
             </div>

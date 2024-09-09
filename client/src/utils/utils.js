@@ -1,4 +1,6 @@
 import axios from "../axios";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
 
 export const handlerFileUpload = async (file) => {
   if (!file) return;
@@ -24,4 +26,22 @@ export const handlerFileUpload = async (file) => {
   } catch (error) {
     console.error("error when upload!!:", error);
   }
+};
+
+export const extractHeadings = (markdownText) => {
+  // Parse the markdown content using remark-parse
+  const tree = unified().use(remarkParse).parse(markdownText);
+  const headings = [];
+
+  // Traverse the markdown AST and extract heading nodes
+  tree.children.forEach((node) => {
+    if (node.type === "heading") {
+      const depth = node.depth; // Depth indicates the heading level (1 for h1, 2 for h2, etc.)
+      const text = node.children.map((child) => child.value).join("");
+
+      headings.push({ depth, text });
+    }
+  });
+
+  return headings;
 };

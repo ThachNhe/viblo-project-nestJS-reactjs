@@ -2,7 +2,7 @@ import ArticleStats from "./ArticleStats";
 
 function CarInfo({title, author, readTime, viewNumber, commentNumber, bookmarkNumber, point}) {
   return (  
-    <div className="flex flex-col gap-2 p-3 border shadow-md w-72 mr-2">
+    <div className="flex flex-col gap-2 pl-5  w-72 shadow-md border">
       <div className="">
         <a>
           <span className="text-md font-medium hover:text-blue-500 cursor-pointer ">{title}</span>
