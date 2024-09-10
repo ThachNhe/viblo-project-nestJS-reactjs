@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import Slider from "react-slick";
 import { extractHeadings } from "../../utils/utils";
+import Banner from "../../components/Banner";
 
 const data = [
   {
@@ -239,14 +240,8 @@ function Homepage() {
     <>
       <div className="flex flex-col min-h-screen border">
         {/* Banner */}
-        <div className="flex items-center justify-center mb-10">
-          <img
-            src="/images/banner.png"
-            alt="Banner Image"
-            className="max-w-full h-auto rounded-lg"
-          />
-        </div>
 
+        <Banner src={"/images/banner.png"} />
         {/* Content */}
         <div className="container mx-auto my-8 px-4 max-w-[1140px]">
           <div className="flex gap-5">
@@ -330,22 +325,21 @@ function Homepage() {
                 </div>
                 <div className="flex">
                   <Slider {...settings}>
-                    {[1.2].map((item, index) => {
-                      return (
-                        <div key={index}>
-                          <ProposedCourse
-                            courseName={"Java"}
-                            time={"thg 8 26, 2024 3:04 SA"}
-                            tags={[ { name: "Abstract" } , {name: "Control Structures"}]}
-                            level={"Cơ bản"}
-                            viewNumber={10}
-                            studentNumber={35}
-                            questionNumber={99}
-                            docNumber={22}
-                          />
-                        </div>
-                      );
-                    })}
+                    <div>
+                      <ProposedCourse
+                        courseName={"Java"}
+                        time={"thg 8 26, 2024 3:04 SA"}
+                        tags={[
+                          { name: "Abstract" },
+                          { name: "Control Structures" },
+                        ]}
+                        level={"Cơ bản"}
+                        viewNumber={10}
+                        studentNumber={35}
+                        questionNumber={99}
+                        docNumber={22}
+                      />
+                    </div>
                   </Slider>
                 </div>
               </div>

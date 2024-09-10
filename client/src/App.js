@@ -11,6 +11,7 @@ import { AppContext } from "./contexts/AppContext";
 function App() {
   const ctx = useContext(AppContext);
   console.log("ctx : ", ctx);
+
   return (
     <StoreProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>

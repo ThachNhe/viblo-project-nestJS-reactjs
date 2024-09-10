@@ -9,6 +9,7 @@ const MenuItem = ({ label, onClick, icon }) => {
         hover:bg-neutral-100
         transition
         font-semibold
+        border-t
       "
     >
       <div className="flex items-center gap-3 ">

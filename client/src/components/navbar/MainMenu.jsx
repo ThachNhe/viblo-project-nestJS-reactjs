@@ -1,31 +1,32 @@
 
 import React from "react";
+import { NavLink } from "react-router-dom";
 const MainMenu = () => {
   return (
     <ul className="flex flex-row gap-10">
       <li>
-        <a
+        <NavLink
           className="font-semibold text-gray-400 hover:text-gray-950"
-          href="/followings"
+          to="/followings"
         >
           Bài viết
-        </a>
+        </NavLink>
       </li>
       <li>
-        <a
+        <NavLink
           className="font-semibold text-gray-400 hover:text-gray-950"
-          href="#questions"
+          to="/questions"
         >
           Hỏi đáp
-        </a>
+        </NavLink>
       </li>
       <li>
-        <a
+        <NavLink
           className="font-semibold text-gray-400 hover:text-gray-950"
-          href="#discussion"
+          to="/discussion"
         >
           Thảo luận
-        </a>
+        </NavLink>
       </li>
     </ul>
   );

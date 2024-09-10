@@ -2,7 +2,17 @@ import { FaRegEye } from "react-icons/fa";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { FaQuestionCircle } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
-function ProposedCourse({ courseName, time, tags, level, viewNumber , studentNumber, questionNumber, docNumber }) {
+import TagButton from "./TagButton";
+function ProposedCourse({
+  courseName,
+  time,
+  tags,
+  level,
+  viewNumber,
+  studentNumber,
+  questionNumber,
+  docNumber,
+}) {
   return (
     <div className="flex flex-col gap-2 py-1">
       <div className="flex justify-between py-3 px-2">
@@ -13,16 +23,7 @@ function ProposedCourse({ courseName, time, tags, level, viewNumber , studentNum
             {tags &&
               tags.length > 0 &&
               tags.map((item, index) => {
-                return (
-                  <button
-                    type="button"
-                    className="py-1 px-3 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 
-                focus:outline-none focus:ring-blue-300  border  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
-                 text-gray-700 hover:text-gray-400  font-medium text-center gap-2 "
-                  >
-                    <span>{item?.name}</span>
-                  </button>
-                );
+                return <TagButton tagName={item?.name} />;
               })}
           </span>
         </div>
