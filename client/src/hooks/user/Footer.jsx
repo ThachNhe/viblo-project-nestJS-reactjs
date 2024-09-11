@@ -2,6 +2,7 @@ import { FaFacebookF } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { FaChrome } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
+import Avatar from "../../components/navbar/Avatar";
 function Footer() {
   return (
     <footer className="dark:bg-gray-900 bg-[color:#0b1a33]">
@@ -9,35 +10,37 @@ function Footer() {
         <div className="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
           {/* SECTION 1 */}
           <div className="text-gray-200">
-            <h2 className="mb-6 text-sm font-semibold uppercase ">Tài nguyên</h2>
+            <h2 className="mb-6 text-sm font-semibold uppercase ">
+              Tài nguyên
+            </h2>
             <ul className="text-gray-300 dark:text-gray-300 font-medium">
               <li className="mb-4">
-                <a href="#" className=" hover:underline">
+                <a href="#" className=" ">
                   Bài viết
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Câu hỏi
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Videos
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Thảo luận
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Công cụ
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Trạng thái hệ thống
                 </a>
               </li>
@@ -47,32 +50,32 @@ function Footer() {
           <div className="text-gray-200">
             <ul className="text-gray-300 dark:text-gray-300 font-medium">
               <li className="mb-4">
-                <a href="#" className=" hover:underline">
+                <a href="#" className=" ">
                   Tổ chức
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Tags
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Tác giả
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Đề xuất hệ thống
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Machine learning
                 </a>
               </li>
               <li className="mb-4">
-                <a href="#" className="hover:underline">
+                <a href="#" className="">
                   Trạng thái hệ thống
                 </a>
               </li>
@@ -84,44 +87,101 @@ function Footer() {
               dịch vụ
             </h2>
             <ul className="text-gray-500 dark:text-gray-300 font-medium">
-              <li className="mb-4 text-gray-300">
-                <a href="#" className="hover:underline">
+              <li className="mb-4 text-gray-300 flex gap-2">
+                <img
+                  src="/images/favicon.ico"
+                  alt="Favicon"
+                  className="footer-favicon"
+                  height={24}
+                  width={24}
+                />
+                <a href="#" className="hover:text-gray-600">
                   Viblo
                 </a>
               </li>
-              <li className="mb-4 text-gray-300">
-                <a href="#" className="hover:underline">
+              <li className="mb-4 text-gray-300 flex gap-2">
+                <img
+                  src="/images/viblo-code.png"
+                  alt="Viblo Code"
+                  width="24"
+                  height="24"
+                  className="link-icon"
+                />
+                <a href="#" className="hover:text-gray-600">
                   Viblo Code
                 </a>
               </li>
-              <li className="mb-4 text-gray-300">
-                <a href="#" className="hover:underline">
+              <li className="mb-4 text-gray-300 flex gap-2">
+                <img
+                  src="/images/viblo-ctf.png"
+                  alt="Favicon"
+                  className="footer-favicon"
+                  height={24}
+                  width={24}
+                />
+                <a href="#" className="hover:text-gray-600">
                   Viblo CTF
                 </a>
               </li>
-              <li className="mb-4 text-gray-300">
-                <a href="#" className="hover:underline">
+              <li className="mb-4 text-gray-300 flex gap-2">
+                <img
+                  src="/images/viblo-learn.png"
+                  alt="Favicon"
+                  className="footer-favicon"
+                  height={24}
+                  width={24}
+                />
+                <a href="#" className="hover:text-gray-600">
                   Viblo Learning
                 </a>
               </li>
-              <li className="mb-4 text-gray-300">
-                <a href="#" className="hover:underline">
+              <li className="mb-4 text-gray-300 flex gap-2">
+                <img
+                  src="/images/viblo-cv.png"
+                  alt="Favicon"
+                  className="footer-favicon"
+                  height={24}
+                  width={24}
+                />
+                <a href="#" className="hover:text-gray-600">
                   Viblo CV
                 </a>
               </li>
-              <li className="mb-4 text-gray-300">
-                <a href="#" className="hover:underline">
+              <li className="mb-4 text-gray-300 flex gap-2">
+                <img
+                  src="/images/viblo-partner.png"
+                  alt="Favicon"
+                  className="footer-favicon"
+                  height={24}
+                  width={24}
+                />
+                <a href="#" className="hover:text-gray-600">
                   Viblo Partner
                 </a>
               </li>
 
-              <li className="mb-4 text-gray-300">
-                <a href="#" className="hover:underline">
+              <li className="mb-4 text-gray-300 flex gap-2">
+                <img
+                  src="/images/viblo-battle.png"
+                  alt="Favicon"
+                  className="footer-favicon"
+                  height={24}
+                  width={24}
+                />
+                <a href="#" className="hover:text-gray-600">
                   Viblo Battle
                 </a>
               </li>
-              <li className="mb-4 text-gray-300">
-                <a href="#" className="hover:underline">
+              <li className="mb-4 text-gray-300 flex gap-2">
+                <img
+                  src="/images/favicon.ico"
+                  alt="Favicon"
+                  className="footer-favicon"
+                  height={24}
+                  width={24}
+                />
+
+                <a href="#" className="hover:text-gray-600">
                   Viblo Interview
                 </a>
               </li>
@@ -151,27 +211,38 @@ function Footer() {
 
         <div className="px-4 py-12 dark:bg-gray-700 md:flex md:items-center md:justify-between border-t border-gray-400 ">
           <span className="text-sm text-gray-200 dark:text-gray-300 sm:text-center font-medium">
-            © 2024 <a href="#">thachdinh</a>. All Rights
-            Reserved.
+            © 2024 <a href="#">thachdinh</a>. All Rights Reserved.
           </span>
           <ul className="flex text-gray-200 gap-3">
             <li>
-              <a href="" className="hover:underline hover:text-gray-400">Về chúng tôi</a>
+              <a href="" className=" hover:text-gray-400">
+                Về chúng tôi
+              </a>
             </li>
             <li>
-              <a href="" className="hover:underline hover:text-gray-400">Phản hồi</a>
+              <a href="" className=" hover:text-gray-400">
+                Phản hồi
+              </a>
             </li>
             <li>
-              <a href="" className="hover:underline hover:text-gray-400">Giúp đỡ</a>
+              <a href="" className=" hover:text-gray-400">
+                Giúp đỡ
+              </a>
             </li>
             <li>
-              <a href="" className="hover:underline hover:text-gray-400">FAQs</a>
+              <a href="" className=" hover:text-gray-400">
+                FAQs
+              </a>
             </li>
             <li>
-              <a href="" className="hover:underline hover:text-gray-400">RSS</a>
+              <a href="" className=" hover:text-gray-400">
+                RSS
+              </a>
             </li>
             <li>
-              <a href="" className="hover:underline hover:text-gray-400">Điều khoản</a>
+              <a href="" className=" hover:text-gray-400">
+                Điều khoản
+              </a>
             </li>
           </ul>
         </div>

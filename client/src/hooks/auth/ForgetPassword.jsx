@@ -1,9 +1,20 @@
-
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../contexts/AppContext";
 const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
+
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [isSendEmail, setIsSendEmail] = useState(true);
+  const ctx = useContext(AppContext);
+
+  // useEffect(() => {
+  //   ctx?.setIsHiddenNavbar(true)
+  //   return () => {
+  //     ctx?.setIsHiddenNavbar(false)
+  //   }
+  // }, [])
+
   const validateEmail = (e) => {
     if (e.target?.value && e.target.value.match(isValidEmail)) {
       setIsSendEmail(true);
@@ -16,6 +27,7 @@ const ForgetPassword = () => {
   const handlerSubmit = (e) => {
     validateEmail(e);
   };
+
   return (
     <div className="flex flex-col items-center  w-full h-screen bg-slate-50 gap-5 py-5 ">
       <img

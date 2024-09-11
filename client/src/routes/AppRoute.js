@@ -20,11 +20,13 @@ function AppRoutes() {
       </Route>
       <Route path="/" element={<HomePage />} />
       <Route path="/followings" element={<Following />} />
+      <Route path="/questions" element={<Following />} />
       <Route path="/trending" element={<TrendingPost />} />
       <Route path="/clip/posts" element={<MyBookmark />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgetPassword />} />
+
       <Route exact path="/publish/post" element={<PrivateRoute />}>
         <Route path="/publish/post" element={<PublishPost />} />
       </Route>

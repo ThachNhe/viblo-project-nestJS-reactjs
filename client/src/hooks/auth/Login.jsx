@@ -1,12 +1,12 @@
 import { FaLock } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import SocialLogin from "./SocialLogin";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../redux/action/index";
-import { useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { AppContext } from "../../contexts/AppContext";
 
-import toast from "react-hot-toast";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -15,18 +15,21 @@ const Login = () => {
   const userInfo = useSelector((state) => state?.auth?.userInfo);
   const isLogin = useSelector((state) => state?.auth?.isLogin);
 
+  const ctx = useContext(AppContext);
+
   const isEmail = (email) => {
     return email.includes("@");
   };
 
   useEffect(() => {
+    ctx?.setIsHiddenNavbar(true);
     if (
       userInfo?.success &&
       isLogin &&
       userInfo?.data?.user?.roles === "ADMIN"
     ) {
       navigate("/admin");
-    } 
+    }
 
     if (
       userInfo?.success &&
@@ -34,8 +37,10 @@ const Login = () => {
       userInfo?.data?.user?.roles !== "ADMIN"
     ) {
       navigate("/");
-    } 
-    
+    }
+    return () => {
+      ctx?.setIsHiddenNavbar(false);
+    };
   }, [userInfo]);
 
   //submit login form
@@ -99,24 +104,27 @@ const Login = () => {
 
           <button
             type="submit"
-            className="p-2 bg-sky-600 text-white rounded-md hover:bg-sky-400"
+            className="p-2 bg-blue-500 text-gray-200 rounded-md hover:bg-sky-400"
             onClick={handlerSubmitLoginForm}
           >
             Đăng nhập
           </button>
           <div className="flex flex-row justify-between">
-            <a
-              href="/forgot-password"
+            <span
+              to="/forgot-password"
               className="text-xs text-blue-600 font-medium hover:underline"
+              onClick={() => {
+                navigate("/forgot-password");
+              }}
             >
               Quên mật khẩu
-            </a>
-            <a
-              href="/register"
+            </span>
+            <Link
+              to="/register"
               className="text-xs text-blue-600 font-medium hover:underline"
             >
               Tạo Tài khoản
-            </a>
+            </Link>
           </div>
           <SocialLogin />
         </form>

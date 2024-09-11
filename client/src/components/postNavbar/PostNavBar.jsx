@@ -12,43 +12,98 @@ const PostNavbar = () => {
       navigator("/login");
     }
   }, [navigator, isLogin]);
-//     Nhà sáng tạo nội dung
-// Đang theo dõi
-// Mới nhất
-// Series
-// Editors' Choice
-// Trending
-// Videos
-// Bookmark Của Tôi
-  console.log("check login L ", isLogin);
+
   return (
     <div className="w-full bg-slate-800 shadow-md  py-4">
       <div className=" py-1">
         <Container>
-          <div className="flex items-center gap-20 justify-center">
+          <div className="flex items-center gap-20 justify-center ">
             <div>
               <ul className="flex gap-6 items-center mx-auto uppercase font-semibold  text-post-nav-bar justify-center  ">
                 <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
-                  <NavLink to="/followings">Đang theo dõi</NavLink>
+                  <NavLink
+                    to="/followings"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "underline underline-offset-8 decoration-2 "
+                        : ""
+                    }
+                  >
+                    Đang theo dõi
+                  </NavLink>
                 </li>
 
                 <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
-                  <NavLink to="/followings">Mới nhất</NavLink>
+                  <NavLink
+                    to="/newest"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "underline underline-offset-8 decoration-2 "
+                        : ""
+                    }
+                  >
+                    Mới nhất
+                  </NavLink>
                 </li>
                 <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
-                  <NavLink to="/followings">Series</NavLink>
+                  <NavLink
+                    to="/series"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "underline underline-offset-8 decoration-2 "
+                        : ""
+                    }
+                  >
+                    Series
+                  </NavLink>
                 </li>
                 <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
-                  <NavLink to="/followings">Editors' Choice</NavLink>
+                  <NavLink
+                    to="/editors-choice"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "underline underline-offset-8 decoration-2 "
+                        : ""
+                    }
+                  >
+                    Editors' Choice
+                  </NavLink>
                 </li>
                 <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
-                  <NavLink to="/followings">Trending</NavLink>
+                  <NavLink
+                    to="/trending"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "underline underline-offset-8 decoration-2 "
+                        : ""
+                    }
+                  >
+                    Trending
+                  </NavLink>
                 </li>
                 <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
-                  <NavLink to="/followings">Videos</NavLink>
+                  <NavLink
+                    to="/videos"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "underline underline-offset-8 decoration-2 "
+                        : ""
+                    }
+                  >
+                    Videos
+                  </NavLink>
                 </li>
-                \<li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
-                  <NavLink to="/followings">Bookmark của tôi</NavLink>
+                <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
+                  <NavLink
+                    to="/clip/posts"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "underline underline-offset-8 decoration-2 "
+                        : ""
+                    }
+                  >
+                    Bookmark của tôi
+                  </NavLink>
                 </li>
               </ul>
             </div>
@@ -59,7 +114,7 @@ const PostNavbar = () => {
                  bg-blue-500 text-gray-100 font-semibold text-center gap-2 hover:bg-blue-600 uppercase"
                 onClick={() => navigator("/publish/post")}
               >
-                <span className="flex items-center">
+                <span className="flex items-center gap-1">
                   <svg
                     className="text-gray-100"
                     width="12px"

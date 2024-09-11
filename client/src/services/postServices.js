@@ -20,4 +20,15 @@ const unbookmark = (postId) => {
   return axios.delete(`/posts/${postId}/bookmark`);
 };
 
-export { createPost, getPostById, votePost, bookmark, unbookmark };
+const getPaginationPosts = (page = 1, limit = 10) => {
+  return axios.get(`/posts?page=${page}&limit=${limit}`);
+};
+
+export {
+  createPost,
+  getPostById,
+  votePost,
+  bookmark,
+  unbookmark,
+  getPaginationPosts,
+};

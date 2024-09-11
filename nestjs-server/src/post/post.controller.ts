@@ -13,6 +13,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PostDTO } from './dto/post.dto';
+import { PaginationDto } from './dto/pagination.dto';
+
 @Controller('posts')
 export class PostController {
   constructor(private readonly PostService: PostService) {}
@@ -49,5 +51,10 @@ export class PostController {
   deleteBookmark(@Request() req: any, @Param('id') postId: number) {
     const userId = req.user.userId;
     return this.PostService.deleteBookmark(postId, userId);
+  }
+
+  @Get()
+  async getPaginationPosts(@Query() query: PaginationDto) {
+    return this.PostService.getPaginationPosts(query);
   }
 }

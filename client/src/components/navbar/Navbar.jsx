@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import Container from "../Container";
 import Logo from "./Logo";
 import Search from "./Search";
@@ -10,19 +10,22 @@ import { useNavigate } from "react-router-dom";
 import WriteMenu from "./WriteMenu";
 import DropdownCommonNotification from "./DropdownCommonNotification";
 import DropdownPersonalNotification from "./DropdownPersonalNotification";
-const Navbar = ({ isHomePage}) => {
+import { AppContext } from "../../contexts/AppContext";
+
+const Navbar = ({ isHomePage }) => {
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
+  const ctx = useContext(AppContext);
 
   useEffect(() => {
-    if (!isLogin) {
-      navigator("/login");
-    }
   }, [navigator, isLogin]);
 
-  console.log("check login L ", isLogin);
   return (
-    <div className="sticky w-full bg-white z-10 shadow-md top-0 h-[60px] ">
+    <div
+      className={` sticky w-full bg-white z-10 shadow-md top-0 h-[60px] 
+      ${ctx.isHiddenNavbar ? "hidden" : " "} 
+    `}
+    >
       <div className=" py-1">
         <Container isHomePage={isHomePage}>
           <div
@@ -41,9 +44,9 @@ const Navbar = ({ isHomePage}) => {
             </div>
             <div className="flex flex-row gap-2 items-center">
               {isHomePage && <Search />}
-             
-              <DropdownCommonNotification/>
-              <DropdownPersonalNotification/>
+
+              <DropdownCommonNotification />
+              <DropdownPersonalNotification />
               <WriteMenu />
               <Auth isLogin={isLogin} />
             </div>

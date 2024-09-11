@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import Banner from "../Banner";
 import Slider from "react-slick";
@@ -8,32 +7,34 @@ import PostCard from "../PostCard";
 import Footer from "../../hooks/user/Footer";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
-
-// Example items, to simulate fetching from another resources.
-const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+import { useDispatch, useSelector } from "react-redux";
+import * as actions from "../../redux/action/index";
+import { useLocation } from "react-router-dom";
 
 function Items({ currentItems }) {
   return (
     <>
       {currentItems &&
-        currentItems.length > 0 &&
-        currentItems.map((item, index) => {
+        currentItems?.length > 0 &&
+        currentItems?.map((item, index) => {
           return (
             <PostCard
-              authorName={item.authorName}
-              date={item.date}
+              authorName={item?.author?.fullName}
+              date={item.created_at}
               title={item.title}
-              tags={item.tags}
-              viewNumber={item.viewNumber}
-              commentNumber={item.commentNumber}
-              bookmarkNumber={item.bookmarkNumber}
-              voteNumber={item.voteNumber}
+              tags={item.tags_array}
+              viewNumber={item.view_number}
+              commentNumber={item.comment_number}
+              bookmarkNumber={item.bookmark_number}
+              voteNumber={item.vote_number}
+              imgURL={item?.author?.avatar}
             />
           );
         })}
     </>
   );
 }
+
 const settings = {
   dots: true,
   infinite: true,
@@ -42,116 +43,34 @@ const settings = {
   slidesToScroll: 1,
 };
 
-const postData = [
-  {
-    authorName: "Duong hoang Vu",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Hướng Dẫn Kích Hoạt Chức Năng Rung Trên Điện Thoại Bằng JavaScript –
-            Tăng Tương Tác Cho Ứng Dụng Web Di Động`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    commentNumber: 10,
-    bookmarkNumber: 15,
-    voteNumber: 5,
-  },
-  {
-    authorName: "Tran Duy Khanh",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Sử Dụng Patch Package Để Tùy Chỉnh NPM Package Theo Ý Muốn`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    commentNumber: 10,
-    bookmarkNumber: 15,
-    voteNumber: 8,
-  },
-  {
-    authorName: "Nguyen nhat Le",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Hướng Dẫn Kích Hoạt Chức Năng Rung Trên Điện Thoại Bằng JavaScript –
-            Tăng Tương Tác Cho Ứng Dụng Web Di Động`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    commentNumber: 10,
-    bookmarkNumber: 15,
-    voteNumber: 5,
-  },
-  {
-    authorName: "Duong hoang Vu",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Hướng Dẫn Kích Hoạt Chức Năng Rung Trên Điện Thoại Bằng JavaScript –
-            Tăng Tương Tác Cho Ứng Dụng Web Di Động`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    voteNumber: 5,
-    commentNumber: 10,
-    bookmarkNumber: 15,
-  },
-  {
-    authorName: "Tran Duy Khanh",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Sử Dụng Patch Package Để Tùy Chỉnh NPM Package Theo Ý Muốn`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    commentNumber: 10,
-    bookmarkNumber: 15,
-    voteNumber: 5,
-  },
-  {
-    authorName: "Nguyen nhat Le",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Hướng Dẫn Kích Hoạt Chức Năng Rung Trên Điện Thoại Bằng JavaScript –
-            Tăng Tương Tác Cho Ứng Dụng Web Di Động`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    commentNumber: 10,
-    bookmarkNumber: 15,
-    voteNumber: 5,
-  },
-  {
-    authorName: "Duong hoang Vu",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Hướng Dẫn Kích Hoạt Chức Năng Rung Trên Điện Thoại Bằng JavaScript –
-            Tăng Tương Tác Cho Ứng Dụng Web Di Động`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    commentNumber: 10,
-    bookmarkNumber: 15,
-    voteNumber: 5,
-  },
-  {
-    authorName: "Tran Duy Khanh",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Sử Dụng Patch Package Để Tùy Chỉnh NPM Package Theo Ý Muốn`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    commentNumber: 10,
-    voteNumber: 5,
-
-    bookmarkNumber: 15,
-  },
-  {
-    authorName: "Nguyen nhat Le",
-    date: "thg 8 26, 2024 3:04 SA",
-    title: ` Hướng Dẫn Kích Hoạt Chức Năng Rung Trên Điện Thoại Bằng JavaScript –
-            Tăng Tương Tác Cho Ứng Dụng Web Di Động`,
-    tags: [{ name: "java" }],
-    viewNumber: 5,
-    commentNumber: 10,
-    bookmarkNumber: 15,
-    voteNumber: 5,
-  },
-];
-
-const Following = ({ itemsPerPage = 4 }) => {
-  useEffect(() => {});
+const Following = ({ itemsPerPage = 10 }) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
-  const pageCount = Math.ceil(items.length / itemsPerPage);
+  const dispatch = useDispatch();
+  const paginationPosts = useSelector((state) => state?.post?.paginationPosts);
+  const [page, setPage] = useState(queryParams.get("page") || 1);
+
+  useEffect(() => {
+    dispatch(actions.getPaginationPosts(page, 10));
+  }, []);
+
   const handlePageChange = (selectedItem) => {
-    const newPage = selectedItem.selected + 1;
-    navigate(`/followings?page=${newPage}`);
+    try {
+      const newPage = selectedItem.selected + 1;
+      setPage(newPage);
+      navigate(`/followings?page=${newPage}`);
+      dispatch(actions.getPaginationPosts(newPage, 10));
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    } catch (e) {
+      console.log("ERROR : ", e);
+    }
   };
 
-  //============
   return (
     <>
       <div className="flex flex-col min-h-screen border">
@@ -162,7 +81,7 @@ const Following = ({ itemsPerPage = 4 }) => {
         <div className="container mx-auto my-8 px-4 max-w-[1140px] ">
           <div className="flex gap-5">
             <div className="flex flex-col gap-4 w-3/4 ">
-              <Items currentItems={postData} />
+              <Items currentItems={paginationPosts?.data} />
             </div>
             <div className="flex-grow p-1 rounded-md flex flex-col gap-10 py-2">
               <div className="w-72">
@@ -188,6 +107,7 @@ const Following = ({ itemsPerPage = 4 }) => {
                         questionNumber={99}
                         docNumber={22}
                       />
+                     
                     </div>
                   </Slider>
                 </div>
@@ -197,23 +117,32 @@ const Following = ({ itemsPerPage = 4 }) => {
         </div>
         <ReactPaginate
           breakLabel="..."
-          nextLabel="next >"
+          nextLabel=">"
           onPageChange={handlePageChange}
           pageRangeDisplayed={5}
-          pageCount={pageCount}
-          previousLabel="< previous"
+          pageCount={paginationPosts?.meta?.totalPages || 2}
+          previousLabel="<"
           renderOnZeroPageCount={null}
           containerClassName={"flex justify-center my-5"}
           pageClassName={"mx-1"}
-          pageLinkClassName={"px-4 py-2 border border-gray-300 rounded-md"}
+          pageLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2 h-10 w-10"
+          }
           previousClassName={"mx-1"}
-          previousLinkClassName={"px-4 py-2 border border-gray-300 rounded-md"}
+          
+          previousLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
           nextClassName={"mx-1"}
-          nextLinkClassName={"px-4 py-2 border border-gray-300 rounded-md"}
+          nextLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
           breakClassName={"mx-1"}
-          breakLinkClassName={"px-4 py-2 border border-gray-300 rounded-md"}
-          activeClassName={"bg-blue-500 text-white"}
-          disabledClassName={"text-gray-400"}
+          breakLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
+          activeClassName={" text-blue-600  font-semibold bg-slate-200"}
+          disabledClassName={"text-gray-400 "}
         />
       </div>
       <Footer />

@@ -1,29 +1,30 @@
-
 import React from "react";
 import { NavLink } from "react-router-dom";
 const MainMenu = () => {
   return (
     <ul className="flex flex-row gap-10">
-      <li>
+      <li className="font-semibold text-gray-400 hover:text-gray-950">
         <NavLink
-          className="font-semibold text-gray-400 hover:text-gray-950"
           to="/followings"
+          className={({ isActive }) => (isActive ? "text-gray-700" : "")}
         >
           Bài viết
         </NavLink>
       </li>
-      <li>
+
+      <li className="font-semibold text-gray-400 hover:text-gray-950">
         <NavLink
-          className="font-semibold text-gray-400 hover:text-gray-950"
           to="/questions"
+          className={({ isActive }) => (isActive ? "text-gray-700" : "")}
         >
           Hỏi đáp
         </NavLink>
       </li>
-      <li>
+
+      <li className="font-semibold text-gray-400 hover:text-gray-950">
         <NavLink
-          className="font-semibold text-gray-400 hover:text-gray-950"
           to="/discussion"
+          className={({ isActive }) => (isActive ? "text-gray-700" : "")}
         >
           Thảo luận
         </NavLink>

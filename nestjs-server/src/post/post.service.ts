@@ -3,6 +3,7 @@ import { PostDTO } from './dto/post.dto';
 import { AppDataSource } from '../index';
 import { Post, User, Tag, UserPost } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class PostService {
@@ -316,6 +317,49 @@ export class PostService {
       statusCode: 200,
       error: null,
       data: null,
+    };
+  }
+
+  async getPaginationPosts(paginationDto: PaginationDto) {
+    const { page = 1, limit = 10 } = paginationDto;
+    const postRepository = AppDataSource.getRepository(Post);
+    // const [result, total] = await postRepository.findAndCount({
+    //   take: limit,
+    //   skip: (page - 1) * limit,
+    //   relations: ['author'],
+    // });
+
+    const [result, total] = await postRepository
+      .createQueryBuilder('post')
+      .leftJoin('post.author', 'author') // Thực hiện join với bảng `author`
+      .addSelect([
+        'author.id',
+        'author.userName',
+        'author.fullName',
+        'author.avatar',
+      ]) // Chỉ lấy các trường cần thiết từ `author`
+      .take(limit)
+      .skip((page - 1) * limit)
+      .getManyAndCount();
+
+    const newResult = result?.map((item, index) => {
+      return {
+        ...item,
+        created_at: formatVietnameseDate(`${item.created_at}`),
+      };
+    });
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: newResult,
+      meta: {
+        totalItems: total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: +page,
+        pageSize: +limit,
+      },
     };
   }
 }

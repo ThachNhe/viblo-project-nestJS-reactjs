@@ -5,6 +5,8 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [isHomePage, setIsHomePage] = useState(true);
 
+  const [isHiddenNavbar, setIsHiddenNavbar] = useState(false);
+
   const [
     isOpenDropdownCommonNotification,
     setIsOpenDropdownCommonNotification,
@@ -32,6 +34,8 @@ export const AppProvider = ({ children }) => {
         setIsOpenDropdownWriteMenu,
         isOpenDropdownUserMenu,
         setIsOpenDropdownUserMenu,
+        isHiddenNavbar,
+        setIsHiddenNavbar,
       }}
     >
       {children}

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SocialLogin from "./SocialLogin";
 import { useNavigate  } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../redux/action/index";
 import toast from "react-hot-toast";
+import { AppContext } from "../../contexts/AppContext";
 const Register = () => {
 
   const navigate = useNavigate();
@@ -15,15 +16,24 @@ const Register = () => {
   const [confirmInfo, setConfirmInfo] = useState(false);
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state?.auth?.userRegister);
+  const ctx = useContext(AppContext)
 
-  useEffect(() => {
-    if (userInfo?.success) {
-      toast.success("Register success!!!");
-       navigate('/login');
-    }else {
-      toast.error("Register failed!!!");
+   useEffect(() => {
+    console.log('register')
+    ctx.setIsHiddenNavbar(true)
+    return () => {
+      ctx.setIsHiddenNavbar(false)
     }
-  }, [userInfo]);
+  }, [])
+
+  // useEffect(() => {
+  //   if (userInfo?.success) {
+  //     toast.success("Register success!!!");
+  //      navigate('/login');
+  //   }else {
+  //     toast.error("Register failed!!!");
+  //   }
+  // }, [userInfo]);
 
 
   const handlerSubmitRegisterForm = (e) => {

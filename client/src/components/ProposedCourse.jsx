@@ -23,7 +23,7 @@ function ProposedCourse({
             {tags &&
               tags.length > 0 &&
               tags.map((item, index) => {
-                return <TagButton tagName={item?.name} />;
+                return <TagButton tagName={item?.name} key={index} />;
               })}
           </span>
         </div>
