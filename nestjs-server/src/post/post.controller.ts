@@ -21,8 +21,9 @@ export class PostController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  create(@Body() body: PostDTO) {
-    return this.PostService.createPost(body);
+  create(@Body() body: PostDTO, @Request() req: any) {
+    const userId = req.user.userId;
+    return this.PostService.createPost(body, userId);
   }
 
   @Get(':id')

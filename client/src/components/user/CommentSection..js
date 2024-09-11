@@ -1,5 +1,5 @@
-import Comment from "../../components/Comment";
-import CommentForm from "../../components/CommentForm";
+import Comment from "../Comment";
+import CommentForm from "../CommentForm";
 import { useState } from "react";
 
 function CommentSection({

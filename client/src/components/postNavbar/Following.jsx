@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import PostNavbar from "./PostNavBar";
 import ProposedCourse from "../ProposedCourse";
 import PostCard from "../PostCard";
-import Footer from "../../hooks/user/Footer";
+import Footer from "../user/Footer";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

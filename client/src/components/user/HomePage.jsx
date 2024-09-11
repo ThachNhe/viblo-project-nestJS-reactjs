@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import UserInfo from "../../components/UserInfo";
-import ArticleStats from "../../components/ArticleStats";
-import Posts from "../../components/Posts";
+import UserInfo from "../UserInfo";
+import ArticleStats from "../ArticleStats";
+import Posts from "../Posts";
 import PostSection from "./PostSection";
-import PostInfo from "../../components/PostInfo";
-import CommentForm from "../../components/CommentForm";
+import PostInfo from "../PostInfo";
+import CommentForm from "../CommentForm";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import Footer from "./Footer";
-import ProposedCourse from "../../components/ProposedCourse";
+import ProposedCourse from "../ProposedCourse";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../redux/action/index";
 import * as services from "../../services/index";
@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import Slider from "react-slick";
 import { extractHeadings } from "../../utils/utils";
-import Banner from "../../components/Banner";
+import Banner from "../Banner";
 
 const data = [
   {

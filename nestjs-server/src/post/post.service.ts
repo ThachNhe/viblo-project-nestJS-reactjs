@@ -8,9 +8,9 @@ import { PaginationDto } from './dto/pagination.dto';
 @Injectable()
 export class PostService {
   constructor() {}
-  async createPost(body: PostDTO) {
+  async createPost(body: PostDTO, userId: number) {
     const user = await AppDataSource.getRepository(User).findOne({
-      where: { id: body.authorId },
+      where: { id: userId },
     });
 
     if (!user) {

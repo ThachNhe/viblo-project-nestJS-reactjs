@@ -32,6 +32,7 @@ const UserMenu = () => {
   };
 
   const handlerLogout = (e) => {
+    navigator("/login");
     e.preventDefault();
     dispatch(actions.logout());
   };
