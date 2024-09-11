@@ -1,4 +1,4 @@
-import TagButton from "./TagButton";
+import TagButton from "./TagButton"
 import Avatar from "./navbar/Avatar";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import ArticleStats from "./ArticleStats";

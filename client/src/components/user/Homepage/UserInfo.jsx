@@ -1,4 +1,5 @@
-import Avatar from "./navbar/Avatar";
+import Avatar from "../../navbar/Avatar";
+
 import { FaUserPlus } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";

@@ -1,4 +1,4 @@
-import ArticleStats from "./ArticleStats";
+import ArticleStats from "../../ArticleStats";
 
 function CarInfo({title, author, readTime, viewNumber, commentNumber, bookmarkNumber, point}) {
   return (  

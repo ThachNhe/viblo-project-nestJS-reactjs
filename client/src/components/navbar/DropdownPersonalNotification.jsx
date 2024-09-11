@@ -1,42 +1,30 @@
+import ClickOutside from "../ClickOutside";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import * as actions from "../../redux/action/index";
 import { FaRegBell } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { AppContext } from "../../contexts/AppContext";
+
 
 const DropdownPersonalNotification = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const ctx = useContext(AppContext);
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
-  const [isOpenDropdown, setIsOpenDropdown] = useState(
-    ctx.isOpenDropdownPersonalNotification
-  );
-
+  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
   const dispatch = useDispatch();
+
+
   useEffect(() => {}, [navigator]);
 
   const toggleOpen = () => {
-    let isOpenDropdownPersonalNotification =
-      ctx.isOpenDropdownPersonalNotification;
-    ctx.setIsOpenDropdownPersonalNotification(
-      !isOpenDropdownPersonalNotification
-    );
-    setIsOpenDropdown(!isOpenDropdownPersonalNotification);
-    if (isOpenDropdown) {
-      ctx.setIsOpenDropdownCommonNotification(false);
-      ctx.setIsOpenDropdownWriteMenu(false);
-      ctx.setIsOpenDropdownUserMenu(false);
-    }
+    setIsOpenDropdown(!isOpenDropdown);
   };
 
   return (
-    <div className="relative">
+    <ClickOutside onClick={() => setIsOpenDropdown(false)} className="relative">
       <div className="flex flex-row items-center gap-3">
         <div onClick={() => toggleOpen()} className="p-2">
           <div className="relative inline-block">
@@ -148,7 +136,7 @@ const DropdownPersonalNotification = () => {
           </div>
         </div>
       )}
-    </div>
+    </ClickOutside>
   );
 };
 

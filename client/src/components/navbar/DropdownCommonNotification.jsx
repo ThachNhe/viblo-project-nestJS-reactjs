@@ -3,29 +3,27 @@ import { useDispatch } from "react-redux";
 import * as actions from "../../redux/action/index";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import React, { useContext } from "react";
+import React from "react";
 import { CiEdit } from "react-icons/ci";
 import { PiListDashesBold } from "react-icons/pi";
 import { FaRegQuestionCircle } from "react-icons/fa";
-import { IoInformation } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { AppContext } from "../../contexts/AppContext";
+import ClickOutside from "../ClickOutside";
 
 const CommonNotification = () => {
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
-  const ctx = useContext(AppContext);
   const [isOpenDropdown, setIsOpenDropdown] = useState(
-    ctx.isOpenDropdownCommonNotification
+    false
   );
   const dispatch = useDispatch();
+
   useEffect(() => {}, [navigator]);
 
   const toggleOpen = () => {
-    let isOpenDropdownCommonNotification = ctx.isOpenDropdownCommonNotification;
-    ctx.setIsOpenDropdownCommonNotification(!isOpenDropdownCommonNotification);
-    setIsOpenDropdown(!isOpenDropdownCommonNotification);
+   
+    setIsOpenDropdown(!isOpenDropdown);
   };
 
   const handlerToPublishPage = useCallback(() => {
@@ -47,7 +45,7 @@ const CommonNotification = () => {
   ];
 
   return (
-    <div className="relative">
+    <ClickOutside onClick={() => setIsOpenDropdown(false)} className="relative">
       <div className="flex flex-row items-center gap-3">
         <div onClick={() => toggleOpen()} className="p-2">
           <div className="relative inline-block">
@@ -186,7 +184,7 @@ const CommonNotification = () => {
           </div>
         </div>
       )}
-    </div>
+    </ClickOutside>
   );
 };
 

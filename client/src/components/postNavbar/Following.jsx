@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Banner from "../Banner";
+import Banner from "../user/Homepage/Banner";
 import Slider from "react-slick";
 import PostNavbar from "./PostNavBar";
-import ProposedCourse from "../ProposedCourse";
+import ProposedCourse from "../user/Homepage/ProposedCourse";
 import PostCard from "../PostCard";
-import Footer from "../user/Footer";
+import Footer from "../user/Homepage/Footer";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

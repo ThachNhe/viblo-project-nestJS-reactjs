@@ -1,7 +1,7 @@
 import { FaFacebookF } from "react-icons/fa6";
 import { FaGoogle } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
-const Login = () => {
+const SocialLogin = () => {
   return (
     <div className="flex flex-col gap-5 mb-3 ">
       <div className="flex items-center justify-center">
@@ -50,4 +50,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SocialLogin;

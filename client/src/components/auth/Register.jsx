@@ -19,7 +19,6 @@ const Register = () => {
   const ctx = useContext(AppContext)
 
    useEffect(() => {
-    console.log('register')
     ctx.setIsHiddenNavbar(true)
     return () => {
       ctx.setIsHiddenNavbar(false)

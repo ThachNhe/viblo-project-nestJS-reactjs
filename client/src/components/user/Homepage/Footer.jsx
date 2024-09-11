@@ -2,7 +2,7 @@ import { FaFacebookF } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { FaChrome } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
-import Avatar from "../navbar/Avatar";
+import Avatar from "../../navbar/Avatar";
 function Footer() {
   return (
     <footer className="dark:bg-gray-900 bg-[color:#0b1a33]">

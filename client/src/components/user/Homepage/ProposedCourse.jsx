@@ -2,7 +2,7 @@ import { FaRegEye } from "react-icons/fa";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { FaQuestionCircle } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
-import TagButton from "./TagButton";
+import TagButton from "../../TagButton";
 function ProposedCourse({
   courseName,
   time,

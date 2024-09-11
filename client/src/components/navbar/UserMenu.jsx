@@ -14,9 +14,11 @@ import { IoIosLogOut } from "react-icons/io";
 import { handlerFileUpload } from "../../utils/utils";
 import * as services from "../../services/index";
 import toast from "react-hot-toast";
+import ClickOutside from "../ClickOutside";
+
 
 const UserMenu = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenUserMenu, setIsOpenUserMenu] = useState(false);
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
   const dispatch = useDispatch();
@@ -45,7 +47,7 @@ const UserMenu = () => {
   }, [isLogin]);
 
   const toggleOpen = useCallback(() => {
-    setIsOpen((prev) => !prev);
+    setIsOpenUserMenu((prev) => !prev);
   }, []);
 
   const handleFileChange = async (event) => {
@@ -94,15 +96,16 @@ const UserMenu = () => {
     { label: "Đăng xuất", action: handlerLogout, icon: <IoIosLogOut /> },
   ];
 
+
   return (
-    <div className="relative">
+    <ClickOutside className="relative" onClick={()=> {setIsOpenUserMenu(false)}}>
       <div className="flex flex-row items-center gap-3">
         <div onClick={toggleOpen} className="p-2 ">
           <Avatar imgURL={avatar} height={37} width={37} />
         </div>
       </div>
 
-      {isOpen && (
+      {isOpenUserMenu && (
         <div
           className={`
       absolute
@@ -118,9 +121,9 @@ const UserMenu = () => {
       border
       transform
       transition-all duration-300
-      ${isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"}
+      ${isOpenUserMenu ? "opacity-100 scale-100" : "opacity-0 scale-95"}
     `}
-          style={{ visibility: isOpen ? "visible" : "hidden" }} // Ẩn khi không mở
+          style={{ visibility: isOpenUserMenu ? "visible" : "hidden" }} // Ẩn khi không mở
         >
           <div className="flex flex-col cursor-pointer">
             <div className="flex gap-2  items-center justify-between px-4 py-2 bg-slate-50 hover:bg-slate-100">
@@ -161,7 +164,7 @@ const UserMenu = () => {
           </div>
         </div>
       )}
-    </div>
+    </ClickOutside>
   );
 };
 
