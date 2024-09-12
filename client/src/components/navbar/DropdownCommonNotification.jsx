@@ -90,7 +90,7 @@ const CommonNotification = () => {
           className={`absolute right-0 mt-2.5 top-10 flex h-96  min-w-80 flex-col rounded-md border border-stroke bg-white shadow-md`}
         >
           <div className="px-4 py-3">
-            <h5 className="text-sm font-medium text-bodydark2">
+            <h5 className="text-sm text-gray-500 font-semibold">
               Thông báo chung
             </h5>
           </div>

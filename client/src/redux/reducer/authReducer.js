@@ -29,8 +29,10 @@ function authReducer(state = initialState, action) {
       return { ...state };
 
     case actionTypes.USER_LOGOUT_SUCCESS:
-      state.userInfo = action.payload;
+      state.userInfo = null;
       state.isLogin = false;
+      console.log("logout success redux userinfo : ", state.userInfo);
+      console.log("logout success redux islogin: ", state.isLogin);
       return { ...state };
 
     default:

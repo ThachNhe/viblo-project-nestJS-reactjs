@@ -59,7 +59,6 @@ export const logout = () => {
   return async (dispatch) => {
     try {
       const users = await services.userLogoutService();
-      console.log("come here!!");
       dispatch({
         type: actionType.USER_LOGOUT_SUCCESS,
         payload: null,

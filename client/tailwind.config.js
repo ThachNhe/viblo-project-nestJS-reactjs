@@ -149,6 +149,7 @@ module.exports = withMT({
         "title-md2": ["26px", "30px"],
         "title-sm": ["20px", "26px"],
         "title-xsm": ["18px", "24px"],
+        // "md": ["18px", "24px"],
       },
       spacing: {
         4.5: "1.125rem",

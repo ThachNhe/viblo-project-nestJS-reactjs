@@ -19,7 +19,6 @@ const Login = () => {
 
   useEffect(() => {
     ctx.setIsHiddenNavbar(true);
-    console.log("ctx login : ", ctx);
     return () => {
       ctx.setIsHiddenNavbar(false);
     };
@@ -30,7 +29,6 @@ const Login = () => {
   };
 
   useEffect(() => {
-    console.log("ctx login : ", ctx);
     if (
       userInfo?.success &&
       isLogin &&
@@ -46,7 +44,7 @@ const Login = () => {
     ) {
       navigate("/");
     }
-  }, [userInfo]);
+  }, [userInfo, isLogin]);
 
   //submit login form
   const handlerSubmitLoginForm = (e) => {
@@ -99,7 +97,7 @@ const Login = () => {
             </div>
 
             <input
-              type="text"
+              type="password"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-100 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Mật khẩu"

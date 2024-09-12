@@ -36,7 +36,7 @@ function UserInfo({
           <div className="relative flex items-center gap-2 group">
             <FaStar />
             <span className="">{starNumber}</span>
-            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-gray-200 bg-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 min-w-[100px] rounded-sm -translate-x-1/2 left-1/2 font-semibold">
               Reputations: {starNumber}
             </div>
           </div>
@@ -45,8 +45,8 @@ function UserInfo({
           <div className="relative flex items-center gap-1 group">
             <FaUserPlus />
             <span className="">{followerNumber}</span>
-            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {followerNumber} Người theo dõi
+            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-gray-200 bg-gray-800  opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-sm -translate-x-1/2 left-1/2 min-w-[100px] font-semibold ">
+               Người theo dõi: {followerNumber}
             </div>
           </div>
 
@@ -54,8 +54,8 @@ function UserInfo({
           <div className="relative flex items-center gap-1 group">
             <MdEdit />
             <span className="">{postNumber}</span>
-            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {postNumber} Bài viết
+            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-gray-200 bg-gray-800  opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-sm -translate-x-1/2 left-1/2 min-w-[100px] font-semibold">
+               Bài viết: {postNumber}
             </div>
           </div>
         </div>

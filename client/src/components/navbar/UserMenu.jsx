@@ -9,17 +9,17 @@ import { IoMdSettings } from "react-icons/io";
 import { useDispatch } from "react-redux";
 import * as actions from "../../redux/action/index";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
 import { handlerFileUpload } from "../../utils/utils";
 import * as services from "../../services/index";
 import toast from "react-hot-toast";
 import ClickOutside from "../ClickOutside";
-
+import { useNavigate } from "react-router-dom";
 
 const UserMenu = () => {
   const [isOpenUserMenu, setIsOpenUserMenu] = useState(false);
-  const navigator = useNavigate();
+  const navigate = useNavigate();
+
   const isLogin = useSelector((state) => state?.auth?.isLogin);
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
@@ -34,15 +34,13 @@ const UserMenu = () => {
   };
 
   const handlerLogout = (e) => {
-    navigator("/login");
     e.preventDefault();
     dispatch(actions.logout());
   };
 
   useEffect(() => {
-    console.log("isLogin", isLogin);
     if (!isLogin) {
-      navigator("/login");
+      navigate("/login");
     }
   }, [isLogin]);
 
@@ -96,9 +94,13 @@ const UserMenu = () => {
     { label: "Đăng xuất", action: handlerLogout, icon: <IoIosLogOut /> },
   ];
 
-
   return (
-    <ClickOutside className="relative" onClick={()=> {setIsOpenUserMenu(false)}}>
+    <ClickOutside
+      className="relative"
+      onClick={() => {
+        setIsOpenUserMenu(false);
+      }}
+    >
       <div className="flex flex-row items-center gap-3">
         <div onClick={toggleOpen} className="p-2 ">
           <Avatar imgURL={avatar} height={37} width={37} />
