@@ -1,22 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { AppContext } from "../../contexts/AppContext";
 import Sidebar from "./Sidebar/Sidebar";
 import Header from "./Header /Header"
 
 
-function AdminDashboard({ children }) {
+function AdminLayOut({ children }) {
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const ctx = useContext(AppContext);
-  useEffect(() => {
-    ctx.setIsHiddenNavbar(true);
-    return () => {
-      ctx.setIsHiddenNavbar(false);
-    };
-  });
-
+  
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
       {/* <!-- ===== Page Wrapper Start ===== --> */}
@@ -35,6 +26,7 @@ function AdminDashboard({ children }) {
           <main>
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
               {children}
+              {/* <Outlet /> */}
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}
@@ -46,4 +38,4 @@ function AdminDashboard({ children }) {
   );
 }
 
-export default AdminDashboard;
+export default AdminLayOut;

@@ -96,7 +96,7 @@ function PublishPost() {
         setTitle("");
         setTags("");
         setStatus("PUBLIC");
-        navigator("/", { state: { data: post?.data?.id } });
+        navigator("/homepage", { state: { data: post?.data?.id } });
         toast.success("Tạo bài viết thành công!!");
       }
     } catch (e) {

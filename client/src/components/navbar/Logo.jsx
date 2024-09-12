@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 const Logo = () => {
   const navigator = useNavigate();
   const handlerRedirectHome = () => {
-    navigator("/");
+    navigator("/homepage");
   };
 
   return (
