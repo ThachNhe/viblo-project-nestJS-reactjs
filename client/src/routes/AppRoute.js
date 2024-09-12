@@ -6,11 +6,12 @@ import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import Homepage from "../components/user/Homepage/HomePage";
 import PublishPost from "../components/user/PublishPost";
-import Following from "../components/postNavbar/Following";
 import NewestPost from "../components/postNavbar/NewestPost";
 import TrendingPost from "../components/postNavbar/TrendingPost";
 import MyBookmark from "../components/postNavbar/MyBookmark";
 import AdminApp from "../components/admin/AdminApp";
+import PostPageLayout from "../components/layouts/PostPageLayout";
+import FollowingPost from "../components/user/PostPage/FollowingPost";
 
 function AppRoutes() {
   return (
@@ -18,9 +19,13 @@ function AppRoutes() {
       {/* <Route element={<AdminRoute />}>
         <Route path="/admin/*" element={<AdminApp />} />
       </Route> */}
+
       <Route path="/homepage" element={<Homepage />} />
-      <Route path="/followings" element={<Following />} />
-      <Route path="/questions" element={<Following />} />
+      <Route path="/" element={<PostPageLayout />}>
+        <Route index path="followings" element={<FollowingPost />} />
+        <Route path="newest" element={<NewestPost />} />
+      </Route>
+
       <Route path="/trending" element={<TrendingPost />} />
       <Route path="/clip/posts" element={<MyBookmark />} />
       <Route path="/login" element={<Login />} />

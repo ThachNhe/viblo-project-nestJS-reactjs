@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar/Sidebar";
 import Header from "./Header /Header"
 
@@ -7,7 +6,7 @@ import Header from "./Header /Header"
 function AdminLayOut({ children }) {
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  
+
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
       {/* <!-- ===== Page Wrapper Start ===== --> */}
@@ -15,7 +14,6 @@ function AdminLayOut({ children }) {
         {/* <!-- ===== Sidebar Start ===== --> */}
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         {/* <!-- ===== Sidebar End ===== --> */}
-
         {/* <!-- ===== Content Area Start ===== --> */}
         <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
           {/* <!-- ===== Header Start ===== --> */}

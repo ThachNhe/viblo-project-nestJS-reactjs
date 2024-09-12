@@ -35,7 +35,7 @@ const PostNavbar = () => {
 
                 <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
                   <NavLink
-                    to="/newest"
+                    to="newest"
                     className={({ isActive }) =>
                       isActive
                         ? "underline underline-offset-8 decoration-2 "
