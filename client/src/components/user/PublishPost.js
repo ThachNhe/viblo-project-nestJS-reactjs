@@ -28,14 +28,31 @@ const checkboxSelect = [
 function PublishPost() {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
-  const [tagOptions, setTagOptions] = useState([]);
   const [title, setTitle] = useState("");
   const [markdownText, setMarkdownText] = useState("");
   const UserInfo = useSelector((state) => state.auth.userInfo);
-  const [selectedOption, setSelectedOption] = useState({});
-
+  const [status, setStatus] = useState("PUBLIC");
   const navigator = useNavigate();
   const ctx = useContext(AppContext);
+  const [tagOptions, setTagOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [openPublishPost, setOpenPublishPost] = useState(false);
+
+  const onClickPublishPost = () => {
+    setOpenPublishPost(!openPublishPost);
+  };
+  // call api to get tag options
+  const fetchTagOptions = async (input) => {
+    try {
+      const response = await services.getTagSearch(input);
+      const options = buildSelectTagOption(response.data);
+      setTagOptions(options);
+    } catch (error) {
+      console.error("Error fetching tag options:", error);
+    }
+  };
+
   const filteredCommands = commands
     .getCommands()
     .filter((cmd) => cmd.name !== "image");
@@ -48,6 +65,19 @@ function PublishPost() {
       ctx.setIsHomePage(true);
     };
   }, []);
+
+  // Handle select change
+  const handleSelectChange = (selected) => {
+    console.log("Selected: ", selected);
+    setSelectedOption(selected);
+  };
+
+  // Handler input change
+  const handleInputChange = (input) => {
+    setInputValue(input);
+    if (input.length === 0) return;
+    fetchTagOptions(input);
+  };
 
   const title3 = {
     name: "title3",
@@ -70,22 +100,21 @@ function PublishPost() {
     },
   };
 
-  // State to track which checkbox is selected
-  const [status, setStatus] = useState("");
-
-  // Handler to update selected checkbox
   const handleCheckboxChange = (event) => {
     setStatus(event.target.id);
   };
 
-  const handlerCreatePost = async () => {
+  const handlerCreatePost = async (e) => {
+    e.preventDefault();
     let payload = {
       title: title,
       contentMarkdown: markdownText,
-      tagArray: options.map((item) => item.value),
+      tagArray: tagOptions?.map((item) => item.value),
       status: status,
       authorId: +UserInfo?.data?.user?.id,
     };
+
+    console.log("Payload: ", payload);
 
     try {
       const post = await services.createPost(payload);
@@ -128,38 +157,9 @@ function PublishPost() {
     });
   };
 
-  const handleSelectChange = async (option) => {
-    try {
-      console.log("Selected Option:", option);
-      // option && setSelectedOption(option);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleInputChange = async (keyword) => {
-    try {
-      console.log("Input Value:", keyword); // Log giá trị keyword hiện tại
-      console.log("Type of keyword:", typeof keyword); // Kiểm tra kiểu dữ liệu của keyword
-
-      // Nếu keyword không phải là chuỗi, có thể cần chuyển thành chuỗi trước khi xử lý
-      const validKeyword = String(keyword);
-
-      const tagSearchRes = await services.getTagSearch(validKeyword);
-      // if (tagSearchRes.success && tagSearchRes.data.length > 0) {
-      //   setTagOptions(buildSelectTagOption(tagSearchRes.data));
-      // }
-      // console.log("tagSearchRes", tagSearchRes);
-
-      // console.log("selected option ", selectedOption); // Log giá trị selectedOption
-    } catch (e) {
-      console.log("Error: ", e); // Log lỗi nếu có
-    }
-  };
-
   return (
     <div className="w-full min-h-full">
-      <div className=" flex flex-col gap-5  bg-slate-100 px-10 py-5">
+      <div className=" flex flex-col gap-5  bg-neutral-100 px-10 py-5">
         <div>
           <input
             type="text"
@@ -184,9 +184,8 @@ function PublishPost() {
               onInputChange={handleInputChange}
               options={tagOptions}
               isMulti={true}
-              placeholder={
-                "Gắn thẻ bài viết của bạn. Tối đa 5 thẻ. Ít nhất 1 thẻ!"
-              }
+              inputValue={inputValue} // Đảm bảo state của input được đồng bộ
+              placeholder="Gắn thẻ bài viết của bạn. Tối đa 5 thẻ. Ít nhất 1 thẻ!"
             />
           </div>
 
@@ -203,96 +202,99 @@ function PublishPost() {
           <div className="flex-grow">
             <div className="relative">
               <button
-                id="dropdownHoverButton"
-                data-dropdown-toggle="dropdownHover"
-                data-dropdown-trigger="hover"
                 type="button"
                 className=" text-gray-500 border hover:bg-blue-100 border-gray-400 focus:border-blue-500 focus:outline-none 
-              focus:text-blue-400 hover:text-blue-400  font-medium 
-              rounded-sm text-sm px-5 py-2 text-center inline-flex items-center w-full justify-center"
+              focus:text-blue-400 hover:text-blue-400  font-medium bg-gray-50
+              rounded-sm text-sm px-5 py-2 text-center inline-flex items-center w-full justify-center "
+                onClick={onClickPublishPost}
               >
-                Dropdown
+                Xuất bản bài viết
                 <RiArrowDropDownLine className="text-2xl" />
               </button>
 
               {/* <!-- Dropdown menu --> */}
-              <div
-                id="dropdownHover"
-                className="absolute
-                          rounded-md
-                          shadow-md
-                          min-w-[300px]
-                          overflow-hidden
-                          right-10
-                          top-11
-                          text-sm
-                          mt-3
-                          border
-                          z-10
-                          p-3
-                          bg-white
-                          "
-              >
-                <div className="flex flex-col gap-2 ">
-                  <span>Xuất bản bài viết của bạn </span>
-                  <span>
-                    <span className="font-md font-bold text-gray-600">
-                      Giấy phép
+              {openPublishPost && (
+                <div
+                  className={`absolute 
+            rounded-md
+            shadow-md
+            min-w-[300px]
+            overflow-hidden
+            right-0
+            top-8
+            text-sm
+            mt-3
+            border
+            z-10
+            p-3
+            bg-white
+            transition-all duration-300 ease-out
+            transform ${
+              openPublishPost ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            }
+          `}
+                >
+                  <div className="flex flex-col gap-2 ">
+                    <span>Xuất bản bài viết của bạn</span>
+                    <span>
+                      <span className="font-md font-bold text-gray-600">
+                        Giấy phép
+                      </span>
+                      <span className="text-sm font-normal">
+                        : All rights reserved
+                      </span>
                     </span>
-                    <span className="text-sm font-normal">
-                      : All rights reserved
-                    </span>
-                  </span>
-                  <span>Hiển thị:</span>
-                  <div className="flex flex-col gap-2">
-                    {checkboxSelect.map((item, index) => {
-                      return (
-                        <div className="flex items-center me-4" key={index}>
-                          <input
-                            defaultChecked={status === `${item.id}`}
-                            value={item.id}
-                            id={item.id}
-                            type={item.type}
-                            checked={status === `${item.id}`}
-                            onChange={handleCheckboxChange}
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                          />
-                          <label
-                            htmlFor={item.label}
-                            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                          >
-                            {item.label}
-                          </label>
-                        </div>
-                      );
-                    })}
+                    <span>Hiển thị:</span>
+                    <div className="flex flex-col gap-2">
+                      {checkboxSelect.map((item, index) => {
+                        return (
+                          <div className="flex items-center me-4" key={index}>
+                            <input
+                              defaultChecked={status === `${item.id}`}
+                              value={item.id}
+                              id={item.id}
+                              type={item.type}
+                              checked={status === `${item.id}`}
+                              onChange={handleCheckboxChange}
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            />
+                            <label
+                              htmlFor={item.label}
+                              className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >
+                              {item.label}
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
 
-                <hr className="border-t w-full mt-2 text-gray-500" />
-                <div className="flex flex-col gap-2 py-2">
-                  <div className="flex text-xs items-center gap-1">
-                    <FaLock className="text-xs text-neutral-500" />
-                    <span>Mọi người có thể thấy bài viết.</span>
+                  <hr className="border-t w-full mt-2 text-gray-500" />
+                  <div className="flex flex-col gap-2 py-2">
+                    <div className="flex text-xs items-center gap-1">
+                      <FaLock className="text-xs text-neutral-500" />
+                      <span>Mọi người có thể thấy bài viết.</span>
+                    </div>
+                    <span>
+                      <button
+                        type="button"
+                        className="py-1 px-3 text-xs inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 
+                          focus:outline-none focus:ring-blue-300 border dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
+                          text-gray-700 hover:text-blue-400 font-medium text-center gap-2 bg-neutral-200"
+                        onClick={(e) => handlerCreatePost(e)}
+                      >
+                        <span>Xuất bản</span>
+                      </button>
+                    </span>
                   </div>
-                  <span>
-                    <button
-                      type="button"
-                      className="py-1 px-3 text-xs  inline-flex items-center bg-slate-50 rounded-md hover:bg-blue-100 focus:ring-1 
-                                  focus:outline-none focus:ring-blue-300  border  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
-                                text-gray-700 hover:text-blue-400  font-medium text-center gap-2 "
-                      onClick={() => handlerCreatePost()}
-                    >
-                      <span>Xuất bản</span>
-                    </button>
-                  </span>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
         {/* MARKDOWN */}
-        <div className=" ">
+        <div className="py-5">
           <MDEditor
             value={markdownText}
             onChange={setMarkdownText}

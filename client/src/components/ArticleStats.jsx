@@ -2,67 +2,75 @@ import { FaEye } from "react-icons/fa";
 import { FaRegCommentDots } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import { TbCaretUpDown } from "react-icons/tb";
-import { Tooltip, Button } from "@material-tailwind/react";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import NumberFormatter from "./NumberFormatter";
+import { useState } from "react";
+
 function ArticleStats({ viewNumber, commentNumber, bookmarkNumber, point }) {
+  const [randomID] = useState(String(Math.random()));
+
   return (
     <div
       className={`flex items-center space-x-4 text-neutral-400 
-    ${point !== undefined} ? 'justify-end' : 'justify-start' `}
+      justify-start`}
     >
-      {/* <!-- Tooltip for view --> */}
-      <div className="relative flex items-center gap-1 group">
+      {/* Tooltip cho view */}
+      <div
+        className="relative flex items-center gap-1"
+        data-tooltip-id={randomID}
+        data-tooltip-content= {`Lượt xem: ${viewNumber}`}
+      >
         <FaEye />
-        <span className="">{viewNumber}</span>
-        <div
-          className="absolute top-full left-1/2 -translate-x-1/2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-sm opacity-0 
-        group-hover:opacity-100 transition-opacity duration-1000 max-w-fit min-w-[100px] "
-        >
-          <span className="font-semibold text-gray-200">
-            Lượt xem: {viewNumber}
-          </span>
-        </div>
+        <span>
+          <NumberFormatter number={viewNumber} />
+        </span>
       </div>
 
-      {/* <!-- Tooltip for comment --> */}
-      <div className="relative flex items-center gap-1 group">
+      {/* Tooltip cho comment */}
+      <div
+        className="relative flex items-center gap-1"
+        data-tooltip-id={randomID}
+        data-tooltip-content= {`Số bình luận: ${commentNumber}`}
+      >
         <FaRegCommentDots />
-        <span className="">{commentNumber}</span>
-        <div
-          className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-sm  left-1/2 -translate-x-1/2
-        opacity-0 group-hover:opacity-100 transition-opacity duration-300 min-w-[100px] "
-        >
-          <span className="font-semibold text-gray-200">
-            Bình luận: {commentNumber}
-          </span>
-        </div>
+        <span>
+          <NumberFormatter number={commentNumber} />
+        </span>
       </div>
 
-      {/* <!-- Tooltip for bookmark --> */}
-      <div className="relative flex items-center gap-1 group">
+      {/* Tooltip cho bookmark */}
+      <div
+        className="relative flex items-center gap-1"
+        data-tooltip-id={randomID}
+        data-tooltip-content={`Số lượt lưu: ${bookmarkNumber}`}
+      >
         <FaBookmark />
-        <span className="">{bookmarkNumber}</span>
-        <div
-          className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-sm min-w-[100px]  left-1/2 -translate-x-1/2
-        opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
-        >
-          <span className="font-semibold text-gray-200">
-            {" "}
-            Đánh dấu: {bookmarkNumber}
-          </span>
-        </div>
+        <span>
+          <NumberFormatter number={bookmarkNumber} />
+        </span>
       </div>
+
+      {/* Tooltip cho point (nếu có) */}
       {point !== undefined && (
-        <div className="relative flex items-center gap-1 group">
+        <div
+          className="relative flex items-center gap-1"
+          data-tooltip-id={randomID}
+          data-tooltip-content= {`Điểm: ${point}`}
+        >
           <TbCaretUpDown />
-          <span className="">{point}</span>
-          <div
-            className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-800 rounded-sm min-w-[100px]  left-1/2 -translate-x-1/2
-        opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
-          >
-            <span className="font-semibold text-gray-200"> Điểm: {point}</span>
-          </div>
+          <span>
+            <NumberFormatter number={point} />
+          </span>
         </div>
       )}
+
+      {/* Tooltip được render một lần và vị trí là bottom */}
+      <ReactTooltip
+        id={randomID}
+        effect="solid"
+        place="bottom"
+     
+      />
     </div>
   );
 }

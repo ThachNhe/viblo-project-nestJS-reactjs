@@ -63,13 +63,13 @@ function PostInfo({
         <div className="relative flex items-center gap-2 group">
           <div
             className={`border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
-         ring-gray-400  group shadow-md
-            ${isBookmark ? 'ring-blue-500 ' : 'hover:bg-white'}
+           group shadow-md
+            ${isBookmark ? 'ring-blue-500 border-cyan-500  ' : 'hover:bg-white'}
          `}
           >
             <IoBookmark
-              className={`text-2xl group-hover:text-blue-500 cursor-pointer
-                ${isBookmark ? "text-blue-500 " : "group-hover:text-neutral-500"}
+              className={`text-2xl group-hover:text-blue-gray-700 cursor-pointer
+                ${isBookmark ? "text-blue-500" : "group-hover:text-neutral-500"}
                 `}
               onClick={handlerBookmark}
             />

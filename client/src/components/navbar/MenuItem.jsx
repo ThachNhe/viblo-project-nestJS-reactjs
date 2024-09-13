@@ -16,7 +16,7 @@ const MenuItem = ({ label, onClick, icon }) => {
         <span className="text-gray-500 text-lg">
           {icon}
         </span>
-      <span className="text-gray-700">{label}</span>
+      <span className="text-neutral-500">{label}</span>
       </div>
       
     </div>

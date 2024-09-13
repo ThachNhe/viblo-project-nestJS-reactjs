@@ -87,10 +87,10 @@ const CommonNotification = () => {
 
       {isOpenDropdown && (
         <div
-          className={`absolute right-0 mt-2.5 top-10 flex h-96  min-w-80 flex-col rounded-md border border-stroke bg-white shadow-md`}
+          className={`absolute right-0 mt-2.5 top-10 flex h-96  min-w-80 flex-col rounded-xs border border-stroke bg-white shadow-md`}
         >
           <div className="px-4 py-3">
-            <h5 className="text-sm text-gray-500 font-semibold">
+            <h5 className="text-sm text-neutral-600 font-semibold">
               Thông báo chung
             </h5>
           </div>
@@ -178,7 +178,7 @@ const CommonNotification = () => {
             </ul>
           </PerfectScrollbar>
           <div className="px-4 py-3 border-t">
-            <h5 className="text-sm font-medium text-bodydark2">
+            <h5 className="text-sm font-medium text-neutral-600">
               Tất cả thông tin
             </h5>
           </div>

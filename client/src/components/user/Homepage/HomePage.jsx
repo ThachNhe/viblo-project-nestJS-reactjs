@@ -146,7 +146,6 @@ function Homepage() {
     dispatch(actions.getPostById(defaultPostId));
     dispatch(actions.getCommentByPostId(defaultPostId));
   }, []);
-
   useEffect(() => {
     const user = post?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
@@ -363,8 +362,7 @@ function Homepage() {
             replyForUserName={""}
           />
 
-          {comments ? (
-            comments.data?.length > 0 &&
+          {comments && comments?.data?.length > 0 ? (
             comments?.data?.map((comment, index) => {
               return (
                 <div key={index}>

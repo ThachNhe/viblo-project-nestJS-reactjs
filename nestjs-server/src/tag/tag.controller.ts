@@ -1,8 +1,8 @@
 import { TagService } from './tag.service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { TagDTO } from './dto/tag.dto';
 
-@Controller('tag')
+@Controller('tags')
 export class TagController {
   constructor(private TagService: TagService) {}
 
@@ -14,5 +14,13 @@ export class TagController {
   @Get('all')
   getTags() {
     return this.TagService.getTags();
+  }
+
+  @Get('search')
+  searchTags(@Query('keyword') keyword: string) {
+    if (!keyword) {
+      throw new Error('Keyword is required');
+    }
+    return this.TagService.searchTags(keyword);
   }
 }

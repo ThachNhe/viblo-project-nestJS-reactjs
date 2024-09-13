@@ -3,8 +3,9 @@ import { Route, Routes, useLocation, Outlet } from "react-router-dom";
 import Loader from "./Common/Loader";
 import AdminLayOut from "./AdminLayOut";
 import PageTitle from "./PageTitle";
-import ECommerce from "./Pages/ECommerce";
+import PostStatistic from "./Pages/PostStatistic";
 import { AppContext } from "../../contexts/AppContext";
+import TagManagement from "./Pages/TagManagement";
 
 function AdminApp() {
   const [loading, setLoading] = useState(true);
@@ -37,25 +38,42 @@ function AdminApp() {
             <>
               <PageTitle title="Admin Dashboard | MyApp" />
               <h1>admin dashboard</h1>
-              {/* <ECommerce /> */}
             </>
           }
         />
         <Route
-          path="/e-commerce"
+          path="/statistics"
           element={
             <>
-              <PageTitle title="eCommerce Dashboard | MyApp" />
-              <ECommerce />
+              <PageTitle title="Viblo Management | MyApp" />
+              <PostStatistic />
             </>
           }
         />
         <Route
-          path="/tables"
+          path="/tags"
           element={
             <>
-              <PageTitle title="eCommerce Dashboard | MyApp" />
-              <h1>tables</h1>
+              <PageTitle title="Viblo Management | MyApp" />
+              <TagManagement />
+            </>
+          }
+        />
+        <Route
+          path="/authorize"
+          element={
+            <>
+              <PageTitle title="Viblo Management | MyApp" />
+              <div>authorize</div>
+            </>
+          }
+        />
+        <Route
+          path="/questions"
+          element={
+            <>
+              <PageTitle title="Viblo Management | MyApp" />
+              <div>questions</div>
             </>
           }
         />
@@ -63,17 +81,27 @@ function AdminApp() {
           path="/charts"
           element={
             <>
-              <PageTitle title="eCommerce Dashboard | MyApp" />
-              <h1>charts</h1>
+              <PageTitle title="Viblo Management | MyApp" />
+              <div class="flex flex-col rounded-2xl w-[600px] bg-[#ffffff] shadow-xl">
+                <div class="flex flex-col p-8">
+                  <div class="text-lg font-bold   text-[#05070b] pb-6">
+                    Generator
+                  </div>
+                  <div class=" text-xl   text-[#374151]">
+                    Leverage a graphical editor to create beautiful web
+                    components.
+                  </div>
+                </div>
+              </div>
             </>
           }
         />
-          <Route
+        <Route
           path="*"
           element={
             <>
-              <PageTitle title="eCommerce Dashboard | MyApp" />
-               <ECommerce />
+              <PageTitle title="Viblo Management | MyApp" />
+              <PostStatistic />
             </>
           }
         />

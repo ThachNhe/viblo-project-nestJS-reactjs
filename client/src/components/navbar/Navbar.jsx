@@ -22,7 +22,7 @@ const Navbar = ({ isHomePage }) => {
 
   return (
     <div
-      className={` sticky w-full bg-white z-10 shadow-md top-0 h-[60px] 
+      className={` sticky w-full bg-neutral-50 z-10 shadow-md top-0 h-[60px] 
       ${ctx.isHiddenNavbar ? "hidden" : " "} 
     `}
     >

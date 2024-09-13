@@ -30,4 +30,18 @@ export class TagService {
       data: tag,
     };
   }
+
+  async searchTags(keyword: string) {
+    const tags = await AppDataSource.getRepository(Tag)
+      .createQueryBuilder('tag')
+      .where('tag.name like :keyword', { keyword: `%${keyword}%` })
+      .getMany();
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: tags,
+    };
+  }
 }

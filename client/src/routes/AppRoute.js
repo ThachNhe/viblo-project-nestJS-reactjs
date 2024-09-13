@@ -16,9 +16,9 @@ import FollowingPost from "../components/user/PostPage/FollowingPost";
 function AppRoutes() {
   return (
     <Routes>
-      {/* <Route element={<AdminRoute />}>
+      <Route element={<AdminRoute />}>
         <Route path="/admin/*" element={<AdminApp />} />
-      </Route> */}
+      </Route>
 
       <Route path="/homepage" element={<Homepage />} />
       <Route path="/" element={<PostPageLayout />}>

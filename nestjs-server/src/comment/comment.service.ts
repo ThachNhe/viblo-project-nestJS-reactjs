@@ -58,7 +58,7 @@ export class CommentService {
       LEFT JOIN "users" u ON r."userId" = u."id"
     `);
 
-    if (!results) {
+    if (results?.length === 0 || !results) {
       return {
         success: true,
         statusCode: 200,

@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-
-
 const SidebarLinkGroup = ({
   children,
   activeCondition,

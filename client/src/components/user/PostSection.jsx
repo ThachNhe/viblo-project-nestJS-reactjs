@@ -23,7 +23,7 @@ function PostSection({ sectionName, data }) {
             data.length > 0 &&
             data.map((item, index) => {
               return (
-                <div key={index} className="px-1">
+                <div key={index} className="px-1 ">
                   <CarInfo
                     index={index}
                     title={item.title}

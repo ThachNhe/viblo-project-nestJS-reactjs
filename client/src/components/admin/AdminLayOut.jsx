@@ -22,7 +22,7 @@ function AdminLayOut({ children }) {
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main>
-            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 bg-page">
               {children}
               {/* <Outlet /> */}
             </div>

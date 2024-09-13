@@ -50,6 +50,7 @@ module.exports = withMT({
         success: "#219653",
         danger: "#D34053",
         warning: "#FFA70B",
+        page: "#f1f5f9",
         neutral: {
           50: "#fafafa",
           100: "#f5f5f5",

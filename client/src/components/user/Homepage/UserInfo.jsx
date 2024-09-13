@@ -1,8 +1,10 @@
 import Avatar from "../../navbar/Avatar";
-
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FaUserPlus } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
+import NumberFormatter from "../../NumberFormatter";
+
 function UserInfo({
   fullName,
   userName,
@@ -34,29 +36,41 @@ function UserInfo({
         <div className="flex items-center space-x-4 text-neutral-500 justify-start">
           {/* <!-- Tooltip for view --> */}
           <div className="relative flex items-center gap-2 group">
-            <FaStar />
-            <span className="">{starNumber}</span>
-            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-gray-200 bg-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 min-w-[100px] rounded-sm -translate-x-1/2 left-1/2 font-semibold">
-              Reputations: {starNumber}
-            </div>
+            <FaStar data-tooltip-id="my-tooltip-1" />
+            <span className="">
+              <NumberFormatter number={starNumber} />
+            </span>
+            <ReactTooltip
+              id="my-tooltip-1"
+              place="bottom"
+              content={`Reputations: ${starNumber}`}
+            />
           </div>
 
           {/* <!-- Tooltip for comment --> */}
           <div className="relative flex items-center gap-1 group">
-            <FaUserPlus />
-            <span className="">{followerNumber}</span>
-            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-gray-200 bg-gray-800  opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-sm -translate-x-1/2 left-1/2 min-w-[100px] font-semibold ">
-               Người theo dõi: {followerNumber}
-            </div>
+            <FaUserPlus data-tooltip-id="my-tooltip-2" />
+            <span className="">
+              <NumberFormatter number={followerNumber} />
+            </span>
+            <ReactTooltip
+              id="my-tooltip-2"
+              place="bottom"
+              content={`Bình luận: ${followerNumber}`}
+            />
           </div>
 
           {/* <!-- Tooltip for bookmark --> */}
           <div className="relative flex items-center gap-1 group">
-            <MdEdit />
-            <span className="">{postNumber}</span>
-            <div className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs text-gray-200 bg-gray-800  opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-sm -translate-x-1/2 left-1/2 min-w-[100px] font-semibold">
-               Bài viết: {postNumber}
-            </div>
+            <MdEdit  data-tooltip-id="my-tooltip-2"/>
+            <span className="">
+              <NumberFormatter number={postNumber} />
+            </span>
+            <ReactTooltip
+              id="my-tooltip-2"
+              place="bottom"
+              content={`Bài viết: ${postNumber}`}
+            />
           </div>
         </div>
       </div>

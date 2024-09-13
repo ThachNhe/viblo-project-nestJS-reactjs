@@ -41,10 +41,10 @@ const DropdownPersonalNotification = () => {
 
       {isOpenDropdown && (
         <div
-          className={`absolute right-0 mt-2.5 top-10 flex h-96  min-w-80 flex-col rounded-md border border-stroke bg-white shadow-md`}
+          className={`absolute right-0 mt-2.5 top-10 flex h-96  min-w-80 flex-col rounded-xs border bg-white shadow-md`}
         >
           <div className="px-4 py-3">
-            <h5 className="text-sm font-medium text-bodydark2">Thông báo</h5>
+            <h5 className="text-sm font-semibold text-neutral-600">Thông báo</h5>
           </div>
           <PerfectScrollbar>
             <ul className="flex flex-col h-96 font-medium text-gray-500">
@@ -130,7 +130,7 @@ const DropdownPersonalNotification = () => {
             </ul>
           </PerfectScrollbar>
           <div className="px-4 py-3 border-t">
-            <h5 className="text-sm font-medium text-bodydark2 text-center hover:text-blue-400 hover:underline">
+            <h5 className="text-sm font-medium text-center hover:text-blue-400 hover:underline text-neutral-500">
               Xem tất cả
             </h5>
           </div>

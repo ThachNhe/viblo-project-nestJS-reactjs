@@ -3,11 +3,11 @@ import ArticleStats from "../../ArticleStats";
 function CarInfo({
   title,
   author,
-  readTime,
   viewNumber,
   commentNumber,
   bookmarkNumber,
   point,
+  createdAt
 }) {
   return (
     <div className="flex flex-col shadow-md gap-2">
@@ -24,7 +24,7 @@ function CarInfo({
             {author}
           </a>
           <span className="text-xs font-medium text-neutral-500">
-            {readTime} phút đọc
+            {createdAt} 
           </span>
         </div>
         <div>
