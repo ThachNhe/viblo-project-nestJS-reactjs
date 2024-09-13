@@ -215,32 +215,32 @@ function Footer() {
           </span>
           <ul className="flex text-gray-200 gap-3">
             <li>
-              <a href="" className=" hover:text-gray-400">
+              <a href="" className=" hover:text-neutral-500">
                 Về chúng tôi
               </a>
             </li>
             <li>
-              <a href="" className=" hover:text-gray-400">
+              <a href="" className=" hover:text-neutral-500">
                 Phản hồi
               </a>
             </li>
             <li>
-              <a href="" className=" hover:text-gray-400">
+              <a href="" className=" hover:text-neutral-500">
                 Giúp đỡ
               </a>
             </li>
             <li>
-              <a href="" className=" hover:text-gray-400">
+              <a href="" className=" hover:text-neutral-500">
                 FAQs
               </a>
             </li>
             <li>
-              <a href="" className=" hover:text-gray-400">
+              <a href="" className=" hover:text-neutral-500">
                 RSS
               </a>
             </li>
             <li>
-              <a href="" className=" hover:text-gray-400">
+              <a href="" className=" hover:text-neutral-500">
                 Điều khoản
               </a>
             </li>

@@ -27,20 +27,18 @@ const checkboxSelect = [
 
 function PublishPost() {
   const dispatch = useDispatch();
-  const tags = useSelector((state) => state.tag.tags);
+  const fileInputRef = useRef(null);
+  const [tagOptions, setTagOptions] = useState([]);
   const [title, setTitle] = useState("");
-  const [tagInputs, setTags] = useState("");
   const [markdownText, setMarkdownText] = useState("");
   const UserInfo = useSelector((state) => state.auth.userInfo);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState({});
+
   const navigator = useNavigate();
+  const ctx = useContext(AppContext);
   const filteredCommands = commands
     .getCommands()
     .filter((cmd) => cmd.name !== "image");
-
-  const fileInputRef = useRef(null);
-
-  const ctx = useContext(AppContext);
 
   useEffect(() => {
     initFlowbite();
@@ -94,7 +92,6 @@ function PublishPost() {
       if (post.success) {
         setMarkdownText("");
         setTitle("");
-        setTags("");
         setStatus("PUBLIC");
         navigator("/homepage", { state: { data: post?.data?.id } });
         toast.success("Tạo bài viết thành công!!");
@@ -122,6 +119,44 @@ function PublishPost() {
     }
   };
 
+  const buildSelectTagOption = (tags) => {
+    return tags?.map((tag) => {
+      return {
+        value: tag.name,
+        label: tag.name,
+      };
+    });
+  };
+
+  const handleSelectChange = async (option) => {
+    try {
+      console.log("Selected Option:", option);
+      // option && setSelectedOption(option);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleInputChange = async (keyword) => {
+    try {
+      console.log("Input Value:", keyword); // Log giá trị keyword hiện tại
+      console.log("Type of keyword:", typeof keyword); // Kiểm tra kiểu dữ liệu của keyword
+
+      // Nếu keyword không phải là chuỗi, có thể cần chuyển thành chuỗi trước khi xử lý
+      const validKeyword = String(keyword);
+
+      const tagSearchRes = await services.getTagSearch(validKeyword);
+      // if (tagSearchRes.success && tagSearchRes.data.length > 0) {
+      //   setTagOptions(buildSelectTagOption(tagSearchRes.data));
+      // }
+      // console.log("tagSearchRes", tagSearchRes);
+
+      // console.log("selected option ", selectedOption); // Log giá trị selectedOption
+    } catch (e) {
+      console.log("Error: ", e); // Log lỗi nếu có
+    }
+  };
+
   return (
     <div className="w-full min-h-full">
       <div className=" flex flex-col gap-5  bg-slate-100 px-10 py-5">
@@ -145,8 +180,9 @@ function PublishPost() {
           >
             <Select
               defaultValue={selectedOption}
-              onChange={setSelectedOption}
-              options={options}
+              onChange={handleSelectChange}
+              onInputChange={handleInputChange}
+              options={tagOptions}
               isMulti={true}
               placeholder={
                 "Gắn thẻ bài viết của bạn. Tối đa 5 thẻ. Ít nhất 1 thẻ!"
@@ -236,7 +272,7 @@ function PublishPost() {
                 <hr className="border-t w-full mt-2 text-gray-500" />
                 <div className="flex flex-col gap-2 py-2">
                   <div className="flex text-xs items-center gap-1">
-                    <FaLock className="text-xs text-gray-400" />
+                    <FaLock className="text-xs text-neutral-500" />
                     <span>Mọi người có thể thấy bài viết.</span>
                   </div>
                   <span>

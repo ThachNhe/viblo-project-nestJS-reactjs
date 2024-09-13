@@ -16,7 +16,7 @@ function PostInfo({
 }) {
   return (
     <>
-      <div className="flex flex-col items-center gap-8 text-gray-400 mt-20">
+      <div className="flex flex-col items-center gap-8 text-neutral-500 mt-20">
         {/* VOTE */}
         <div className="flex flex-col gap-0 ">
           {/* UP VOTE */}
@@ -37,7 +37,7 @@ function PostInfo({
 
           <span
             className={`text-2xl font-medium leading-3
-            ${upvote || downvote ? "text-cyan-700" : "text-gray-400"}
+            ${upvote || downvote ? "text-cyan-700" : "text-neutral-500"}
             `}
           >
             +{voteNumber}
@@ -69,7 +69,7 @@ function PostInfo({
           >
             <IoBookmark
               className={`text-2xl group-hover:text-blue-500 cursor-pointer
-                ${isBookmark ? "text-blue-500 " : "group-hover:text-gray-400"}
+                ${isBookmark ? "text-blue-500 " : "group-hover:text-neutral-500"}
                 `}
               onClick={handlerBookmark}
             />

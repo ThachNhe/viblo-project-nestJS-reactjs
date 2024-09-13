@@ -56,7 +56,7 @@ const CommonNotification = () => {
               7
             </span>
             <svg
-              className="text-gray-400 hover:text-gray-600" // Màu xanh (blue)
+              className="text-neutral-500 hover:text-gray-600" // Màu xanh (blue)
               width="25px"
               height="25px"
               viewBox="0 0 24.00 24.00"

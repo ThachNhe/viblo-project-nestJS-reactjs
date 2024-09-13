@@ -10,18 +10,20 @@ function PostSection({ sectionName, data }) {
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 4,
+    centerPadding: "1",
+    // centerMode: true
   };
 
   return (
-    <div className="flex flex-col gap-4 py-4 ">
-      <span className="text-lg font-medium ">{sectionName}</span>
-      <div className="py-2">
+    <div className="flex flex-col gap-4 py-3 ">
+      <span className="text-lg font-semibold text-neutral-700 leading-3">{sectionName}</span>
+      <div className="py-1">
         <Slider {...settings}>
           {data &&
             data.length > 0 &&
             data.map((item, index) => {
               return (
-                <div key={index}>
+                <div key={index} className="px-1">
                   <CarInfo
                     index={index}
                     title={item.title}

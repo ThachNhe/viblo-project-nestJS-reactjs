@@ -80,7 +80,7 @@ const Login = () => {
         <div className="flex flex-col gap-3 w-full">
           <div className="relative mb-6">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <FaUser className="text-gray-400" />
+              <FaUser className="text-neutral-500" />
             </div>
 
             <input
@@ -93,7 +93,7 @@ const Login = () => {
           </div>
           <div className="relative mb-6">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <FaLock className="text-gray-400" />
+              <FaLock className="text-neutral-500" />
             </div>
 
             <input

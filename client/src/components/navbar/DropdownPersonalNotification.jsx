@@ -34,7 +34,7 @@ const DropdownPersonalNotification = () => {
             >
               2
             </span>
-            <FaRegBell className="text-xl font-extrabold text-gray-400 cursor-pointer: hover:text-gray-900" />
+            <FaRegBell className="text-xl font-extrabold text-neutral-500 cursor-pointer: hover:text-gray-900" />
           </div>
         </div>
       </div>

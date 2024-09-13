@@ -24,7 +24,7 @@ function PostCard({
           <span className="text-sm font-medium text-blue-400 hover:text-blue-500 hover:underline ">
             {authorName}
           </span>
-          <span className="text-xs text-gray-400">{date}</span>
+          <span className="text-xs text-neutral-500">{date}</span>
         </div>
         <div>
           <p className="font-medium text-gray-700 hover:text-blue-400">{title}</p>

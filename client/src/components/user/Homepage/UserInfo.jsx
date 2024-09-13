@@ -18,7 +18,7 @@ function UserInfo({
           <span className=" text-blue-400 hover:underline font-medium">
             {fullName}
           </span>
-          <span className=" text-gray-400 font-medium">@{userName}</span>
+          <span className=" text-neutral-500 font-medium">@{userName}</span>
           <div className=" flex">
             <button
               type="button"
@@ -31,7 +31,7 @@ function UserInfo({
           </div>
         </div>
 
-        <div className="flex items-center space-x-4 text-gray-400 justify-start">
+        <div className="flex items-center space-x-4 text-neutral-500 justify-start">
           {/* <!-- Tooltip for view --> */}
           <div className="relative flex items-center gap-2 group">
             <FaStar />

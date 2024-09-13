@@ -1,7 +1,13 @@
 import axios from "../axios";
 
 const getAllTag = () => {
-  return axios.get("/tag/all");
+  return axios.get("/tags/all");
 };
 
-export { getAllTag };
+const getTagSearch = (keyword) => {
+  return axios.get("/tags/search", {
+    params: { keyword: keyword },
+  });
+};
+
+export { getAllTag, getTagSearch };

@@ -20,10 +20,10 @@ function Posts({ data, tags }) {
                 type="button"
                 key={index}
                 className="py-1 px-4 text-xs  inline-flex items-center bg-slate-200 rounded-sm hover:bg-blue-100 
-                  hover:text-gray-600
-                 text-gray-500  font-medium text-center gap-2 "
+                  hover:text-gray-600 border
+                 text-gray-500  font-medium text-center gap-2 bg-neutral-100 "
               >
-                <span>{tag}</span>
+                <span className="font-medium text-neutral-400">{tag}</span>
               </button>
             );
           })}

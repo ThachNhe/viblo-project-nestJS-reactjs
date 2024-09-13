@@ -39,12 +39,12 @@ function Comment({
               <span className="font-medium text-md text-blue-400 hover:text-blue-600 hover:underline cursor-pointer">
                 {fullName}
               </span>
-              <span className="font-md text-gray-400 font-medium hover:underline cursor-pointer">
+              <span className="font-md text-neutral-500 font-medium hover:underline cursor-pointer">
                 @{userName}
               </span>
             </div>
 
-            <span className="text-md text-gray-400 ">{date}</span>
+            <span className="text-md text-neutral-500 ">{date}</span>
           </div>
         </div>
 
@@ -57,7 +57,7 @@ function Comment({
 
         <div className="flex gap-1 items-center ">
           <div className="relative flex items-center group">
-            <FaAngleUp className="text-gray-400 cursor-pointer" />
+            <FaAngleUp className="text-neutral-500 cursor-pointer" />
             <div
               className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
              text-white bg-gray-800 rounded-lg opacity-0 
@@ -67,10 +67,10 @@ function Comment({
             </div>
           </div>
 
-          <span className="text-gray-400">1</span>
+          <span className="text-neutral-500">1</span>
 
           <div className="relative flex items-center group">
-            <FaAngleDown className="text-gray-400 cursor-pointer" />
+            <FaAngleDown className="text-neutral-500 cursor-pointer" />
 
             <div
               className="absolute top-full mt-2 hidden group-hover:block px-2 py-1 text-xs
@@ -81,7 +81,7 @@ function Comment({
             </div>
           </div>
 
-          <PiLineVertical className="text-gray-400" />
+          <PiLineVertical className="text-neutral-500" />
 
           <div className="relative flex items-center group mr-3">
             <span
@@ -100,7 +100,7 @@ function Comment({
           </div>
 
           <div className="relative flex items-center group mr-3">
-            <span className="text-gray-400 font-medium text-sm cursor-pointer">
+            <span className="text-neutral-500 font-medium text-sm cursor-pointer">
               Chia sẻ
             </span>
             <div
@@ -113,7 +113,7 @@ function Comment({
           </div>
 
           <div>
-            <BsThreeDots className="text-gray-400 cursor-pointer" />
+            <BsThreeDots className="text-neutral-500 cursor-pointer" />
           </div>
         </div>
       </div>

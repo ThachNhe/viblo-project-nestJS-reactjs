@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 const MainMenu = () => {
   return (
     <ul className="flex flex-row gap-10">
-      <li className="font-semibold text-gray-400 hover:text-gray-950">
+      <li className="font-semibold text-neutral-500 hover:text-gray-950">
         <NavLink
           to="/followings"
           className={({ isActive }) => (isActive ? "text-gray-700" : "")}
@@ -12,7 +12,7 @@ const MainMenu = () => {
         </NavLink>
       </li>
 
-      <li className="font-semibold text-gray-400 hover:text-gray-950">
+      <li className="font-semibold text-neutral-500 hover:text-gray-950">
         <NavLink
           to="/questions"
           className={({ isActive }) => (isActive ? "text-gray-700" : "")}
@@ -21,7 +21,7 @@ const MainMenu = () => {
         </NavLink>
       </li>
 
-      <li className="font-semibold text-gray-400 hover:text-gray-950">
+      <li className="font-semibold text-neutral-500 hover:text-gray-950">
         <NavLink
           to="/discussion"
           className={({ isActive }) => (isActive ? "text-gray-700" : "")}

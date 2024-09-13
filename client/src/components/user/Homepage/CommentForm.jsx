@@ -60,7 +60,7 @@ function CommentForm({
           <div className="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
             <button
               type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-neutral-500 dark:hover:text-white dark:hover:bg-gray-600"
             >
               <svg
                 className="w-4 h-4"
@@ -80,7 +80,7 @@ function CommentForm({
             </button>
             <button
               type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-neutral-500 dark:hover:text-white dark:hover:bg-gray-600"
             >
               <svg
                 className="w-4 h-4"
@@ -95,7 +95,7 @@ function CommentForm({
             </button>
             <button
               type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-neutral-500 dark:hover:text-white dark:hover:bg-gray-600"
             >
               <svg
                 className="w-4 h-4"

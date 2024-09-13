@@ -95,7 +95,7 @@ const FollowingPost = () => {
           "px-4 py-2 border border-gray-500 rounded-md border-2"
         }
         activeClassName={" text-blue-600  font-semibold bg-slate-200"}
-        disabledClassName={"text-gray-400 "}
+        disabledClassName={"text-neutral-500 "}
       />
     </>
   );

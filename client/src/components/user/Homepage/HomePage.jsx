@@ -17,7 +17,7 @@ import { useLocation } from "react-router-dom";
 import Slider from "react-slick";
 import { extractHeadings } from "../../../utils/utils";
 import Banner from "./Banner";
-
+import NoComment from "./NoComment";
 const data = [
   {
     title: "How to push code to github repository",
@@ -363,7 +363,7 @@ function Homepage() {
             replyForUserName={""}
           />
 
-          {comments &&
+          {comments ? (
             comments.data?.length > 0 &&
             comments?.data?.map((comment, index) => {
               return (
@@ -381,7 +381,10 @@ function Homepage() {
                   />
                 </div>
               );
-            })}
+            })
+          ) : (
+            <NoComment />
+          )}
         </div>
       </div>
       <Footer />

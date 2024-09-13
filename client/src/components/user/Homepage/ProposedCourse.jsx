@@ -18,7 +18,7 @@ function ProposedCourse({
       <div className="flex justify-between py-3 px-2">
         <div className="flex flex-col gap-2">
           <span className="hover:text-cyan-600 font-medium">{courseName}</span>
-          <span className="text-gray-400 text-xs font-medium">{time}</span>
+          <span className="text-neutral-500 text-xs font-medium">{time}</span>
           <span className="flex gap-3">
             {tags &&
               tags.length > 0 &&
