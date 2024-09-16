@@ -3,6 +3,7 @@ import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
 import { Response, Request } from 'express';
 import { Role } from '../enums/role.enum';
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -27,7 +28,6 @@ export class AuthService {
     user.password = hashedPassword;
     user.userName = body.userName;
     user.fullName = body.fullName;
-    // user.avatar = body.avatar;
     try {
       await userRepository.save(user);
       delete user.password;
@@ -59,11 +59,18 @@ export class AuthService {
         'avatar',
         'password',
         'roles',
+        'isBlocked',
       ],
     });
 
     if (!user) {
       throw new UnauthorizedException();
+    }
+
+    if (user.isBlocked) {
+      throw new ForbiddenException(
+        'Your account is blocked. Please contact support.',
+      );
     }
 
     const isValidPassword = await argon2.verify(user.password, body.password);

@@ -12,7 +12,6 @@ export const getCommentByPostId = (id) => {
       });
     } catch (error) {
       console.error("Err from get comment by postId!!!:", error);
-      // toast.error("Login information is not correct!!");
       dispatch({
         type: actionType.GET_COMMENT_BY_POST_ID_FAILED,
         payload: null,

@@ -3,34 +3,10 @@ import { AppDataSource } from '../index';
 import { User } from '../entity/User';
 import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
 import { formatVietnameseDate } from 'src/utils/common.function';
+import { Role } from '../enums/index';
 
 @Injectable()
 export class UserService {
-  // async getUsersService() {
-  //   const userRepository = AppDataSource.getRepository(User);
-
-  //   const users = await userRepository.find({
-  //     select: [
-  //       'id',
-  //       'email',
-  //       'userName',
-  //       'fullName',
-  //       'avatar',
-  //       'follower_number',
-  //       'post_number',
-  //       'roles',
-  //       'isBlocked',
-  //     ],
-  //   });
-
-  //   return {
-  //     success: true,
-  //     statusCode: 200,
-  //     error: null,
-  //     data: users,
-  //   };
-  // }
-
   async getUser(id: UserIdDTO) {
     const userRepository = AppDataSource.getRepository(User);
     return await userRepository.findOne({
@@ -80,6 +56,9 @@ export class UserService {
     const userRepository = AppDataSource.getRepository(User);
 
     const [result, total] = await userRepository.findAndCount({
+      where: {
+        roles: Role.User,
+      },
       select: [
         'id',
         'email',
@@ -113,6 +92,69 @@ export class UserService {
         currentPage: +page,
         pageSize: +limit,
       },
+    };
+  }
+
+  async blockUser(userId: UserIdDTO) {
+    console.log('userId', userId);
+    const userRepository = AppDataSource.getRepository(User);
+
+    const user = await userRepository.findOne({
+      where: { id: userId.id },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.isBlocked) {
+      throw new Error('User is already blocked');
+    }
+
+    await userRepository.update({ id: userId.id }, { isBlocked: true });
+
+    delete user.password;
+    delete user.email;
+
+    user.isBlocked = true;
+
+    await userRepository.save(user);
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: user,
+    };
+  }
+
+  async unblockUser(userId: UserIdDTO) {
+    const userRepository = AppDataSource.getRepository(User);
+
+    const user = await userRepository.findOne({
+      where: { id: userId.id },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (!user.isBlocked) {
+      throw new Error('User is already unblocked');
+    }
+
+    user.isBlocked = false;
+
+    delete user.password;
+    delete user.email;
+
+    await userRepository.save(user);
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: user,
     };
   }
 }

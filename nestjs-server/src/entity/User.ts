@@ -8,6 +8,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
+
 import { NotificationDetail } from './NotificationDetail';
 import {
   Tag,

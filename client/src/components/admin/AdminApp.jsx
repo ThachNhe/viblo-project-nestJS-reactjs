@@ -82,12 +82,12 @@ function AdminApp() {
           element={
             <>
               <PageTitle title="Viblo Management | MyApp" />
-              <div class="flex flex-col rounded-2xl w-[600px] bg-[#ffffff] shadow-xl">
-                <div class="flex flex-col p-8">
-                  <div class="text-lg font-bold   text-[#05070b] pb-6">
+              <div className="flex flex-col rounded-2xl w-[600px] bg-[#ffffff] shadow-xl">
+                <div className="flex flex-col p-8">
+                  <div className="text-lg font-bold   text-[#05070b] pb-6">
                     Generator
                   </div>
-                  <div class=" text-xl   text-[#374151]">
+                  <div className=" text-xl   text-[#374151]">
                     Leverage a graphical editor to create beautiful web
                     components.
                   </div>

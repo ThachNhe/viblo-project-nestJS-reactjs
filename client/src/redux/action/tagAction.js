@@ -12,7 +12,6 @@ export const getAllTag = () => {
       });
     } catch (error) {
       console.error("Err from get tags!!!:", error);
-      // toast.error("Login information is not correct!!");
       dispatch({
         type: actionType.GET_TAGS_FAILURE,
         payload: null,

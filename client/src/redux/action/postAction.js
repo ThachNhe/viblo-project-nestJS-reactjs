@@ -14,7 +14,6 @@ export const getPostById = (id) => {
       });
     } catch (error) {
       console.error("Err from get post!!!:", error);
-      // toast.error("Login information is not correct!!");
       dispatch({
         type: actionType.GET_POST_ID_FAILED,
         payload: null,

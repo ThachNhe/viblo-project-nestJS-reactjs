@@ -124,7 +124,7 @@ const PostStatistic = () => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g
               id="SVGRepo_tracerCarrier"
               stroke-linecap="round"
@@ -134,21 +134,21 @@ const PostStatistic = () => {
               <path
                 d="M7 7H17"
                 stroke="#0000FF"
-                stroke-width="2"
+                strokeWidth="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               ></path>
               <path
                 d="M7 11H11"
                 stroke="#0000FF"
-                stroke-width="2"
+                strokeWidth="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               ></path>
               <path
                 d="M3 5V20.7929C3 21.2383 3.53857 21.4614 3.85355 21.1464L7.70711 17.2929C7.89464 17.1054 8.149 17 8.41421 17H19C20.1046 17 21 16.1046 21 15V5C21 3.89543 20.1046 3 19 3H5C3.89543 3 3 3.89543 3 5Z"
                 stroke="#0000FF"
-                stroke-width="2"
+                strokeWidth="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               ></path>

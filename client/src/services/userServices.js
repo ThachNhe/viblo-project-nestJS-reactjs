@@ -19,10 +19,21 @@ const getPaginationUsers = (page, limit) => {
   return axios.get(`/users?page=${page}&limit=${limit}`);
 };
 
+const blockUser = (userId) => {
+  console.log("userId service : ", userId);
+  return axios.put(`/users/${userId}/block`);
+};
+
+const unblockUser = (userId) => {
+  return axios.put(`/users/${userId}/unblock`);
+};
+
 export {
   userLoginService,
   userRegisterService,
   userLogoutService,
   uploadAvatar,
   getPaginationUsers,
+  blockUser,
+  unblockUser,
 };

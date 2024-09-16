@@ -24,10 +24,7 @@ export class PostService {
     const tags = await Promise.all(
       body?.tagArray?.map(async (name) => {
         let tag = await tagRepository.findOne({ where: { name } });
-        if (!tag) {
-          tag = tagRepository.create({ name });
-          await tagRepository.save(tag);
-        }
+
         return tag;
       }),
     );

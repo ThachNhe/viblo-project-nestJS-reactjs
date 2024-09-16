@@ -8,10 +8,13 @@ import avatarDefault from "../../../images/user/avatar.png";
 import Avatar from "../../navbar/Avatar";
 import ReactPaginate from "react-paginate";
 import { useNavigate, useLocation } from "react-router-dom";
+import * as services from "../../../services/index";
+import toast from "react-hot-toast";
 
 function UserManagement() {
-  const [isDeleteUser, setIsDeleteUser] = useState(false);
+  // const [isBlockUser, setIdBockUser] = useState(false);
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const [blockedUser, setDeleteUser] = useState("");
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [page, setPage] = useState(queryParams.get("page") || 1);
@@ -20,19 +23,54 @@ function UserManagement() {
   const allUser = useSelector((state) => state.user.allUsers);
   const dispatch = useDispatch();
 
-  console.log("alluser : ", allUser);
-
   useEffect(() => {
     dispatch(actions.getPaginationUsers(page, 15));
   }, []);
 
-  const handleConfirmDelete = () => {
-    setIsDeleteUser(true);
-    setIsOpenDialog(false);
+  const handleBlockUser = async (userId) => {
+    try {
+      console.log("userId : ", userId);
+      if (!userId) return;
+      const res = await services.blockUser(userId);
+      console.log("res : ", res);
+      if (res?.success) {
+        dispatch(actions.getPaginationUsers(page, 15));
+        toast.success("Khoá người dùng thành công!");
+      }
+    } catch (error) {
+      console.log("ERROR block user : ", error);
+    }
   };
 
-  const handleOpenDialog = () => {
+  const handleUnblockUser = async (userId) => {
+    try {
+      if (!userId) return;
+      const res = await services.unblockUser(+userId);
+      if (res?.success) {
+        dispatch(actions.getPaginationUsers(page, 15));
+        toast.success("Mở khoá người dùng thành công!");
+      }
+    } catch (error) {
+      console.log("ERROR unblock user : ", error);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    setIsOpenDialog(false);
+
+    if(blockedUser.isBlocked){
+      handleUnblockUser(+blockedUser.id);
+    }
+  
+    if(!blockedUser.isBlocked){
+      handleBlockUser(+blockedUser.id);
+    }
+    
+  };
+
+  const handleOpenDialog = (user) => {
     setIsOpenDialog(true);
+    setDeleteUser(user);
   };
 
   const handleCloseDialog = () => {
@@ -67,14 +105,15 @@ function UserManagement() {
         />
         <div className="flex flex-col">
           <div className="grid grid-cols-3 rounded-sm bg-gray-2  sm:grid-cols-7">
-          
-            <div class="col-span-2 p-2.5 xl:p-5 flex justify-around items-center gap-10">
-              <h5 className="text-sm font-medium uppercase xsm:text-base text-neutral-500 w-10">
-                STT
-              </h5>
-              <h5 className="text-sm font-medium uppercase xsm:text-base text-neutral-500 flex-grow">
-                Người dùng
-              </h5>
+            <div className="col-span-2 p-2.5 xl:p-5 ">
+              <div className="flex items-center gap-10">
+                <h5 className="text-sm font-medium uppercase xsm:text-base text-neutral-500 w-10">
+                  STT
+                </h5>
+                <h5 className="text-sm font-medium uppercase xsm:text-base text-neutral-500 flex-grow">
+                  Người dùng
+                </h5>
+              </div>
             </div>
             <div className="p-2.5 text-center xl:p-5">
               <h5 className="text-sm font-medium uppercase xsm:text-base text-neutral-500">
@@ -119,7 +158,7 @@ function UserManagement() {
                   <Avatar
                     imgURL={user.avatar || avatarDefault}
                     height={50}
-                    width={50} 
+                    width={50}
                   />
                   <p className="text-black">{user.userName}</p>
                 </div>
@@ -145,7 +184,7 @@ function UserManagement() {
                       : "bg-danger text-danger"
                   }`}
                 >
-                  {!user.status ? "Mở" : "Khóa"}
+                  {!user.isBlocked ? "Mở" : "Khóa"}
                 </p>
               </div>
               <div className="flex items-center justify-center p-2.5 sm:flex xl:p-5">
@@ -153,50 +192,49 @@ function UserManagement() {
                   type="button"
                   className={`text-white bg-gradient-to-r  hover:bg-gradient-to-br focus:ring-1 focus:outline-none   shadow-sm   font-medium rounded-lg text-sm px-3 py-2 text-center me-2 mb-2
                   ${
-                    !user.status
+                    !user.isBlocked
                       ? " from-red-400 via-red-500 to-red-600 shadow-red-500/50 focus:ring-red-300"
                       : "bg-success"
                   }
                     
                     `}
-                  onClick={handleOpenDialog}
+                  onClick={() => handleOpenDialog(user)}
                 >
-                  {!user.status ? "Khóa" : "Mở khóa"}
+                  {!user.isBlocked ? "Khóa" : "Mở khóa"}
                 </button>
               </div>
             </div>
           ))}
         </div>
 
-
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel=">"
-        onPageChange={handlePageChange}
-        pageRangeDisplayed={5}
-        pageCount={allUser?.data?.meta?.totalPages || 2}
-        previousLabel="<"
-        renderOnZeroPageCount={null}
-        containerClassName={"flex justify-center my-5"}
-        pageClassName={"mx-1"}
-        pageLinkClassName={
-          "px-4 py-2 border border-gray-500 rounded-md border-2 h-10 w-10"
-        }
-        previousClassName={"mx-1"}
-        previousLinkClassName={
-          "px-4 py-2 border border-gray-500 rounded-md border-2"
-        }
-        nextClassName={"mx-1"}
-        nextLinkClassName={
-          "px-4 py-2 border border-gray-500 rounded-md border-2"
-        }
-        breakClassName={"mx-1"}
-        breakLinkClassName={
-          "px-4 py-2 border border-gray-500 rounded-md border-2"
-        }
-        activeClassName={" text-blue-600  font-semibold bg-slate-200"}
-        disabledClassName={"text-neutral-500 "}
-      />
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel=">"
+          onPageChange={handlePageChange}
+          pageRangeDisplayed={5}
+          pageCount={allUser?.data?.meta?.totalPages || 2}
+          previousLabel="<"
+          renderOnZeroPageCount={null}
+          containerClassName={"flex justify-center my-5"}
+          pageClassName={"mx-1"}
+          pageLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2 h-10 w-10"
+          }
+          previousClassName={"mx-1"}
+          previousLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
+          nextClassName={"mx-1"}
+          nextLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
+          breakClassName={"mx-1"}
+          breakLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
+          activeClassName={" text-blue-600  font-semibold bg-slate-200"}
+          disabledClassName={"text-neutral-500 "}
+        />
       </div>
     </>
   );

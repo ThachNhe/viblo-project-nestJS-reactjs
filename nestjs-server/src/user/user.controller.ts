@@ -45,4 +45,18 @@ export class UserController {
   async getUsersService(@Query() query: UserPaginationDTO) {
     return this.userService.getUsersService(query);
   }
+
+  @Put(':id/block')
+  @UseGuards(AuthGuard('jwt'))
+  blockUser(@Param() id: UserIdDTO) {
+    // const { id } = userId;
+    return this.userService.blockUser(id);
+  }
+
+  @Put(':id/unblock')
+  @UseGuards(AuthGuard('jwt'))
+  unblockUser(@Param() userId: UserIdDTO) {
+    // const { id } = userId;
+    return this.userService.unblockUser(userId);
+  }
 }

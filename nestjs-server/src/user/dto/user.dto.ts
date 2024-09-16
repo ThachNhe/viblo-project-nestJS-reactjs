@@ -2,8 +2,9 @@ import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString, IsUrl, Min } from 'class-validator';
 
 export class UserIdDTO {
-  @IsNumber()
   @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
   id: number;
 }
 

@@ -39,7 +39,7 @@ const FollowingPost = () => {
   const [page, setPage] = useState(queryParams.get("page") || 1);
 
   useEffect(() => {
-    dispatch(actions.get(page, 10));
+    dispatch(actions.getPaginationPosts(page, 10));
   }, []);
 
   const handlePageChange = (selectedItem) => {

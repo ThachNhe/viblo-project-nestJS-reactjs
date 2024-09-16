@@ -142,7 +142,6 @@ function Homepage() {
     location?.state?.data ? location?.state?.data : 17
   );
 
-  console.log("related posts : ", relatedPosts);
 
   useEffect(() => {
     dispatch(actions.getPostById(defaultPostId));

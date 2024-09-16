@@ -6,10 +6,13 @@ import {
   Body,
   BadRequestException,
   Res,
+  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
 import { Response, Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -35,9 +38,6 @@ export class AuthController {
   refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     return this.authService.requestNewAccessToken(req, res);
   }
-
-  @Get('test-authorize')
-  authorize() {}
 
   @Post('logout')
   logout(@Req() req: Request) {
