@@ -11,8 +11,8 @@ function CarInfo({
 }) {
   return (
     <div className="flex flex-col shadow-md gap-2">
-      <div className="border p-4 "> 
-        <div className="py-2">
+      <div className="flex flex-col border p-4 min-h-46  justify-between"> 
+        <div className="py-1">
           <a>
             <span className="font-medium hover:text-blue-500 cursor-pointer text-title-xsm text-neutral-700">
               {title}
@@ -27,7 +27,7 @@ function CarInfo({
             {createdAt} 
           </span>
         </div>
-        <div>
+        <div className="">
           <ArticleStats
             viewNumber={viewNumber}
             commentNumber={commentNumber}

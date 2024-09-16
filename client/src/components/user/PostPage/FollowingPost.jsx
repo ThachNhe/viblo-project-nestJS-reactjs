@@ -30,14 +30,6 @@ function Items({ currentItems }) {
   );
 }
 
-const settings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-};
-
 const FollowingPost = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);

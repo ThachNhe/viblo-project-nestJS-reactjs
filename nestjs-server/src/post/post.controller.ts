@@ -58,4 +58,9 @@ export class PostController {
   async getPaginationPosts(@Query() query: PaginationDto) {
     return this.PostService.getPaginationPosts(query);
   }
+
+  @Get(':id/related')
+  async getRelatedPosts(@Param('id') postId: number) {
+    return this.PostService.getRelatedPosts(postId);
+  }
 }

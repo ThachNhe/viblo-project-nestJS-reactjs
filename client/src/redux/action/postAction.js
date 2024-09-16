@@ -40,3 +40,21 @@ export const getPaginationPosts = (page, limit) => {
     }
   };
 };
+
+export const getRelatedPosts = (postId) => {
+  return async (dispatch) => {
+    try {
+      const posts = await services.getRelatedPosts(postId);
+      dispatch({
+        type: actionType.GET_RELATED_POST_SUCCESS,
+        payload: posts,
+      });
+    } catch (error) {
+      console.error("Err from get post pagination!!!:", error);
+      dispatch({
+        type: actionType.GET_RELATED_POST_FAILED,
+        payload: null,
+      });
+    }
+  };
+};

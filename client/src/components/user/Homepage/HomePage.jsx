@@ -131,21 +131,25 @@ function Homepage() {
   const post = useSelector((state) => state.post.post);
   const comments = useSelector((state) => state.comment.commentByPostId);
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const relatedPosts = useSelector((state) => state.post.relatedPosts);
   const [responseId, setResponseId] = useState(0);
   const [isUpvote, setIsUpvote] = useState(false);
   const [isDownvote, setIsDownvote] = useState(false);
   const [isBookmark, setIsBookmark] = useState(false);
   const location = useLocation();
   const [toc, setToc] = useState([]);
-
   const [defaultPostId, setDefaultPostId] = useState(
     location?.state?.data ? location?.state?.data : 17
   );
 
+  console.log("related posts : ", relatedPosts);
+
   useEffect(() => {
     dispatch(actions.getPostById(defaultPostId));
     dispatch(actions.getCommentByPostId(defaultPostId));
+    dispatch(actions.getRelatedPosts(defaultPostId));
   }, []);
+
   useEffect(() => {
     const user = post?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
@@ -345,10 +349,14 @@ function Homepage() {
             </div>
           </div>
 
-          <PostSection data={data} sectionName={"Bài viết liên quan"} />
+          <PostSection
+            post={relatedPosts?.data}
+
+            sectionName={"Bài viết liên quan"}
+          />
 
           <PostSection
-            data={data}
+             post={relatedPosts?.data}
             sectionName={"Bài viết khác của văn Thạch"}
           />
 

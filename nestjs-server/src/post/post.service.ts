@@ -322,22 +322,18 @@ export class PostService {
 
   async getPaginationPosts(paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
+    console.log(page, limit);
     const postRepository = AppDataSource.getRepository(Post);
-    // const [result, total] = await postRepository.findAndCount({
-    //   take: limit,
-    //   skip: (page - 1) * limit,
-    //   relations: ['author'],
-    // });
 
     const [result, total] = await postRepository
       .createQueryBuilder('post')
-      .leftJoin('post.author', 'author') // Thực hiện join với bảng `author`
+      .leftJoin('post.author', 'author')
       .addSelect([
         'author.id',
         'author.userName',
         'author.fullName',
         'author.avatar',
-      ]) // Chỉ lấy các trường cần thiết từ `author`
+      ])
       .take(limit)
       .skip((page - 1) * limit)
       .getManyAndCount();
@@ -360,6 +356,55 @@ export class PostService {
         currentPage: +page,
         pageSize: +limit,
       },
+    };
+  }
+
+  async getRelatedPosts(postId: number) {
+    const postRepository = AppDataSource.getRepository(Post);
+
+    const post = await postRepository.findOne({ where: { id: postId } });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    const tags = post.tags_array;
+    console.log(postId);
+    console.log(tags);
+    if (!tags || tags.length === 0) {
+      return {
+        success: true,
+        statusCode: 200,
+        error: null,
+        data: [],
+      };
+    }
+
+    const relatedPosts = await postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.tags', 'tags')
+      .leftJoin('post.author', 'author')
+      .addSelect([
+        'author.id',
+        'author.userName',
+        'author.fullName',
+        'author.avatar',
+      ])
+      .where('tags.name IN (:...tags)', { tags })
+      .andWhere('post.id != :postId', { postId })
+      .getMany();
+
+    const newResult = relatedPosts?.map((item, index) => {
+      return {
+        ...item,
+        created_at: formatVietnameseDate(`${item.created_at}`),
+      };
+    });
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: newResult,
     };
   }
 }

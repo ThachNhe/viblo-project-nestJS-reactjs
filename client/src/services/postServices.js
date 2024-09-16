@@ -24,6 +24,10 @@ const getPaginationPosts = (page = 1, limit = 10) => {
   return axios.get(`/posts?page=${page}&limit=${limit}`);
 };
 
+const getRelatedPosts = (postId) => {
+  return axios.get(`/posts/${postId}/related`);
+};
+
 export {
   createPost,
   getPostById,
@@ -31,4 +35,5 @@ export {
   bookmark,
   unbookmark,
   getPaginationPosts,
+  getRelatedPosts,
 };
