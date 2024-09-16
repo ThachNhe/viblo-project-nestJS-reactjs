@@ -1,8 +1,5 @@
 import axios from "../axios";
 
-const getUsers = () => {
-  return axios.get("/users");
-};
 const userLoginService = (body) => {
   return axios.post("/auth/login", body);
 };
@@ -18,10 +15,14 @@ const uploadAvatar = (body) => {
   return axios.put("/users/avatar", body);
 };
 
+const getPaginationUsers = (page, limit) => {
+  return axios.get(`/users?page=${page}&limit=${limit}`);
+};
+
 export {
-  getUsers,
   userLoginService,
   userRegisterService,
   userLogoutService,
   uploadAvatar,
+  getPaginationUsers,
 };

@@ -9,7 +9,9 @@ import { PaginationDto } from './dto/pagination.dto';
 export class PostService {
   constructor() {}
   async createPost(body: PostDTO, userId: number) {
-    const user = await AppDataSource.getRepository(User).findOne({
+    const userRepository = AppDataSource.getRepository(User);
+
+    const user = await userRepository.findOne({
       where: { id: userId },
     });
 
@@ -38,6 +40,13 @@ export class PostService {
     post.author = user;
     post.tags = tags;
     await postRepository.save(post);
+
+    userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({ post_number: () => 'post_number + 1' })
+      .where('id = :id', { id: userId })
+      .execute();
 
     delete post.author;
 
@@ -322,7 +331,6 @@ export class PostService {
 
   async getPaginationPosts(paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
-    console.log(page, limit);
     const postRepository = AppDataSource.getRepository(Post);
 
     const [result, total] = await postRepository

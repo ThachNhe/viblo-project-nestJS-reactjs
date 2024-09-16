@@ -39,15 +39,16 @@ const FollowingPost = () => {
   const [page, setPage] = useState(queryParams.get("page") || 1);
 
   useEffect(() => {
-    dispatch(actions.getPaginationPosts(page, 10));
+    dispatch(actions.get(page, 10));
   }, []);
 
   const handlePageChange = (selectedItem) => {
     try {
       const newPage = selectedItem.selected + 1;
+      const limit = 10;
       setPage(newPage);
       navigate(`/followings?page=${newPage}`);
-      dispatch(actions.getPaginationPosts(newPage, 10));
+      dispatch(actions.getPaginationPosts(newPage, limit));
 
       window.scrollTo({
         top: 0,

@@ -56,16 +56,11 @@ export class User {
   @Column({ default: 0 })
   post_number: number;
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: VoteStatus,
-  //   default: VoteStatus.NONE,
-  // })
-  // voter_status: VoteStatus[];
+  @Column({ default: false })
+  isBlocked: boolean;
 
   @OneToMany(() => Post, (post) => post.author, {
     cascade: true,
-    eager: true,
   })
   posts: Post[];
 

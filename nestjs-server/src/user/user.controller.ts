@@ -8,21 +8,17 @@ import {
   Put,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from '../enums/role.enum';
 import { Roles } from '../auth/strategy/roles.decorator';
-import { UrlDto, UserIdDTO } from './dto/user.dto';
+import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
 export class UserController {
   constructor(private userService: UserService) {}
-
-  @Get()
-  async getUsers() {
-    return this.userService.getUsersService();
-  }
 
   @Post('authorize')
   @Roles(Role.User)
@@ -41,5 +37,12 @@ export class UserController {
   uploadAvatar(@Body() body: UrlDto, @Request() req: any) {
     const userId = req.user.userId;
     return this.userService.uploadAvatar(userId, body?.avatar);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.Admin)
+  async getUsersService(@Query() query: UserPaginationDTO) {
+    return this.userService.getUsersService(query);
   }
 }

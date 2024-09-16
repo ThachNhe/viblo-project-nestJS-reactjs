@@ -51,6 +51,7 @@ module.exports = withMT({
         danger: "#D34053",
         warning: "#FFA70B",
         page: "#f1f5f9",
+        modal: "rgba(0, 0, 0, 0.7)",
         neutral: {
           50: "#fafafa",
           100: "#f5f5f5",

@@ -41,10 +41,10 @@ export const userRegister = (body) => {
   };
 };
 
-export const getAllUserAction = () => {
+export const getPaginationUsers = (page, limit) => {
   return async (dispatch) => {
     try {
-      const users = await services.getUsers();
+      const users = await services.getPaginationUsers(page, limit);
       dispatch({
         type: actionType.GET_ALL_USER,
         payload: users,

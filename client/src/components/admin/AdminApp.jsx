@@ -6,7 +6,7 @@ import PageTitle from "./PageTitle";
 import PostStatistic from "./Pages/PostStatistic";
 import { AppContext } from "../../contexts/AppContext";
 import TagManagement from "./Pages/TagManagement";
-
+import UserManagement from "./Management/UserManagement";
 function AdminApp() {
   const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
@@ -64,7 +64,7 @@ function AdminApp() {
           element={
             <>
               <PageTitle title="Viblo Management | MyApp" />
-              <div>authorize</div>
+              <UserManagement />
             </>
           }
         />

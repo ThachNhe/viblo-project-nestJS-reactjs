@@ -6,10 +6,6 @@ const initialState = {
 };
 function authReducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.GET_ALL_USER:
-      state.users = action.payload;
-      return { ...state };
-
     case actionTypes.USER_REGISTER_SUCCESS:
       state.userRegister = action.payload;
       return { ...state };
