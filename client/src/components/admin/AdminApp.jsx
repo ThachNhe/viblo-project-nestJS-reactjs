@@ -7,6 +7,7 @@ import PostStatistic from "./Pages/PostStatistic";
 import { AppContext } from "../../contexts/AppContext";
 import TagManagement from "./Pages/TagManagement";
 import UserManagement from "./Management/UserManagement";
+import PostManagement from "./Management/PostManagement";
 function AdminApp() {
   const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
@@ -65,6 +66,15 @@ function AdminApp() {
             <>
               <PageTitle title="Viblo Management | MyApp" />
               <UserManagement />
+            </>
+          }
+        />
+        <Route
+          path="/post/management"
+          element={
+            <>
+              <PageTitle title="Viblo Management | MyApp" />
+              <PostManagement />
             </>
           }
         />

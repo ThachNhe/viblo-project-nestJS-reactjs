@@ -3,11 +3,20 @@ import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 import { useEffect, useState } from "react";
 import * as services from "../../../services/index";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import * as actions from "../../../redux/action/index";
 
 function TagManagement() {
+  const dispatch = useDispatch();
   const [tagName, setTagName] = useState("");
   const [tagDescription, setTagDescription] = useState("");
   const [isTagExisting, setIsTagExisting] = useState(false);
+  const tagStatisticData = useSelector((state) => state.statistic.tagStatisticData);
+
+
+  useEffect(() => {
+    dispatch(actions.tagStatistic());
+  }, [])
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -112,7 +121,7 @@ function TagManagement() {
         <div className="flex flex-col gap-9">
           <CardDataStats
             title="Tổng số tag"
-            total="3.456"
+            total={tagStatisticData?.data?.tagNumber}
             rate="0.95%"
             levelDown
           >
@@ -140,7 +149,7 @@ function TagManagement() {
           </CardDataStats>
           <CardDataStats
             title="Tổng bài viết của tag"
-            total="$45,2K"
+             total={tagStatisticData?.data?.postNumber}
             rate="4.35%"
             levelUp
           >

@@ -20,6 +20,7 @@ import {
   User,
   UserPost,
 } from './entity';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import {
     PostModule,
     TagModule,
     CommentModule,
+    StatisticsModule,
   ],
   providers: [],
   controllers: [],

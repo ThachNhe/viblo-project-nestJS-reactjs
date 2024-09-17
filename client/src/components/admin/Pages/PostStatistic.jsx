@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import CardDataStats from "../Tables/CardDataStats";
+import * as actions from "../../../redux/action/index";
+
 const PostStatistic = () => {
+  const dispatch = useDispatch();
+  const commonStatisticData = useSelector((state)=> state.statistic.commonStatisticData)
+
+  console.log('commonStatisticData :' ,commonStatisticData);
+
+  useEffect(() => {
+    dispatch(actions.commonStatistic());
+  }, []);
+
+
+
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        
         <CardDataStats
           title="Tổng người dùng"
-          total="3.456"
+          total= {commonStatisticData?.data?.userNumber}
           rate="0.95%"
           levelDown
         >
@@ -35,7 +48,7 @@ const PostStatistic = () => {
         </CardDataStats>
         <CardDataStats
           title="Tổng bài viết"
-          total="$45,2K"
+          total= {commonStatisticData?.data?.postNumber}
           rate="4.35%"
           levelUp
         >
@@ -88,7 +101,7 @@ const PostStatistic = () => {
         </CardDataStats>
         <CardDataStats
           title="Tổng lượt xem"
-          total="$3.456K"
+           total= {commonStatisticData?.data?.viewNumber}
           rate="0.43%"
           levelUp
         >
@@ -113,7 +126,7 @@ const PostStatistic = () => {
 
         <CardDataStats
           title="Tổng bình luận"
-          total="2.450"
+           total= {commonStatisticData?.data?.commentNumber}
           rate="2.59%"
           levelUp
         >

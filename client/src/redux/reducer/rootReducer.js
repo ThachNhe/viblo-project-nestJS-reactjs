@@ -5,6 +5,7 @@ import tagReducer from "./tagReducer";
 import postReducer from "./postReducer";
 import commentReducer from "./commentReducer";
 import userReducer from "./userReducer";
+import StatisticReducer from "./statisticReducer";
 const rootReducer = combineReducers({
   auth: authReducer,
   admin: adminReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   post: postReducer,
   comment: commentReducer,
   user: userReducer,
+  statistic: StatisticReducer,
 });
 
 export default rootReducer;
