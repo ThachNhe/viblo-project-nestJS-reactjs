@@ -1,6 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { markdownConfig } from "../../../utils/config";
+
 function Posts({ data, tags }) {
   return (
     <div className="flex flex-col gap-6 py-5 px-3">
@@ -11,6 +12,7 @@ function Posts({ data, tags }) {
           {data}
         </ReactMarkdown>
       </div>
+
       <div className="flex gap-3 items-center">
         {tags &&
           tags.length > 0 &&

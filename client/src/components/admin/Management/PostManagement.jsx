@@ -1,33 +1,54 @@
-const packageData = [
-  {
-    name: "Free package",
-    price: 0.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Paid",
-  },
-  {
-    name: "Standard Package",
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Paid",
-  },
-  {
-    name: "Business Package",
-    price: 99.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Unpaid",
-  },
-  {
-    name: "Standard Package",
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Pending",
-  },
-];
+import ReactPaginate from "react-paginate";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import avatarDefault from "../../../images/user/avatar.png";
+import Avatar from "../../navbar/Avatar";
+import { useLocation, useNavigate } from "react-router-dom";
+import * as actions from "../../../redux/action/index";
+import PostViewModal from "../PostViewmModal";
 
 const PostManagement = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [page, setPage] = useState(queryParams.get("page") || 1);
+  const [openPostViewModal, setOpenPostViewModal] = useState(false);
+  const [content_markdown, setContent_markdown] = useState("");
+
+  const paginationPosts = useSelector((state) => state?.post?.paginationPosts);
+
+  const handlePageChange = (selectedItem) => {
+    try {
+      const newPage = selectedItem.selected + 1;
+      setPage(newPage);
+      navigate(`/admin/post/management?page=${newPage}`);
+      dispatch(actions.getPaginationPosts(newPage, 10));
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    } catch (e) {
+      console.log("ERROR : ", e);
+    }
+  };
+
+  const handleOpenPostViewModal = (content_markdown) => {
+    setOpenPostViewModal(true);
+    setContent_markdown(content_markdown)
+  };
+
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div
+      className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default 
+    dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
+    >
+      <PostViewModal
+        isOpen={openPostViewModal}
+        closeModal={() => setOpenPostViewModal(false)}
+        handleOpenPostViewModal={handleOpenPostViewModal}
+        content={content_markdown}
+      />
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
@@ -35,17 +56,17 @@ const PostManagement = () => {
               <th className="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 STT
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="w-[250px] py-4 px-4 font-medium text-black dark:text-white">
                 Bài Viết
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Tác giả
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Lượt xem
+                Lượt bình luận
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Lượt bookmark
+                Lượt xem
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Trạng thái
@@ -56,52 +77,60 @@ const PostManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {packageData.map((packageItem, key) => (
+            {paginationPosts?.data?.map((post, key) => (
               <tr key={key}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
                     {key + 1}
                   </h5>
                 </td>
-
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">
-                    {packageItem.name}
+                    {post.title}
                   </h5>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark cursor-pointer">
+                  <Avatar
+                    imgURL={post?.author?.avatar || avatarDefault}
+                    height={45}
+                    width={45}
+                  />
+                  <p className="text-neutral-500 hover:text-neutral-600 hover:underline">
+                    {post?.author?.userName}
+                  </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
-                    Vanthach
-                  </h5>
-                </td>
-                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                  <h5 className="font-medium text-black dark:text-white">
-                    {key + 1}
+                    {post.comment_number}
                   </h5>
                 </td>
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
-                    {key + 1}
+                    {post.view_number}
                   </h5>
                 </td>
 
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p
                     className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                      packageItem.status === "Paid"
+                      post.status === "PUBLISH"
                         ? "bg-success text-success"
-                        : packageItem.status === "Unpaid"
+                        : post.status === "PRIVATE"
                         ? "bg-danger text-danger"
                         : "bg-warning text-warning"
                     }`}
                   >
-                    {packageItem.status}
+                    {post.status}
                   </p>
                 </td>
+
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <button className="hover:text-primary">
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => handleOpenPostViewModal(post.content_markdown)}
+                    >
                       <svg
                         className="fill-current"
                         width="18"
@@ -147,6 +176,34 @@ const PostManagement = () => {
           </tbody>
         </table>
       </div>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel=">"
+        onPageChange={handlePageChange}
+        pageRangeDisplayed={5}
+        pageCount={paginationPosts?.meta?.totalPages || 2}
+        previousLabel="<"
+        renderOnZeroPageCount={null}
+        containerClassName={"flex justify-center my-5"}
+        pageClassName={"mx-1"}
+        pageLinkClassName={
+          "px-4 py-2 border border-gray-500 rounded-md border-2 h-10 w-10"
+        }
+        previousClassName={"mx-1"}
+        previousLinkClassName={
+          "px-4 py-2 border border-gray-500 rounded-md border-2"
+        }
+        nextClassName={"mx-1"}
+        nextLinkClassName={
+          "px-4 py-2 border border-gray-500 rounded-md border-2"
+        }
+        breakClassName={"mx-1"}
+        breakLinkClassName={
+          "px-4 py-2 border border-gray-500 rounded-md border-2"
+        }
+        activeClassName={" text-blue-600  font-semibold bg-slate-200"}
+        disabledClassName={"text-neutral-500 "}
+      />
     </div>
   );
 };

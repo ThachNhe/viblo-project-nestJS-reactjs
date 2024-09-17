@@ -13,12 +13,6 @@ import { initFlowbite } from "flowbite";
 import { AppContext } from "../../contexts/AppContext";
 import { handlerFileUpload } from "../../utils/utils";
 
-const options = [
-  { value: "Nodejs", label: "Nodejs" },
-  { value: "Js", label: "Js" },
-  { value: "Java", label: "Java" },
-];
-
 const checkboxSelect = [
   { id: "PUBLIC", type: "checkbox", label: "Công khai" },
   { id: "LINK", type: "checkbox", label: "Bất kì ai với link" },

@@ -12,6 +12,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
+
     @InjectRepository(User)
     private userRepository: Repository<User>,
 
@@ -324,9 +325,10 @@ export class PostService {
   }
 
   async getPaginationPosts(paginationDto: PaginationDto) {
+    const postRepository = AppDataSource.getRepository(Post);
     const { page = 1, limit = 10 } = paginationDto;
-
-    const [result, total] = await this.postRepository
+    console.log(page, limit);
+    const [result, total] = await postRepository
       .createQueryBuilder('post')
       .leftJoin('post.author', 'author')
       .addSelect([
@@ -339,7 +341,7 @@ export class PostService {
       .skip((page - 1) * limit)
       .getManyAndCount();
 
-    const newResult = result?.map((item, index) => {
+    const newResult = result?.map((item) => {
       return {
         ...item,
         created_at: formatVietnameseDate(`${item.created_at}`),
@@ -368,8 +370,7 @@ export class PostService {
     }
 
     const tags = post.tags_array;
-    console.log(postId);
-    console.log(tags);
+
     if (!tags || tags.length === 0) {
       return {
         success: true,

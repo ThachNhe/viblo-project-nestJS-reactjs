@@ -62,6 +62,7 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.author, {
     cascade: true,
+    eager: true,
   })
   posts: Post[];
 

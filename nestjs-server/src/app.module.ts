@@ -19,7 +19,8 @@ import {
   Tag,
   User,
   UserPost,
-} from './entity';
+} from './entity/index';
+
 import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({

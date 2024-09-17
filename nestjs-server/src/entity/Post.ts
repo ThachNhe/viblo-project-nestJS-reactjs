@@ -8,10 +8,10 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
-  VersionColumn,
 } from 'typeorm';
 import { User, UserPost, Comment, Tag } from './index';
 import { Status } from '../enums/status.enum';
+
 @Entity({ name: 'posts' })
 export class Post {
   @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -60,7 +60,6 @@ export class Post {
 
   @OneToMany(() => Comment, (comment) => comment.post, {
     cascade: true,
-    eager: true,
   })
   comments: Comment[];
 
@@ -76,13 +75,8 @@ export class Post {
   })
   bookmarkers: User[];
 
-  // @ManyToMany(() => User, (user) => user.voted_posts)
-  // @JoinTable({
-  //   name: 'user_votes',
-  // })
   @OneToMany(() => UserPost, (userPost) => userPost.post)
   userVotes: UserPost[];
-  // voters: User[];
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -96,7 +90,4 @@ export class Post {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updated_at: Date;
-
-  // @VersionColumn()
-  // version: number;
 }
