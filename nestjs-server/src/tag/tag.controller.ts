@@ -1,6 +1,6 @@
 import { TagService } from './tag.service';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { TagDTO } from './dto/tag.dto';
+import { TagDTO, TagNameDTO } from './dto/tag.dto';
 
 @Controller('tags')
 export class TagController {
@@ -22,5 +22,13 @@ export class TagController {
       throw new Error('Keyword is required');
     }
     return this.TagService.searchTags(keyword);
+  }
+
+  @Get('exist')
+  isExist(@Query() query: TagNameDTO) {
+    if (!query.name) {
+      throw new Error('tagName is required');
+    }
+    return this.TagService.isExist(query);
   }
 }

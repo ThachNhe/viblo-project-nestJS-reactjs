@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { AppDataSource } from '../index';
 import { Tag } from '../entity';
-import { TagDTO } from './dto/tag.dto';
+import { TagDTO, TagNameDTO } from './dto/tag.dto';
 import { Repository } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +19,9 @@ export class TagService {
 
     await this.tagRepository.save(tag);
     return {
+      success: true,
+      statusCode: 200,
+      error: null,
       tag,
     };
   }
@@ -50,6 +52,19 @@ export class TagService {
       statusCode: 200,
       error: null,
       data: tags,
+    };
+  }
+
+  async isExist(tagName: TagNameDTO) {
+    const tag = await this.tagRepository.findOne({
+      where: { name: tagName.name },
+    });
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: !!tag,
     };
   }
 }

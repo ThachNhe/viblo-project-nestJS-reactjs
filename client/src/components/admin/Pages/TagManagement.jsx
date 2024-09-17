@@ -1,8 +1,55 @@
 import CardDataStats from "../Tables/CardDataStats";
 import Breadcrumb from "../Breadcrumbs/Breadcrumb";
-
+import { useEffect, useState } from "react";
+import * as services from "../../../services/index";
+import toast from "react-hot-toast";
 
 function TagManagement() {
+  const [tagName, setTagName] = useState("");
+  const [tagDescription, setTagDescription] = useState("");
+  const [isTagExisting, setIsTagExisting] = useState(false);
+
+  useEffect(() => {
+    const debounceTimeout = setTimeout(() => {
+      if (tagName) {
+        checkTagExists(tagName);
+      }
+    }, 300);
+
+    return () => clearTimeout(debounceTimeout);
+  }, [tagName]);
+
+  const checkTagExists = async (name) => {
+    try {
+      const response = await services.isExist(name);
+      setIsTagExisting(response.data);
+    } catch (error) {
+      console.error("Error checking tag existence:", error);
+    }
+  };
+
+  const handleCreateTag = async (e) => {
+    e.preventDefault();
+    try {
+      if (!isTagExisting) {
+        const res = await services.createTag({
+          name: tagName,
+          description: tagDescription,
+        });
+        if (res.success) {
+          toast.success("Tạo tag thành công!!!");
+          setTagDescription("");
+          setTagName("");
+        }
+      } else {
+        toast.error("Xin vui lòng tạo tag với tên khác!!!");
+      }
+    } catch (error) {
+      console.error("Error creating tag:", error);
+      toast.error("Tạo tag thất bại!!!");
+    }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Tags" />
@@ -24,7 +71,17 @@ function TagManagement() {
                   <input
                     type="text"
                     placeholder="Tag của bạn..."
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    className={`w-full rounded border-[1.5px]  bg-transparent py-3 px-5 text-black
+                     outline-none transition disabled:cursor-default disabled:bg-whiter 
+                    ${
+                      isTagExisting
+                        ? "border-danger focus:border-danger active:border-danger focus:ring-0 "
+                        : "border-stroke focus:border-primary active:border-primary "
+                    }
+                    
+                    `}
+                    onChange={(e) => setTagName(e.target.value)}
+                    value={tagName}
                   />
                 </div>
 
@@ -34,12 +91,17 @@ function TagManagement() {
                   </label>
                   <textarea
                     rows={6}
-                    placeholder="Type your message"
+                    placeholder="Mô tả tag của bạn..."
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    onChange={(e) => setTagDescription(e.target.value)}
+                    value={tagDescription}
                   ></textarea>
                 </div>
 
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                <button
+                  className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                  onClick={(e) => handleCreateTag(e)}
+                >
                   Tạo
                 </button>
               </div>

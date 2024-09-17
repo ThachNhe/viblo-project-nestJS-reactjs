@@ -8,3 +8,9 @@ export class TagDTO {
   @IsString()
   description: string;
 }
+
+export class TagNameDTO {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+}

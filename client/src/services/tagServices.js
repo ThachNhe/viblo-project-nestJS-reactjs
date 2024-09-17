@@ -10,4 +10,14 @@ const getTagSearch = (keyword) => {
   });
 };
 
-export { getAllTag, getTagSearch };
+const isExist = (tagName) => {
+  return axios.get(`/tags/exist`, {
+    params: { name: tagName },
+  });
+};
+
+const createTag = (body) => {
+  return axios.post("/tags", body);
+};
+
+export { getAllTag, getTagSearch, isExist, createTag };
