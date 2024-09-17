@@ -3,11 +3,17 @@ import { CommentDTO } from './dto/comment.dto';
 import { AppDataSource } from '../index';
 import { Comment, User, Post } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 @Injectable()
 export class CommentService {
-  async createComment(body: CommentDTO) {
-    const commentRepository = AppDataSource.getRepository(Comment);
+  constructor(
+    @InjectRepository(Comment)
+    private commentRepository: Repository<Comment>,
+  ) {}
 
+  async create(body: CommentDTO) {
     const user = await AppDataSource.getRepository(User).findOne({
       where: { id: +body.userId },
     });
@@ -25,7 +31,7 @@ export class CommentService {
     comment.user = user;
     comment.post = post;
 
-    await commentRepository.save(comment);
+    await this.commentRepository.save(comment);
 
     delete comment?.post;
     delete comment?.user?.password;
@@ -40,7 +46,7 @@ export class CommentService {
   }
 
   async getCommentsByPostId(postId: any) {
-    let results = await AppDataSource.getRepository(Comment).query(`
+    let results = await this.commentRepository.query(`
       WITH replies AS (
         SELECT
             *,

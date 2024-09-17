@@ -5,12 +5,13 @@ import { UserService } from './user.service';
 import { JwtStrategy } from '../auth/strategy';
 import { RolesGuard } from '../auth/strategy/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../entity/index';
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User]),
     ConfigModule,
-    JwtModule.register({
-      // Add your options here
-    }),
+    JwtModule.register({}),
   ],
   controllers: [UserController],
   providers: [

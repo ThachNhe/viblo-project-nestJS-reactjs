@@ -20,6 +20,9 @@ export class Tag {
   @Column({ unique: true })
   name: string;
 
+  @Column({ nullable: true })
+  description: string;
+
   @Column({ default: 0 })
   view_number: number;
 

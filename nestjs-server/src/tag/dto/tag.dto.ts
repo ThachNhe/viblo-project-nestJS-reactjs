@@ -4,4 +4,7 @@ export class TagDTO {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @IsString()
+  description: string;
 }

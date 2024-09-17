@@ -4,14 +4,25 @@ import { AppDataSource } from '../index';
 import { Post, User, Tag, UserPost } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
 import { PaginationDto } from './dto/pagination.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PostService {
-  constructor() {}
-  async createPost(body: PostDTO, userId: number) {
-    const userRepository = AppDataSource.getRepository(User);
+  constructor(
+    @InjectRepository(Post)
+    private postRepository: Repository<Post>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
 
-    const user = await userRepository.findOne({
+    @InjectRepository(Tag)
+    private tagRepository: Repository<Tag>,
+
+    @InjectRepository(UserPost)
+    private userPostRepository: Repository<UserPost>,
+  ) {}
+  async createPost(body: PostDTO, userId: number) {
+    const user = await this.userRepository.findOne({
       where: { id: userId },
     });
 
@@ -19,26 +30,23 @@ export class PostService {
       throw new Error('User not found');
     }
 
-    const tagRepository = AppDataSource.getRepository(Tag);
-
     const tags = await Promise.all(
       body?.tagArray?.map(async (name) => {
-        let tag = await tagRepository.findOne({ where: { name } });
+        let tag = await this.tagRepository.findOne({ where: { name } });
 
         return tag;
       }),
     );
 
-    const postRepository = AppDataSource.getRepository(Post);
     const post = new Post();
     post.title = body.title;
     post.content_markdown = body.contentMarkdown;
     post.tags_array = tags.map((tag) => tag.name);
     post.author = user;
     post.tags = tags;
-    await postRepository.save(post);
+    await this.postRepository.save(post);
 
-    userRepository
+    this.userRepository
       .createQueryBuilder()
       .update(User)
       .set({ post_number: () => 'post_number + 1' })
@@ -56,10 +64,7 @@ export class PostService {
   }
 
   async vote(postId: any, userId: any, voteType: 'UPVOTE' | 'DOWNVOTE') {
-    const postRepository = AppDataSource.getRepository(Post);
-    const userPostRepository = AppDataSource.getRepository(UserPost);
-
-    const post = await postRepository.findOne({
+    const post = await this.postRepository.findOne({
       where: { id: +postId },
     });
 
@@ -75,7 +80,7 @@ export class PostService {
       throw new NotFoundException('User not found');
     }
 
-    let userPost = await userPostRepository.findOne({
+    let userPost = await this.userPostRepository.findOne({
       where: { user: { id: +userId }, post: { id: +postId } },
     });
 
@@ -83,56 +88,56 @@ export class PostService {
       if (userPost?.voteType === voteType) {
         if (voteType === 'UPVOTE') {
           // post.vote_number -= 1;
-          postRepository
+          this.postRepository
             .createQueryBuilder()
             .update(Post)
             .set({ vote_number: () => 'vote_number - 1' })
             .where('id = :id', { id: postId })
             .execute();
 
-          await userPostRepository.remove(userPost);
+          await this.userPostRepository.remove(userPost);
         }
 
         if (voteType === 'DOWNVOTE') {
           // post.vote_number += 1;
-          postRepository
+          this.postRepository
             .createQueryBuilder()
             .update(Post)
             .set({ vote_number: () => 'vote_number + 1' })
             .where('id = :id', { id: postId })
             .execute();
-          await userPostRepository.remove(userPost);
+          await this.userPostRepository.remove(userPost);
         }
       } else {
         if (voteType === 'UPVOTE') {
           // post.vote_number += 2;
-          postRepository
+          this.postRepository
             .createQueryBuilder()
             .update(Post)
             .set({ vote_number: () => 'vote_number + 2' })
             .where('id = :id', { id: postId })
             .execute();
 
-          userPostRepository.save({
+          this.userPostRepository.save({
             ...userPost,
             voteType,
           });
         }
 
         if (voteType === 'DOWNVOTE') {
-          postRepository
+          this.postRepository
             .createQueryBuilder()
             .update(Post)
             .set({ vote_number: () => 'vote_number - 2' })
             .where('id = :id', { id: postId })
             .execute();
-          userPostRepository.save({
+          this.userPostRepository.save({
             ...userPost,
             voteType,
           });
         }
 
-        await postRepository.save(post);
+        await this.postRepository.save(post);
       }
     } else {
       post.vote_number =
@@ -143,8 +148,8 @@ export class PostService {
       newUserPost.post = post;
       newUserPost.voteType = voteType;
 
-      await userPostRepository.save(newUserPost);
-      await postRepository.save(post);
+      await this.userPostRepository.save(newUserPost);
+      await this.postRepository.save(post);
     }
 
     delete post.comments;
@@ -158,9 +163,7 @@ export class PostService {
   }
 
   async getId(id: number) {
-    const postRepository = AppDataSource.getRepository(Post);
-
-    const post = await postRepository
+    const post = await this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.userVotes', 'userVote') // Nối với bảng userVotes
       .leftJoin('userVote.user', 'user') // Nối với bảng user nhưng không lấy toàn bộ
@@ -177,14 +180,14 @@ export class PostService {
     delete post?.author?.posts;
 
     // post.view_number += 1;
-    postRepository
+    this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({ view_number: () => 'view_number + 1' })
       .where('id = :id', { id })
       .execute();
 
-    await postRepository.save(post);
+    await this.postRepository.save(post);
 
     const updatedPost = {
       ...post,
@@ -203,9 +206,7 @@ export class PostService {
   }
 
   async getRadomId() {
-    const postRepository = AppDataSource.getRepository(Post);
-
-    const post = await postRepository
+    const post = await this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.userVotes', 'userVote') // Nối với bảng userVotes
       .leftJoin('userVote.user', 'user') // Nối với bảng user nhưng không lấy toàn bộ
@@ -225,13 +226,13 @@ export class PostService {
     // post.view_number += 1;
     const id = post?.id;
 
-    postRepository
+    this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({ view_number: () => 'view_number + 1' })
       .where('id = :id', { id })
       .execute();
-    await postRepository.save(post);
+    await this.postRepository.save(post);
 
     const updatedPost = {
       ...post,
@@ -250,8 +251,7 @@ export class PostService {
   }
 
   async bookmarkService(postId: number, userId: number) {
-    const postRepository = AppDataSource.getRepository(Post);
-    const user = await AppDataSource.getRepository(User).findOne({
+    const user = await this.userRepository.findOne({
       where: { id: userId },
     });
 
@@ -259,7 +259,7 @@ export class PostService {
       throw new NotFoundException('User not found');
     }
 
-    const post = await postRepository.findOne({
+    const post = await this.postRepository.findOne({
       where: { id: postId },
     });
 
@@ -269,14 +269,14 @@ export class PostService {
 
     post.bookmarkers = [user];
 
-    postRepository
+    this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({ bookmark_number: () => 'bookmark_number + 1' })
       .where('id = :id', { id: postId })
       .execute();
 
-    await postRepository.save(post);
+    await this.postRepository.save(post);
 
     return {
       success: true,
@@ -287,10 +287,7 @@ export class PostService {
   }
 
   async deleteBookmark(postId: number, userId: number) {
-    const postRepository = AppDataSource.getRepository(Post);
-    const userRepository = AppDataSource.getRepository(User);
-
-    const user = await userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id: +userId },
     });
 
@@ -298,7 +295,7 @@ export class PostService {
       throw new NotFoundException('User not found');
     }
 
-    const post = await postRepository.findOne({
+    const post = await this.postRepository.findOne({
       relations: ['bookmarkers'],
       where: { id: +postId },
     });
@@ -309,9 +306,9 @@ export class PostService {
 
     post.bookmarkers = post.bookmarkers.filter((item) => item.id !== userId);
 
-    await postRepository.save(post);
+    await this.postRepository.save(post);
 
-    postRepository
+    this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({ bookmark_number: () => 'bookmark_number - 1' })
@@ -328,9 +325,8 @@ export class PostService {
 
   async getPaginationPosts(paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
-    const postRepository = AppDataSource.getRepository(Post);
 
-    const [result, total] = await postRepository
+    const [result, total] = await this.postRepository
       .createQueryBuilder('post')
       .leftJoin('post.author', 'author')
       .addSelect([
@@ -365,9 +361,7 @@ export class PostService {
   }
 
   async getRelatedPosts(postId: number) {
-    const postRepository = AppDataSource.getRepository(Post);
-
-    const post = await postRepository.findOne({ where: { id: postId } });
+    const post = await this.postRepository.findOne({ where: { id: postId } });
 
     if (!post) {
       throw new NotFoundException('Post not found');
@@ -385,7 +379,7 @@ export class PostService {
       };
     }
 
-    const relatedPosts = await postRepository
+    const relatedPosts = await this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tags')
       .leftJoin('post.author', 'author')

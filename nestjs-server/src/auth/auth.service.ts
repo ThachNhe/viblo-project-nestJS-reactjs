@@ -10,26 +10,30 @@ import {
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
-import { AppDataSource } from '../index';
 import { User } from '../entity/User';
+import { Repository } from 'typeorm';
+
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   // user register service
   async registerService(body: AuthDTORegister) {
     let hashedPassword = await argon2.hash(body.password);
-    const userRepository = AppDataSource.getRepository(User);
     const user = new User();
     user.email = body.email;
     user.password = hashedPassword;
     user.userName = body.userName;
     user.fullName = body.fullName;
+
     try {
-      await userRepository.save(user);
+      await this.userRepository.save(user);
       delete user.password;
       delete user.avatar;
       return {
@@ -48,8 +52,7 @@ export class AuthService {
 
   // user login service
   async loginService(body: AuthDTOLogin, response: Response) {
-    const userRepository = AppDataSource.getRepository(User);
-    const user = await userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: [{ email: body.email }, { userName: body.userName }],
       select: [
         'id',

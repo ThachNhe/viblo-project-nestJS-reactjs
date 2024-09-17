@@ -8,7 +8,7 @@ export class TagController {
 
   @Post()
   createTag(@Body() body: TagDTO) {
-    return this.TagService.createTag(body);
+    return this.TagService.create(body);
   }
 
   @Get('all')

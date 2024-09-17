@@ -4,12 +4,18 @@ import { User } from '../entity/User';
 import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
 import { formatVietnameseDate } from 'src/utils/common.function';
 import { Role } from '../enums/index';
+import { In } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
   async getUser(id: UserIdDTO) {
-    const userRepository = AppDataSource.getRepository(User);
-    return await userRepository.findOne({
+    return await this.userRepository.findOne({
       where: { id: id.id },
       select: [
         'id',
@@ -24,8 +30,7 @@ export class UserService {
   }
 
   async uploadAvatar(userId: number, avatar: string) {
-    const userRepository = AppDataSource.getRepository(User);
-    const user = await userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id: userId },
       select: [
         'id',
@@ -40,7 +45,7 @@ export class UserService {
 
     user.avatar = avatar;
 
-    await userRepository.save(user);
+    await this.userRepository.save(user);
     return {
       success: true,
       statusCode: 200,
@@ -50,12 +55,9 @@ export class UserService {
   }
 
   async getUsersService(query: UserPaginationDTO) {
-    console.log('query', query);
     const { page = 1, limit = 15 } = query;
 
-    const userRepository = AppDataSource.getRepository(User);
-
-    const [result, total] = await userRepository.findAndCount({
+    const [result, total] = await this.userRepository.findAndCount({
       where: {
         roles: Role.User,
       },
@@ -96,10 +98,7 @@ export class UserService {
   }
 
   async blockUser(userId: UserIdDTO) {
-    console.log('userId', userId);
-    const userRepository = AppDataSource.getRepository(User);
-
-    const user = await userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id: userId.id },
     });
 
@@ -111,14 +110,14 @@ export class UserService {
       throw new Error('User is already blocked');
     }
 
-    await userRepository.update({ id: userId.id }, { isBlocked: true });
+    await this.userRepository.update({ id: userId.id }, { isBlocked: true });
 
     delete user.password;
     delete user.email;
 
     user.isBlocked = true;
 
-    await userRepository.save(user);
+    await this.userRepository.save(user);
 
     return {
       success: true,
@@ -129,9 +128,7 @@ export class UserService {
   }
 
   async unblockUser(userId: UserIdDTO) {
-    const userRepository = AppDataSource.getRepository(User);
-
-    const user = await userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id: userId.id },
     });
 
@@ -148,7 +145,7 @@ export class UserService {
     delete user.password;
     delete user.email;
 
-    await userRepository.save(user);
+    await this.userRepository.save(user);
 
     return {
       success: true,

@@ -2,22 +2,30 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { AppDataSource } from '../index';
 import { Tag } from '../entity';
 import { TagDTO } from './dto/tag.dto';
-import { error } from 'console';
+import { Repository } from 'typeorm';
+
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TagService {
-  async createTag(body: TagDTO) {
-    const tagRepository = AppDataSource.getRepository(Tag);
+  constructor(
+    @InjectRepository(Tag)
+    private tagRepository: Repository<Tag>,
+  ) {}
+
+  async create(body: TagDTO) {
     const tag = new Tag();
     tag.name = body.name;
-    await tagRepository.save(tag);
+    tag.description = body.description;
+
+    await this.tagRepository.save(tag);
     return {
       tag,
     };
   }
 
   async getTags() {
-    const tag = await AppDataSource.getRepository(Tag).find();
+    const tag = this.tagRepository.find();
 
     if (!tag) {
       throw new NotFoundException();
@@ -32,7 +40,7 @@ export class TagService {
   }
 
   async searchTags(keyword: string) {
-    const tags = await AppDataSource.getRepository(Tag)
+    const tags = await this.tagRepository
       .createQueryBuilder('tag')
       .where('tag.name like :keyword', { keyword: `%${keyword}%` })
       .getMany();
