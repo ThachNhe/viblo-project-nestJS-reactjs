@@ -5,14 +5,17 @@ import { Comment, User, Post } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CommentGateway } from './comment.gateway';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
+    private readonly commentsGateway: CommentGateway,
   ) {}
 
+  // Hàm create comment
   async create(body: CommentDTO) {
     const user = await AppDataSource.getRepository(User).findOne({
       where: { id: +body.userId },
@@ -36,6 +39,11 @@ export class CommentService {
     delete comment?.post;
     delete comment?.user?.password;
     delete comment?.user?.email;
+
+    this.commentsGateway.server.emit('newComment', {
+      comment,
+      postId: body.postId,
+    });
 
     return {
       success: true,

@@ -18,106 +18,8 @@ import Slider from "react-slick";
 import { extractHeadings } from "../../../utils/utils";
 import Banner from "./Banner";
 import NoComment from "./NoComment";
-const data = [
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
+import { socket } from "../../../socket";
 
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-
-  {
-    title: "How to push code to github repository",
-    author: "Dinh Van Thach",
-    readTime: 5,
-    viewNumber: 10,
-    commentNumber: 5,
-    bookmarkNumber: 1,
-    point: 10,
-  },
-];
 const settings = {
   dots: true,
   infinite: true,
@@ -142,11 +44,21 @@ function Homepage() {
     location?.state?.data ? location?.state?.data : 17
   );
 
-
   useEffect(() => {
     dispatch(actions.getPostById(defaultPostId));
     dispatch(actions.getCommentByPostId(defaultPostId));
     dispatch(actions.getRelatedPosts(defaultPostId));
+    // Kết nối với sự kiện 'newComment'
+    socket.on("newComment", (commentData) => {
+      console.log("newComment : ", commentData);
+      if (commentData?.postId === defaultPostId) {
+        dispatch(actions.getCommentByPostId(defaultPostId));
+      }
+    });
+
+    return () => {
+      socket.off("newComment");
+    };
   }, []);
 
   useEffect(() => {
@@ -350,12 +262,11 @@ function Homepage() {
 
           <PostSection
             post={relatedPosts?.data}
-
             sectionName={"Bài viết liên quan"}
           />
 
           <PostSection
-             post={relatedPosts?.data}
+            post={relatedPosts?.data}
             sectionName={"Bài viết khác của văn Thạch"}
           />
 
