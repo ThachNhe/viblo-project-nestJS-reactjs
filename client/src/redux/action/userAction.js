@@ -55,6 +55,24 @@ export const getPaginationUsers = (page, limit) => {
   };
 };
 
+export const getTopAuthors = (page, limit) => {
+  return async (dispatch) => {
+    try {
+      const users = await services.getTopAuthors(page, limit);
+      dispatch({
+        type: actionType.GET_TOP_AUTHOR_SUCCESS,
+        payload: users,
+      });
+    } catch (error) {
+      dispatch({
+        type: actionType.GET_TOP_AUTHOR_FAILED,
+        payload: null,
+      });
+      console.error("err from get top authors:", error);
+    }
+  };
+};
+
 export const logout = () => {
   return async (dispatch) => {
     try {

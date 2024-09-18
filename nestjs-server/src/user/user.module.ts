@@ -6,10 +6,10 @@ import { JwtStrategy } from '../auth/strategy';
 import { RolesGuard } from '../auth/strategy/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../entity/index';
+import { Post, User } from '../entity/index';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Post]),
     ConfigModule,
     JwtModule.register({}),
   ],

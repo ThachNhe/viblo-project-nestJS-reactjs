@@ -1,18 +1,19 @@
 import { Injectable, Query } from '@nestjs/common';
-import { AppDataSource } from '../index';
-import { User } from '../entity/User';
 import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
 import { formatVietnameseDate } from 'src/utils/common.function';
 import { Role } from '../enums/index';
-import { In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Post, User } from '../entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+
+    @InjectRepository(Post)
+    private postRepository: Repository<Post>,
   ) {}
   async getUser(id: UserIdDTO) {
     return await this.userRepository.findOne({
@@ -152,6 +153,42 @@ export class UserService {
       statusCode: 200,
       error: null,
       data: user,
+    };
+  }
+
+  async getTopUsers(query: UserPaginationDTO) {
+    const { page = 1, limit = 15 } = query;
+    const offset = (page - 1) * limit;
+
+    const result = await this.postRepository
+      .createQueryBuilder('post')
+      .innerJoin('post.author', 'user') // Thực hiện JOIN với bảng user dựa trên mối quan hệ
+      .select('user.fullName', 'fullName') // Lấy thông tin fullName
+      .addSelect('user.userName', 'userName') // Lấy thông tin userName
+      .addSelect('user.follower_number', 'follower_number') // Lấy số follower
+      .addSelect('user.avatar', 'avatar') // Lấy avatar
+      .addSelect('user.post_number', 'post_number') // Lấy số lượng bài viết
+      .addSelect('SUM(post.view_number)', 'view_number') // Tính tổng số lượt xem
+      .groupBy('user.fullName') // Nhóm theo fullName
+      .addGroupBy('user.userName') // Nhóm theo userName
+      .addGroupBy('user.follower_number') // Nhóm theo số lượng follower
+      .addGroupBy('user.avatar') // Nhóm theo avatar
+      .addGroupBy('user.post_number')
+      .take(limit)
+      .limit((page - 1) * limit) // Nhóm theo số lượng bài viết
+      .getRawMany(); // Lấy kết quả dưới dạng raw data
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: result,
+      meta: {
+        totalItems: result.length,
+        totalPages: Math.ceil(result.length / limit),
+        currentPage: +page,
+        pageSize: +limit,
+      },
     };
   }
 }

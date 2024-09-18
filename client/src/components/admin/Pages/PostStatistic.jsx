@@ -1,26 +1,55 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import CardDataStats from "../Tables/CardDataStats";
+import Avatar from "../../navbar/Avatar";
+import avatarDefault from "../../../images/user/avatar.png";
 import * as actions from "../../../redux/action/index";
+import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 
 const PostStatistic = () => {
   const dispatch = useDispatch();
-  const commonStatisticData = useSelector((state)=> state.statistic.commonStatisticData)
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const [page, setPage] = useState(queryParams.get("page") || 1);
 
-  console.log('commonStatisticData :' ,commonStatisticData);
+  const commonStatisticData = useSelector(
+    (state) => state.statistic.commonStatisticData
+  );
 
   useEffect(() => {
     dispatch(actions.commonStatistic());
+    dispatch(actions.getTopAuthors(1, 10));
   }, []);
 
+  useEffect(() => {
+    const page = parseInt(queryParams.get("page")) || 1;
+    setPage(page);
+  }, [location.search]);
 
+  const topAuthors = useSelector((state) => state?.user?.topAuthors);
 
+  const handlePageChange = (selectedItem) => {
+    try {
+      const newPage = selectedItem.selected + 1;
+      const limit = 10;
+      setPage(newPage);
+      navigate(`/admin/statistics?page=${newPage}`);
+      dispatch(actions.getTopAuthors(newPage, limit));
+    } catch (e) {
+      console.log("ERROR : ", e);
+    }
+  };
   return (
-    <>
+    <div className=" flex flex-col gap-6">
+      <Breadcrumb pageName="Số liệu" />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
           title="Tổng người dùng"
-          total= {commonStatisticData?.data?.userNumber}
+          total={commonStatisticData?.data?.userNumber}
           rate="0.95%"
           levelDown
         >
@@ -48,7 +77,7 @@ const PostStatistic = () => {
         </CardDataStats>
         <CardDataStats
           title="Tổng bài viết"
-          total= {commonStatisticData?.data?.postNumber}
+          total={commonStatisticData?.data?.postNumber}
           rate="4.35%"
           levelUp
         >
@@ -101,7 +130,7 @@ const PostStatistic = () => {
         </CardDataStats>
         <CardDataStats
           title="Tổng lượt xem"
-           total= {commonStatisticData?.data?.viewNumber}
+          total={commonStatisticData?.data?.viewNumber}
           rate="0.43%"
           levelUp
         >
@@ -126,7 +155,7 @@ const PostStatistic = () => {
 
         <CardDataStats
           title="Tổng bình luận"
-           total= {commonStatisticData?.data?.commentNumber}
+          total={commonStatisticData?.data?.commentNumber}
           rate="2.59%"
           levelUp
         >
@@ -169,7 +198,153 @@ const PostStatistic = () => {
           </svg>
         </CardDataStats>
       </div>
-    </>
+
+      <div
+        className="rounded-sm border border-stroke bg-white
+         px-5 pt-6 pb-2.5 shadow-default 
+    dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1"
+      >
+        <div className="border-b mb-6">
+          <span className="text-neutral-700 font-semibold text-lg">
+            Tác giả hàng đầu
+          </span>
+        </div>
+        <div className="max-w-full overflow-x-auto">
+          <table className="w-full table-auto">
+            <thead>
+              <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                <th className="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                  STT
+                </th>
+
+                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                  Tác giả
+                </th>
+                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                  Bài Viết
+                </th>
+                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                  Lượt theo dõi
+                </th>
+                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                  Lượt xem
+                </th>
+                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                  Danh tiếng
+                </th>
+                <th className="py-4 px-4 font-medium text-black dark:text-white">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {topAuthors?.data?.map((author, key) => (
+                <tr key={key}>
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h5 className="font-medium text-neutral-500 dark:text-white">
+                      {key + 1}
+                    </h5>
+                  </td>
+
+                  <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark cursor-pointer">
+                    <Avatar
+                      imgURL={author?.avatar || avatarDefault}
+                      height={45}
+                      width={45}
+                    />
+                    <p className="text-neutral-500 hover:text-neutral-600 hover:underline">
+                      {author?.userName}
+                    </p>
+                  </td>
+
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h5 className="font-medium text-neutral-500 dark:text-white">
+                      {author?.post_number}
+                    </h5>
+                  </td>
+
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h5 className="font-medium text-neutral-500 dark:text-white">
+                      {author?.follower_number}
+                    </h5>
+                  </td>
+
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h5 className="font-medium text-neutral-500 dark:text-white">
+                      {author?.view_number}
+                    </h5>
+                  </td>
+
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h5 className="font-medium text-neutral-500 dark:text-white">
+                      {author.view_number}
+                    </h5>
+                  </td>
+
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                    <div className="flex items-center space-x-3.5">
+                      <button
+                        className="hover:text-primary"
+                        onClick={() => {
+                          console.log("");
+                        }}
+                      >
+                        <svg
+                          className="fill-current"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 18 18"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z"
+                            fill=""
+                          />
+                          <path
+                            d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z"
+                            fill=""
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel=">"
+          onPageChange={handlePageChange}
+          pageRangeDisplayed={5}
+          pageCount={topAuthors?.meta?.totalPages || 1}
+          previousLabel="<"
+          renderOnZeroPageCount={null}
+          containerClassName={"flex justify-center my-5"}
+          pageClassName={"mx-1"}
+          forcePage={page - 1}
+          pageLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2 h-10 w-10"
+          }
+          previousClassName={"mx-1"}
+          previousLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
+          nextClassName={"mx-1"}
+          nextLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
+          breakClassName={"mx-1"}
+          breakLinkClassName={
+            "px-4 py-2 border border-gray-500 rounded-md border-2"
+          }
+          activeClassName={" text-blue-600  font-semibold bg-slate-200"}
+          disabledClassName={"text-neutral-500 "}
+        />
+      </div>
+    </div>
   );
 };
 

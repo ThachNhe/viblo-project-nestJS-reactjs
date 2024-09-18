@@ -26,9 +26,15 @@ export class UserController {
     return 'authorize';
   }
 
+  @Get('top')
+  @UseGuards(AuthGuard('jwt'))
+  async getTopUsers(@Query() query: UserPaginationDTO) {
+    return this.userService.getTopUsers(query);
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  getUser(@Param('id') userId: UserIdDTO) {
+  getUser(@Param() userId: UserIdDTO) {
     return this.userService.getUser(userId);
   }
 

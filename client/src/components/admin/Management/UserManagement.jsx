@@ -20,7 +20,7 @@ function UserManagement() {
   const [page, setPage] = useState(queryParams.get("page") || 1);
   const navigate = useNavigate();
 
-  const allUser = useSelector((state) => state.user.allUsers);
+  const paginatingUsers = useSelector((state) => state.user.paginatingUsers);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -143,7 +143,7 @@ function UserManagement() {
             </div>
           </div>
 
-          {allUser?.data?.map((user, key) => (
+          {paginatingUsers?.data?.map((user, key) => (
             <div
               className={`grid grid-cols-3 sm:grid-cols-7 ${
                 key === user.length - 1 ? "" : "border-b border-stroke "
@@ -212,7 +212,7 @@ function UserManagement() {
           nextLabel=">"
           onPageChange={handlePageChange}
           pageRangeDisplayed={5}
-          pageCount={allUser?.data?.meta?.totalPages || 2}
+          pageCount={paginatingUsers?.data?.meta?.totalPages || 2}
           previousLabel="<"
           renderOnZeroPageCount={null}
           containerClassName={"flex justify-center my-5"}

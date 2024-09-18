@@ -28,6 +28,10 @@ const unblockUser = (userId) => {
   return axios.put(`/users/${userId}/unblock`);
 };
 
+const getTopAuthors = (page, limit) => {
+  return axios.get(`/users/top?page=${page}&limit=${limit}`);
+};
+
 export {
   userLoginService,
   userRegisterService,
@@ -36,4 +40,5 @@ export {
   getPaginationUsers,
   blockUser,
   unblockUser,
+  getTopAuthors,
 };

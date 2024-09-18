@@ -42,6 +42,11 @@ const FollowingPost = () => {
     dispatch(actions.getPaginationPosts(page, 10));
   }, []);
 
+  useEffect(() => {
+    const page = parseInt(queryParams.get("page")) || 1;
+    setPage(page);
+  }, [location.search]);
+
   const handlePageChange = (selectedItem) => {
     try {
       const newPage = selectedItem.selected + 1;
@@ -72,6 +77,7 @@ const FollowingPost = () => {
         renderOnZeroPageCount={null}
         containerClassName={"flex justify-center my-5"}
         pageClassName={"mx-1"}
+        forcePage={page - 1}
         pageLinkClassName={
           "px-4 py-2 border border-gray-500 rounded-md border-2 h-10 w-10"
         }

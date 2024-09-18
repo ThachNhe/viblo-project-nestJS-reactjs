@@ -108,7 +108,7 @@ function TagManagement() {
                 </div>
 
                 <button
-                  className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                  className="flex w-full justify-center rounded bg-primary p-3 text-gray hover:bg-opacity-90 text-gray-50 font-semibold"
                   onClick={(e) => handleCreateTag(e)}
                 >
                   Tạo

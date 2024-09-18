@@ -1,5 +1,5 @@
 import ReactPaginate from "react-paginate";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import avatarDefault from "../../../images/user/avatar.png";
 import Avatar from "../../navbar/Avatar";
@@ -18,6 +18,11 @@ const PostManagement = () => {
 
   const paginationPosts = useSelector((state) => state?.post?.paginationPosts);
 
+  useEffect(() => {
+    const page = parseInt(queryParams.get("page")) || 1;
+    setPage(page);
+  }, [location.search]);
+
   const handlePageChange = (selectedItem) => {
     try {
       const newPage = selectedItem.selected + 1;
@@ -35,8 +40,9 @@ const PostManagement = () => {
 
   const handleOpenPostViewModal = (content_markdown) => {
     setOpenPostViewModal(true);
-    setContent_markdown(content_markdown)
+    setContent_markdown(content_markdown);
   };
+  console.log("page : ", page);
 
   return (
     <div
@@ -129,7 +135,9 @@ const PostManagement = () => {
                   <div className="flex items-center space-x-3.5">
                     <button
                       className="hover:text-primary"
-                      onClick={() => handleOpenPostViewModal(post.content_markdown)}
+                      onClick={() =>
+                        handleOpenPostViewModal(post.content_markdown)
+                      }
                     >
                       <svg
                         className="fill-current"
@@ -186,6 +194,7 @@ const PostManagement = () => {
         renderOnZeroPageCount={null}
         containerClassName={"flex justify-center my-5"}
         pageClassName={"mx-1"}
+        forcePage={page - 1}
         pageLinkClassName={
           "px-4 py-2 border border-gray-500 rounded-md border-2 h-10 w-10"
         }
@@ -201,7 +210,7 @@ const PostManagement = () => {
         breakLinkClassName={
           "px-4 py-2 border border-gray-500 rounded-md border-2"
         }
-        activeClassName={" text-blue-600  font-semibold bg-slate-200"}
+        activeClassName={" text-blue-600  font-semibold bg-slate-200 active"}
         disabledClassName={"text-neutral-500 "}
       />
     </div>
