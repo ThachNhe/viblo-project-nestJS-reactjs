@@ -14,3 +14,9 @@ export class TagNameDTO {
   @IsNotEmpty()
   name: string;
 }
+
+export class KeywordDTO {
+  @IsString()
+  @IsNotEmpty()
+  keyword: string;
+}

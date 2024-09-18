@@ -1,6 +1,6 @@
 import { Controller, Body, Put, Query, Get } from '@nestjs/common';
 import { FileUploadService } from './file-upload.service';
-import { NoVersionOrUpdateDateColumnError } from 'typeorm';
+
 @Controller('minio')
 export class MinioController {
   constructor(private readonly minioService: FileUploadService) {}
@@ -11,8 +11,6 @@ export class MinioController {
     const bucketName = 'test';
     const objectName = fileName;
     const expirySeconds = 60 * 60 * 60;
-
-    console.log('check obj : ', objectName);
 
     const presignedURL = await this.minioService.generatePresignedUrl(
       bucketName,

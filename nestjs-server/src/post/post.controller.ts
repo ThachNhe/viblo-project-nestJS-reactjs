@@ -12,7 +12,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { PostDTO } from './dto/post.dto';
+import { PostDTO, PostIdDTO, VoteDTO } from './dto/post.dto';
 import { PaginationDto } from './dto/pagination.dto';
 
 @Controller('posts')
@@ -26,32 +26,32 @@ export class PostController {
     return this.PostService.createPost(body, userId);
   }
 
-  @Get(':id')
-  getId(@Param('id') postId: any) {
-    return postId
-      ? this.PostService.getId(postId)
+  @Get(':postId')
+  getId(@Param() params: PostIdDTO) {
+    return params?.postId
+      ? this.PostService.getId(params?.postId)
       : this.PostService.getRadomId();
   }
 
-  @Post(':id/vote')
+  @Post(':postId/vote')
   @UseGuards(AuthGuard('jwt'))
-  vote(@Body() body: any, @Param('id') postId: number, @Request() req: any) {
+  vote(@Body() body: VoteDTO, @Param() params: PostIdDTO, @Request() req: any) {
     const userId = req.user.userId;
-    return this.PostService.vote(postId, userId, body.voteType);
+    return this.PostService.vote(params.postId, userId, body.voteType);
   }
 
-  @Post(':id/bookmark')
+  @Post(':postId/bookmark')
   @UseGuards(AuthGuard('jwt'))
-  bookmark(@Request() req: any, @Param('id') postId: number) {
+  bookmark(@Request() req: any, @Param() params: PostIdDTO) {
     const userId = req.user.userId;
-    return this.PostService.bookmarkService(postId, userId);
+    return this.PostService.bookmarkService(params.postId, userId);
   }
 
-  @Delete(':id/bookmark')
+  @Delete(':postId/bookmark')
   @UseGuards(AuthGuard('jwt'))
-  deleteBookmark(@Request() req: any, @Param('id') postId: number) {
+  deleteBookmark(@Request() req: any, @Param() params: PostIdDTO) {
     const userId = req.user.userId;
-    return this.PostService.deleteBookmark(postId, userId);
+    return this.PostService.deleteBookmark(params.postId, userId);
   }
 
   @Get()
@@ -59,8 +59,8 @@ export class PostController {
     return this.PostService.getPaginationPosts(query);
   }
 
-  @Get(':id/related')
-  async getRelatedPosts(@Param('id') postId: number) {
-    return this.PostService.getRelatedPosts(postId);
+  @Get(':postId/related')
+  async getRelatedPosts(@Param() params: PostIdDTO) {
+    return this.PostService.getRelatedPosts(params.postId);
   }
 }

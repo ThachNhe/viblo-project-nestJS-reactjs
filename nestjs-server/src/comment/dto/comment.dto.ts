@@ -1,10 +1,5 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  ValidateIf,
-} from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CommentDTO {
   @IsNotEmpty()
@@ -27,4 +22,11 @@ export class CommentDTO {
 
   @IsString()
   replyForUserName: string;
+}
+
+export class PostIdDTO {
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
+  postId: number;
 }

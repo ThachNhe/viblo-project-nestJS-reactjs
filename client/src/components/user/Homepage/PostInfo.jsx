@@ -1,71 +1,65 @@
 import { FaCaretUp } from "react-icons/fa";
 import { FaCaretDown } from "react-icons/fa";
 import { IoBookmark } from "react-icons/io5";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FaFacebookF } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
+
 function PostInfo({
   upvote,
   downvote,
   isBookmark,
   voteNumber,
-  facebook,
-  twitter,
   handlerUpvote,
   handlerDownvote,
   handlerBookmark,
 }) {
   return (
     <>
-      <div className="flex flex-col items-center gap-8 text-neutral-500 mt-20">
+      <div className="flex flex-col items-center gap-8 text-neutral-400 mt-20">
         {/* VOTE */}
         <div className="flex flex-col gap-0 ">
           {/* UP VOTE */}
-          <div className="relative flex items-center gap-2 group ">
+          <div
+            className="relative flex items-center gap-2 group "
+            data-tooltip-id="upvote"
+          >
             <FaCaretUp
               className={`text-5xl hover:text-gray-800 cursor-pointer
-                                ${upvote ? "text-cyan-700" : ""}`}
+                                ${upvote ? "text-blue-600" : ""}`}
               onClick={handlerUpvote}
             />
-            <div
-              className="absolute z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
-             text-white bg-gray-800 rounded-sm opacity-0 
-              group-hover:opacity-100 transition-opacity duration-300 font-semibold"
-            >
-              Upvote
-            </div>
+
+            <ReactTooltip id="upvote" place="right" content="Upvote" />
           </div>
 
           <span
             className={`text-2xl font-medium leading-3
-            ${upvote || downvote ? "text-cyan-700" : "text-neutral-500"}
+            ${upvote || downvote ? "text-blue-600" : "text-neutral-500"}
             `}
           >
             +{voteNumber}
           </span>
           {/* DOWN VOTE */}
-          <div className="relative flex items-center gap-2 group">
+          <div
+            className="relative flex items-center gap-2 group"
+            data-tooltip-id="downvote"
+          >
             <FaCaretDown
               className={`text-5xl hover:text-gray-800 cursor-pointer
-             ${downvote ? "text-cyan-700" : ""}
+             ${downvote ? "text-blue-600" : ""}
               `}
               onClick={handlerDownvote}
             />
-            <div
-              className="absolute left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
-             text-white bg-gray-800 rounded-sm opacity-0 
-              group-hover:opacity-100 transition-opacity duration-300 font-semibold z-10"
-            >
-              Upvote
-            </div>
+            <ReactTooltip id="downvote" place="right" content="Downvote" />
           </div>
         </div>
+
         {/* BOOKMARK */}
-        <div className="relative flex items-center gap-2 group">
+        <div className="" data-tooltip-id="bookmark">
           <div
-            className={`border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
-           group shadow-md
-            ${isBookmark ? 'ring-blue-500 border-cyan-500  ' : 'hover:bg-white'}
-         `}
+            className="border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
+         ring-gray-400 hover:ring-blue-300 group shadow-md"
           >
             <IoBookmark
               className={`text-2xl group-hover:text-blue-gray-700 cursor-pointer
@@ -74,51 +68,44 @@ function PostInfo({
               onClick={handlerBookmark}
             />
           </div>
-
-          <div
-            className="absolute  z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
-             text-white bg-gray-800 rounded-sm opacity-0 
-              group-hover:opacity-100 transition-opacity duration-300 font-semibold"
-          >
-            BookMark
-          </div>
         </div>
+        <ReactTooltip
+          id="bookmark"
+          place="right"
+          content={isBookmark ? "Bỏ lưu" : "Lưu"}
+        />
 
         {/* FACEBOOK */}
-        <div className="relative flex items-center gap-2 group">
+        <div className="" data-tooltip-id="facebook">
           <div
             className="border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
          ring-gray-400 hover:ring-blue-300 group shadow-md"
           >
             <FaFacebookF className="text-2xl group-hover:text-blue-300 cursor-pointer" />
           </div>
-
-          <div
-            className="absolute z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
-             text-white bg-gray-800 rounded-sm opacity-0 
-              group-hover:opacity-100 transition-opacity duration-300 min-w-36 font-semibold"
-          >
-            Chia sẻ lên facebook
-          </div>
         </div>
 
+        <ReactTooltip
+          id="facebook"
+          place="right"
+          content="Chia sẻ lên facebook"
+        />
+
         {/* TWITTER */}
-        <div className="relative flex items-center gap-2 group">
+        <div className="" data-tooltip-id="twitter">
           <div
             className="border rounded-full hover:bg-blue-100 w-10 h-10 flex justify-center items-center ring-1
-         ring-gray-300 hover:ring-blue-300 group shadow-md"
+         ring-gray-400 hover:ring-blue-300 group shadow-md"
           >
             <FaTwitter className="text-2xl group-hover:text-blue-300 cursor-pointer" />
           </div>
-
-          <div
-            className="absolute z-10 left-full ml-2 hidden group-hover:block px-2 py-1 text-xs
-             text-white bg-gray-800 rounded-sm opacity-0 
-              group-hover:opacity-100 transition-opacity duration-300 min-w-36 font-semibold"
-          >
-            Chia sẻ lên twitter
-          </div>
         </div>
+
+        <ReactTooltip
+          id="twitter"
+          place="right"
+          content="Chia sẻ lên twitter"
+        />
       </div>
     </>
   );

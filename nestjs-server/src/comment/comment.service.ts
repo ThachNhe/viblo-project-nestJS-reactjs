@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CommentDTO } from './dto/comment.dto';
+import { CommentDTO, PostIdDTO } from './dto/comment.dto';
 import { AppDataSource } from '../index';
 import { Comment, User, Post } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
@@ -53,7 +53,7 @@ export class CommentService {
     };
   }
 
-  async getCommentsByPostId(postId: any) {
+  async getCommentsByPostId(params: PostIdDTO) {
     let results = await this.commentRepository.query(`
       WITH replies AS (
         SELECT
@@ -62,7 +62,7 @@ export class CommentService {
         FROM
             "comments" c
         WHERE
-           c."parentId" IS NOT NULL AND c."postId" = ${postId}
+           c."parentId" IS NOT NULL AND c."postId" = ${params.postId}
       )
       SELECT
           r."id", r."content", r."parentId", r."row_number", r."replyForUserId", r."replyForUserName",r."created_at",

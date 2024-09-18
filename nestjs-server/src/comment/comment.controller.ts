@@ -1,6 +1,6 @@
 import { CommentService } from './comment.service';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { CommentDTO } from './dto/comment.dto';
+import { CommentDTO, PostIdDTO } from './dto/comment.dto';
 import { AuthGuard } from '@nestjs/passport';
 @Controller('comments')
 export class CommentController {
@@ -12,8 +12,8 @@ export class CommentController {
     return this.CommentService.create(body);
   }
 
-  @Get(':id')
-  getCommentsByPostId(@Param('id') postId: number) {
-    return this.CommentService.getCommentsByPostId(postId);
+  @Get(':postId')
+  getCommentsByPostId(@Param() params: PostIdDTO) {
+    return this.CommentService.getCommentsByPostId(params);
   }
 }

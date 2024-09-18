@@ -100,7 +100,6 @@ export class PostService {
         }
 
         if (voteType === 'DOWNVOTE') {
-          // post.vote_number += 1;
           this.postRepository
             .createQueryBuilder()
             .update(Post)
@@ -111,7 +110,6 @@ export class PostService {
         }
       } else {
         if (voteType === 'UPVOTE') {
-          // post.vote_number += 2;
           this.postRepository
             .createQueryBuilder()
             .update(Post)

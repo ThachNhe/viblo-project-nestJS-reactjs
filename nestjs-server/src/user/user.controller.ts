@@ -27,7 +27,6 @@ export class UserController {
   }
 
   @Get('top')
-  @UseGuards(AuthGuard('jwt'))
   async getTopUsers(@Query() query: UserPaginationDTO) {
     return this.userService.getTopUsers(query);
   }

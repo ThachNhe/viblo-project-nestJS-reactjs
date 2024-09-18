@@ -6,13 +6,14 @@ import 'dotenv/config';
 export class FileUploadService {
   public configService: ConfigService;
   private readonly minioClient: Minio.Client;
+
   constructor() {
     // this.minioClient = new Minio.Client({
-    //   endPoint: configService.get('MINIO_ENDPOINT'),
+    //   endPoint: this.configService.get('MINIO_ENDPOINT'),
     //   port: 9000,
-    //   useSSL: configService.get('MINIO_USE_SSL'),
-    //   accessKey: configService.get('MINIO_ACCESS_KEY'),
-    //   secretKey: configService.get('MINIO_SECRET_KEY'),
+    //   useSSL: this.configService.get('MINIO_USE_SSL'),
+    //   accessKey: this.configService.get('MINIO_ACCESS_KEY'),
+    //   secretKey: this.configService.get('MINIO_SECRET_KEY'),
     // });
 
     this.minioClient = new Minio.Client({
