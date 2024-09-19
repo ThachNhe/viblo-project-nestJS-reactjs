@@ -19,7 +19,7 @@ function CommentSection({
   };
 
   return (
-    <div className="flex flex-col gap-1 border p-2 mt-3">
+    <div className="flex flex-col gap-1 border border-neutral-300 p-2 mt-3 rounded-sm">
       <div>
         <Comment
           fullName={comment?.authorfullname}

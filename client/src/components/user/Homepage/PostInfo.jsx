@@ -34,7 +34,7 @@ function PostInfo({
           </div>
 
           <span
-            className={`text-2xl font-medium leading-3
+            className={`text-2xl font-medium leading-3 ml-2
             ${upvote || downvote ? "text-blue-600" : "text-neutral-500"}
             `}
           >

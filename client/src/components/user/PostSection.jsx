@@ -27,11 +27,11 @@ function PostSection({ sectionName, post }) {
                   <CarInfo
                     index={index}
                     title={item.title}
-                    author={item?.author?.userName}
+                    author={item?.author?.fullName}
                     createdAt={item.created_at}
-                    viewNumber={item.viewNumber}
-                    commentNumber={item.commentNumber}
-                    bookmarkNumber={item.bookmarkNumber}
+                    viewNumber={item.view_number}
+                    commentNumber={item.comment_number}
+                    bookmarkNumber={item.bookmark_number}
                     point={10}
                   />
                 </div>

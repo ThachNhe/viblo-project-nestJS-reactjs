@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { Link } from "react-router-dom";
-import PerfectScrollbar from "react-perfect-scrollbar";
 
 
 const DropdownPersonalNotification = () => {
@@ -34,7 +33,7 @@ const DropdownPersonalNotification = () => {
             >
               2
             </span>
-            <FaRegBell className="text-xl font-extrabold text-neutral-500 cursor-pointer: hover:text-gray-900" />
+            <FaRegBell className="text-xl font-extrabold text-neutral-500 cursor-pointer hover:text-neutral-600 transition duration-300" />
           </div>
         </div>
       </div>
@@ -46,8 +45,7 @@ const DropdownPersonalNotification = () => {
           <div className="px-4 py-3">
             <h5 className="text-sm font-semibold text-neutral-600">Thông báo</h5>
           </div>
-          <PerfectScrollbar>
-            <ul className="flex flex-col h-96 font-medium text-gray-500">
+            <ul className="flex flex-col h-96 font-medium text-gray-500 overflow-y-auto custom-scrollbar">
               <li>
                 <Link
                   className="flex flex-col gap-2.5 border-t border-stroke hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 px-4 py-3 hover:bg-slate-100 group hover:text-blue-400 "
@@ -128,7 +126,6 @@ const DropdownPersonalNotification = () => {
                 </Link>
               </li>
             </ul>
-          </PerfectScrollbar>
           <div className="px-4 py-3 border-t">
             <h5 className="text-sm font-medium text-center hover:text-blue-400 hover:underline text-neutral-500">
               Xem tất cả

@@ -360,27 +360,64 @@ export class PostService {
     };
   }
 
+  // async getRelatedPosts(postId: number) {
+  //   const post = await this.postRepository.findOne({ where: { id: postId } });
+
+  //   if (!post) {
+  //     throw new NotFoundException('Post not found');
+  //   }
+
+  //   const tags = post.tags_array;
+
+  //   if (!tags || tags.length === 0) {
+  //     return {
+  //       success: true,
+  //       statusCode: 200,
+  //       error: null,
+  //       data: [],
+  //     };
+  //   }
+
+  //   const relatedPosts = await this.postRepository
+  //     .createQueryBuilder('post')
+  //     .innerJoin('post.tags', 'tag') // Kết nối với bảng tags
+  //     .where('post.id != :postId', { postId }) // Loại trừ bài viết hiện tại
+  //     .andWhere((qb) => {
+  //       const subQuery = qb
+  //         .subQuery()
+  //         .select('tag.id')
+  //         .from(Post, 'p')
+  //         .innerJoin('p.tags', 't')
+  //         .where('p.id = :postId')
+  //         .getQuery();
+  //       return 'tag.id IN ' + subQuery; // Kiểm tra xem tag có nằm trong subQuery không
+  //     })
+  //     .getMany();
+
+  //   const newResult = relatedPosts?.map((item, index) => {
+  //     return {
+  //       ...item,
+  //       created_at: formatVietnameseDate(`${item.created_at}`),
+  //     };
+  //   });
+  //   return {
+  //     success: true,
+  //     statusCode: 200,
+  //     error: null,
+  //     data: newResult,
+  //   };
+  // }
+
   async getRelatedPosts(postId: number) {
+    // Lấy các bài viết liên quan theo tag
     const post = await this.postRepository.findOne({ where: { id: postId } });
 
     if (!post) {
       throw new NotFoundException('Post not found');
     }
-
-    const tags = post.tags_array;
-
-    if (!tags || tags.length === 0) {
-      return {
-        success: true,
-        statusCode: 200,
-        error: null,
-        data: [],
-      };
-    }
-
     const relatedPosts = await this.postRepository
       .createQueryBuilder('post')
-      .leftJoinAndSelect('post.tags', 'tags')
+      .innerJoin('post.tags', 'tag') // Kết nối với bảng tags
       .leftJoin('post.author', 'author')
       .addSelect([
         'author.id',
@@ -388,8 +425,17 @@ export class PostService {
         'author.fullName',
         'author.avatar',
       ])
-      .where('tags.name IN (:...tags)', { tags })
-      .andWhere('post.id != :postId', { postId })
+      .where('post.id != :postId', { postId }) // Loại trừ bài viết hiện tại
+      .andWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('tag.id')
+          .from(Post, 'p')
+          .innerJoin('p.tags', 't')
+          .where('p.id = :postId')
+          .getQuery();
+        return 'tag.id IN ' + subQuery; // Kiểm tra xem tag có nằm trong subQuery không
+      })
       .getMany();
 
     const newResult = relatedPosts?.map((item, index) => {

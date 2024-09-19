@@ -16,6 +16,7 @@ module.exports = withMT({
       },
       colors: {
         "post-nav-bar": "#0b1a33",
+        homepage: "#ffffff",
         current: "currentColor",
         transparent: "transparent",
         white: "#FFFFFF",
@@ -357,5 +358,9 @@ module.exports = withMT({
       },
     },
   },
-  plugins: [require("flowbite/plugin"), require("@tailwindcss/typography")],
+  plugins: [
+    require("flowbite/plugin"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/line-clamp"),
+  ],
 });
