@@ -23,12 +23,11 @@ import {
 } from './entity/index';
 
 import { StatisticsModule } from './statistics/statistics.module';
-
+import { DatabaseClearUtil } from '../test/database-clear.util';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env.test', // Ensure this path is correct
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
@@ -39,7 +38,6 @@ import { StatisticsModule } from './statistics/statistics.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         synchronize: true,
-        dropSchema: true,
         logging: false,
         entities: [
           User,
@@ -56,7 +54,6 @@ import { StatisticsModule } from './statistics/statistics.module';
       }),
       inject: [ConfigService],
     }),
-
     AuthModule,
     UserModule,
     FileUploadModule,
@@ -65,12 +62,21 @@ import { StatisticsModule } from './statistics/statistics.module';
     CommentModule,
     StatisticsModule,
   ],
-  providers: [],
+  providers: [DatabaseClearUtil], // Add utility to providers
   controllers: [],
 })
 export class AppModule implements NestModule {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private databaseClearUtil: DatabaseClearUtil, // Inject utility
+  ) {}
+
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+
+  async clearDatabase() {
+    // Method to clear database, can be called from tests
+    await this.databaseClearUtil.clearDatabase();
   }
 }

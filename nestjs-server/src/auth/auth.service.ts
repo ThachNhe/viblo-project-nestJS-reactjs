@@ -185,9 +185,8 @@ export class AuthService {
   }
 
   // logout service
-
   async logout(req: Request) {
-    req.cookies.refreshToken = null;
+    // req.cookies?.refreshToken = null;
     return {
       success: true,
       statusCode: 200,

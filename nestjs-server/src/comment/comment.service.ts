@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Request } from '@nestjs/common';
 import { CommentDTO, PostIdDTO } from './dto/comment.dto';
 import { AppDataSource } from '../index';
 import { Comment, User, Post } from '../entity';
@@ -15,10 +15,11 @@ export class CommentService {
     private readonly commentsGateway: CommentGateway,
   ) {}
 
-  // Hàm create comment
-  async create(body: CommentDTO) {
+  // create comment
+  async create(body: CommentDTO, @Request() req: any) {
+    const userId = req.user.id;
     const user = await AppDataSource.getRepository(User).findOne({
-      where: { id: +body.userId },
+      where: { id: userId },
     });
 
     const post = await AppDataSource.getRepository(Post).findOne({

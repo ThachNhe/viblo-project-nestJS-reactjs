@@ -5,8 +5,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entity/index';
+import { ConfigModule } from '@nestjs/config';
 @Module({
-  imports: [JwtModule.register({}), TypeOrmModule.forFeature([User])],
+  imports: [
+    JwtModule.register({}),
+    TypeOrmModule.forFeature([User]),
+    ConfigModule,
+  ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
   exports: [AuthService],

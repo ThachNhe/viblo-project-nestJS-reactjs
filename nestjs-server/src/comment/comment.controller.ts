@@ -1,5 +1,13 @@
 import { CommentService } from './comment.service';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { CommentDTO, PostIdDTO } from './dto/comment.dto';
 import { AuthGuard } from '@nestjs/passport';
 @Controller('comments')
@@ -8,8 +16,8 @@ export class CommentController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  create(@Body() body: CommentDTO) {
-    return this.CommentService.create(body);
+  create(@Body() body: CommentDTO, @Request() req: any) {
+    return this.CommentService.create(body, req);
   }
 
   @Get(':postId')

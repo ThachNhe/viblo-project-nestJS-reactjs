@@ -8,10 +8,6 @@ export class CommentDTO {
 
   @IsNotEmpty()
   @IsNumber()
-  userId: number;
-
-  @IsNotEmpty()
-  @IsNumber()
   postId: number;
 
   @IsNotEmpty()
