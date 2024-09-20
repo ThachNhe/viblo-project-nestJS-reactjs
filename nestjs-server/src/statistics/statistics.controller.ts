@@ -2,8 +2,8 @@ import { StatisticsService } from './statistics.service';
 import { AuthGuard } from '@nestjs/passport';
 import { TagService } from './../tag/tag.service';
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { Roles } from 'src/auth/strategy/roles.decorator';
-import { Role } from 'src/enums';
+import { Roles } from '../auth/strategy/roles.decorator';
+import { Role } from '../enums';
 
 @Controller('statistics')
 export class StatisticsController {

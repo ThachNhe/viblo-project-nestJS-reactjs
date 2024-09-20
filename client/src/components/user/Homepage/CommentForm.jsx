@@ -55,7 +55,7 @@ function CommentForm({
             hover:bg-blue-500 rounded-md"
             onClick={handleSubmit}
           >
-            Post comment
+            Bình luận
           </button>
           <div className="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
             <button

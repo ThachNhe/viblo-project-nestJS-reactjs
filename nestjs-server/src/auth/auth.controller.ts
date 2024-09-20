@@ -18,7 +18,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('register')
   register(@Body() body: AuthDTORegister) {
-    return this.authService.registerService(body);
+    return this.authService.register(body);
   }
 
   @Post('login')
@@ -31,7 +31,7 @@ export class AuthController {
         'Either email or username must be provided',
       );
     }
-    return this.authService.loginService(body, response);
+    return this.authService.login(body, response);
   }
 
   @Post('refresh-token')

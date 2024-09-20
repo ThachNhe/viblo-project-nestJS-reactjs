@@ -29,7 +29,7 @@ function Comment({
 
   return (
     <>
-      <div className="flex flex-col gap-2 rounded-md p-2">
+      <div className="flex flex-col gap-2 rounded-md p-2 ">
         <div className="flex items-center gap-2">
           <Avatar
            imgURL={"/images/avatar.png"} height={37} width={37}

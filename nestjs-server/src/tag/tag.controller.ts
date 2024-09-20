@@ -1,8 +1,8 @@
 import { TagService } from './tag.service';
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { KeywordDTO, TagDTO, TagNameDTO } from './dto/tag.dto';
-import { Roles } from 'src/auth/strategy/roles.decorator';
-import { Role } from 'src/enums';
+import { Roles } from '../auth/strategy/roles.decorator';
+import { Role } from '../enums';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('tags')

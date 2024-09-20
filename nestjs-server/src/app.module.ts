@@ -1,13 +1,14 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { ConfigModule } from '@nestjs/config';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { LoggerMiddleware } from './utils/logger.middleware';
 import { PostModule } from './post/post.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagModule } from './tag/tag.module';
 import { CommentModule } from './comment/comment.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import {
   Answer,
   Comment,
@@ -25,33 +26,39 @@ import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'root',
-      password: '123',
-      database: 'viblo-db',
-      synchronize: true,
-      logging: false,
-      entities: [
-        User,
-        Post,
-        Comment,
-        Series,
-        Question,
-        Answer,
-        Tag,
-        Notification,
-        NotificationDetail,
-        UserPost,
-      ],
-      migrations: [],
-      subscribers: [],
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env.test', // Ensure this path is correct
     }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        synchronize: true,
+        dropSchema: true,
+        logging: false,
+        entities: [
+          User,
+          Post,
+          Comment,
+          Series,
+          Question,
+          Answer,
+          Tag,
+          Notification,
+          NotificationDetail,
+          UserPost,
+        ],
+      }),
+      inject: [ConfigService],
+    }),
+
     AuthModule,
     UserModule,
-    ConfigModule.forRoot({ isGlobal: true }),
     FileUploadModule,
     PostModule,
     TagModule,
@@ -62,6 +69,7 @@ import { StatisticsModule } from './statistics/statistics.module';
   controllers: [],
 })
 export class AppModule implements NestModule {
+  constructor(private configService: ConfigService) {}
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }

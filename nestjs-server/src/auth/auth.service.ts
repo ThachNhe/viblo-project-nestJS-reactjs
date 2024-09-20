@@ -24,7 +24,7 @@ export class AuthService {
   ) {}
 
   // user register service
-  async registerService(body: AuthDTORegister) {
+  async register(body: AuthDTORegister) {
     let hashedPassword = await argon2.hash(body.password);
     const user = new User();
     user.email = body.email;
@@ -36,6 +36,7 @@ export class AuthService {
       await this.userRepository.save(user);
       delete user.password;
       delete user.avatar;
+      delete user.roles;
       return {
         statusCode: 200,
         err: null,
@@ -43,7 +44,6 @@ export class AuthService {
         data: {
           user: user,
         },
-        msg: 'Register success!',
       };
     } catch (error) {
       throw new InternalServerErrorException();
@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   // user login service
-  async loginService(body: AuthDTOLogin, response: Response) {
+  async login(body: AuthDTOLogin, response: Response) {
     const user = await this.userRepository.findOne({
       where: [{ email: body.email }, { userName: body.userName }],
       select: [

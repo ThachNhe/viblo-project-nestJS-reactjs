@@ -14,8 +14,6 @@ export class AuthDTORegister {
 
   @IsNotEmpty()
   userName: string;
-
-  avatar: string;
 }
 
 export class AuthDTOLogin {

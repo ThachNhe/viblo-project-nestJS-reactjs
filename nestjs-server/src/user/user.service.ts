@@ -1,6 +1,6 @@
 import { Injectable, Query } from '@nestjs/common';
 import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
-import { formatVietnameseDate } from 'src/utils/common.function';
+import { formatVietnameseDate } from '../utils/common.function';
 import { Role } from '../enums/index';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
