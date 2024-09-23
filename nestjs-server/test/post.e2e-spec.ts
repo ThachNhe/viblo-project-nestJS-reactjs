@@ -5,6 +5,8 @@ import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
 import { DatabaseClearUtil } from './database-clear.util';
 import { PostDatabasePrepareUtil } from './utils/database-post-prepare.util';
+import { error } from 'console';
+import e from 'express';
 
 describe('Post Module (e2e)', () => {
   let app: INestApplication;
@@ -264,7 +266,7 @@ describe('Post Module (e2e)', () => {
     it('Should get a post unsuccessfully because id is less than 1', async () => {
       const response = await requestAgent.get(`/posts/-1`).expect(400);
       expect(response.body).toEqual({
-        message: ['postId must be less than 1 id'],
+        message: ['postId must be more than 1'],
         error: 'Bad Request',
         statusCode: 400,
       });
@@ -275,7 +277,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent.get(`/posts/ohskgfjjf`).expect(400);
       expect(response.body).toEqual({
         message: [
-          'postId must be less than 1 id',
+          'postId must be more than 1',
           'postId must be an integer number',
           'postId must be a number conforming to the specified constraints',
         ],
@@ -285,16 +287,132 @@ describe('Post Module (e2e)', () => {
     });
   });
 
-  describe('POST /posts/:id/vote', () => {
-    //1. Vote post successfully
-    it('Should vote a post successfully', async () => {
-      console.log('postId', postId);
-      // const vote = await requestAgents
-      //   .post(`/posts/${postId}/vote`)
-      //   .send({ voteType: 'UPVOTE' })
-      //   .set('Authorization', `Bearer ${token}`)
-      //   .expect(201);
+  describe('POST /posts/:id/bookmark', () => {
+    //1. Bookmark post without token
+    it('Should bookmark a post unsuccessfully because without token', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/bookmark`)
+        .expect(401);
+      expect(response.body).toEqual({
+        message: 'Unauthorized',
+        statusCode: 401,
+      });
     });
+
+    //2. Bookmark post successfully
+    it('Should bookmark a post successfully', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/bookmark`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toEqual({
+        success: true,
+        statusCode: 200,
+        error: null,
+        data: 'Bookmark successfully',
+      });
+    });
+
+    //3. Bookmark post unsuccessfully with wrong postId
+    it('Should bookmark a post unsuccessfully because wrong postId', async () => {
+      const response = await requestAgent
+        .post(`/posts/8723987349/bookmark`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
+
+      expect(response.body).toEqual({
+        message: 'Post not found',
+        error: 'Not Found',
+        statusCode: 404,
+      });
+    });
+
+    //4. Bookmark post unsuccessfully with less than 1 id
+
+    it('Should bookmark a post unsuccessfully because id is less than 1', async () => {
+      const response = await requestAgent
+        .post(`/posts/${-1}/bookmark`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400);
+      expect(response.body).toEqual({
+        message: ['postId must be more than 1'],
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+    });
+
+    //5 Bookmark post not found with id is string
+
+    it('Should bookmark a post unsuccessfully because id is string', async () => {
+      const response = await requestAgent
+        .post(`/posts/ohskgfjjf/bookmark`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400);
+      expect(response.body).toEqual({
+        message: [
+          'postId must be more than 1',
+          'postId must be an integer number',
+          'postId must be a number conforming to the specified constraints',
+        ],
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+    });
+
+    //6. Unbookmark post successfully
+    it('Should unbookmark a post successfully', async () => {
+      const response = await requestAgent
+        .delete(`/posts/${postId}/bookmark`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+
+      expect(response.body).toEqual({
+        success: true,
+        statusCode: 200,
+        error: null,
+        data: 'UnBookmark successfully',
+      });
+    });
+
+    // 7. unbookmark without token
+    it('Should unbookmark a post uncucessfully because wihtout token', async () => {
+      const response = await requestAgent
+        .delete(`/posts/${postId}/bookmark`)
+        .expect(401);
+      expect(response.body).toEqual({
+        message: 'Unauthorized',
+        statusCode: 401,
+      });
+    });
+
+    // 8. unbookmark unsuccessfully with wrong postId
+    it('Should unbookmark a post unsuccessfully because wrong postId', async () => {
+      const response = await requestAgent
+        .delete(`/posts/8723987349/bookmark`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
+
+      expect(response.body).toEqual({
+        message: 'Post not found',
+        error: 'Not Found',
+        statusCode: 404,
+      });
+    });
+  });
+
+  describe('GET /posts/:id/related', () => {
+    //1. Get related post successfully
+    // beforeAll(async () => {});
+    // it('Should get related post successfully', async () => {
+    //   const response = await requestAgent.get(`/posts/${postId}/related`).expect(200);
+    //   expect(response.body).toEqual({
+    //     success: true,
+    //     statusCode: 200,
+    //     error: null,
+    //     data: [],
+    //   });
+    // })
   });
 
   afterAll(async () => {

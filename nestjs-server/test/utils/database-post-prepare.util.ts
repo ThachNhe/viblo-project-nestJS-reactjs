@@ -13,14 +13,14 @@ export class PostDatabasePrepareUtil {
 
   async prepare(): Promise<void> {
     // Xóa dữ liệu cũ
-    await this.dataSource.createQueryBuilder().delete().from('posts').execute();
-    await this.dataSource.createQueryBuilder().delete().from('tags').execute();
-    await this.dataSource.createQueryBuilder().delete().from('users').execute();
     await this.dataSource
       .createQueryBuilder()
       .delete()
       .from('user_votes')
       .execute();
+    await this.dataSource.createQueryBuilder().delete().from('posts').execute();
+    await this.dataSource.createQueryBuilder().delete().from('tags').execute();
+    await this.dataSource.createQueryBuilder().delete().from('users').execute();
 
     // Tạo user mới
     const hashedPassword = await argon2.hash('123');
@@ -48,7 +48,36 @@ export class PostDatabasePrepareUtil {
       .values([
         { name: 'nestjs', description: 'Nestjs' },
         { name: 'testing', description: 'Testing' },
+        { name: 'JDK', description: 'Java Development Kit' },
+        { name: 'JVM', description: 'Java Virtual-machine' },
       ])
       .execute();
+
+    // Tạo post mới
+    // await this.dataSource
+    //   .createQueryBuilder()
+    //   .insert()
+    //   .into('posts')
+    //   .values([
+    //     {
+    //       title: 'Co Ban ve React',
+    //       contentMarkdown: 'React la mot thu vien pho bien',
+    //       tagArray: ['nestjs', 'testing'],
+    //       status: 'PUBLISHED',
+    //     },
+    //     {
+    //       title: 'Co Ban ve Nestjs',
+    //       contentMarkdown: 'Nestjs la mot thu vien pho bien',
+    //       tagArray: ['nestjs', 'JDK'],
+    //       status: 'PUBLISHED',
+    //     },
+    //     {
+    //       title: 'Co Ban ve java',
+    //       contentMarkdown: 'Java la mot ngon ngu lap trinh pho bien',
+    //       tagArray: ['nestjs', 'JVM'],
+    //       status: 'PUBLISHED',
+    //     },
+    //   ])
+    //   .execute();
   }
 }

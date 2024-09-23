@@ -32,7 +32,7 @@ export class PostIdDTO {
   @Type(() => Number)
   @IsNumber()
   @IsInt()
-  @Min(1, { message: 'postId must be less than 1 id' })
+  @Min(1, { message: 'postId must be more than 1' })
   postId: number;
 }
 

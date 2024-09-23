@@ -42,7 +42,7 @@ export class PostController {
   @UseGuards(AuthGuard('jwt'))
   bookmark(@Request() req: any, @Param() params: PostIdDTO) {
     const userId = req.user.userId;
-    return this.PostService.bookmarkService(params.postId, userId);
+    return this.PostService.bookmark(params.postId, userId);
   }
 
   @Delete(':postId/bookmark')

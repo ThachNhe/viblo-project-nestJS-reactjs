@@ -87,19 +87,17 @@ export class PostService {
     if (userPost) {
       if (userPost?.voteType === voteType) {
         if (voteType === 'UPVOTE') {
-          // post.vote_number -= 1;
-          this.postRepository
+          await this.postRepository
             .createQueryBuilder()
             .update(Post)
             .set({ vote_number: () => 'vote_number - 1' })
             .where('id = :id', { id: postId })
             .execute();
-
           await this.userPostRepository.remove(userPost);
         }
 
         if (voteType === 'DOWNVOTE') {
-          this.postRepository
+          await this.postRepository
             .createQueryBuilder()
             .update(Post)
             .set({ vote_number: () => 'vote_number + 1' })
@@ -109,27 +107,33 @@ export class PostService {
         }
       } else {
         if (voteType === 'UPVOTE') {
-          this.postRepository
+          await this.postRepository
             .createQueryBuilder()
             .update(Post)
             .set({ vote_number: () => 'vote_number + 2' })
             .where('id = :id', { id: postId })
             .execute();
 
-          this.userPostRepository.save({
+          await this.userPostRepository.save({
             ...userPost,
             voteType,
           });
         }
 
         if (voteType === 'DOWNVOTE') {
-          this.postRepository
+          console.log('come here!!!!!!!!!!!');
+          console.log('voteType', voteType);
+          console.log('postId', postId);
+          const res = await this.postRepository
             .createQueryBuilder()
             .update(Post)
             .set({ vote_number: () => 'vote_number - 2' })
             .where('id = :id', { id: postId })
             .execute();
-          this.userPostRepository.save({
+          console.log('res', res.generatedMaps[0]);
+          // post.vote_number -= 2;
+          // this.postRepository.save(post);
+          await this.userPostRepository.save({
             ...userPost,
             voteType,
           });
@@ -138,8 +142,9 @@ export class PostService {
         await this.postRepository.save(post);
       }
     } else {
-      post.vote_number =
-        voteType === 'DOWNVOTE' ? post.vote_number - 1 : post.vote_number + 1;
+      // console.log('come here!!!!!!!!!!!OK');
+      // console.log('voteType', voteType);
+      post.vote_number += voteType === 'UPVOTE' ? 1 : -1;
 
       const newUserPost = new UserPost();
       newUserPost.user = user;
@@ -161,7 +166,6 @@ export class PostService {
   }
 
   async getId(id: number) {
-    console.log('id', id);
     const post = await this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.userVotes', 'userVote') // Nối với bảng userVotes
@@ -208,52 +212,7 @@ export class PostService {
     };
   }
 
-  async getRadomId() {
-    const post = await this.postRepository
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.userVotes', 'userVote') // Nối với bảng userVotes
-      .leftJoin('userVote.user', 'user') // Nối với bảng user nhưng không lấy toàn bộ
-      .addSelect(['user.id']) // Chỉ lấy trường user.id
-      .leftJoinAndSelect('post.comments', 'comments') // Nối với bảng comments để lấy tất cả comments
-      .leftJoinAndSelect('post.author', 'author')
-      .leftJoin('post.bookmarkers', 'bookmarkers')
-      .addSelect(['bookmarkers.id'])
-      .orderBy('RANDOM()')
-      .limit(1)
-      .getOne();
-
-    delete post?.author?.password;
-    delete post?.author?.email;
-    delete post?.author?.posts;
-
-    // post.view_number += 1;
-    const id = post?.id;
-
-    this.postRepository
-      .createQueryBuilder()
-      .update(Post)
-      .set({ view_number: () => 'view_number + 1' })
-      .where('id = :id', { id })
-      .execute();
-    await this.postRepository.save(post);
-
-    const updatedPost = {
-      ...post,
-      createdDate: formatVietnameseDate(`${post.created_at}`),
-    };
-    if (!post) {
-      throw new NotFoundException('Post not found');
-    }
-
-    return {
-      success: true,
-      statusCode: 200,
-      error: null,
-      data: updatedPost,
-    };
-  }
-
-  async bookmarkService(postId: number, userId: number) {
+  async bookmark(postId: number, userId: number) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
@@ -272,20 +231,19 @@ export class PostService {
 
     post.bookmarkers = [user];
 
-    this.postRepository
+    await this.postRepository.save(post);
+    await this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({ bookmark_number: () => 'bookmark_number + 1' })
       .where('id = :id', { id: postId })
       .execute();
 
-    await this.postRepository.save(post);
-
     return {
       success: true,
       statusCode: 200,
       error: null,
-      data: user,
+      data: 'Bookmark successfully',
     };
   }
 
@@ -311,7 +269,7 @@ export class PostService {
 
     await this.postRepository.save(post);
 
-    this.postRepository
+    await this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({ bookmark_number: () => 'bookmark_number - 1' })
@@ -322,7 +280,7 @@ export class PostService {
       success: true,
       statusCode: 200,
       error: null,
-      data: null,
+      data: 'UnBookmark successfully',
     };
   }
 
