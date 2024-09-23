@@ -1,12 +1,17 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Min,
+} from 'class-validator';
 import { IsEnum } from 'class-validator';
 
 export class PostDTO {
-  @IsNotEmpty()
-  @IsNumber()
-  authorId: number;
-
   @IsNotEmpty()
   @IsString()
   contentMarkdown: string;
@@ -15,6 +20,10 @@ export class PostDTO {
   @IsString()
   title: string;
 
+  @IsArray()
+  @ArrayMinSize(1, { message: 'tagArray must contain at least one tag.' })
+  @ArrayMaxSize(5, { message: 'tagArray must contain at most five tags.' })
+  @IsString({ each: true })
   tagArray: string[];
 }
 
@@ -22,6 +31,8 @@ export class PostIdDTO {
   @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()
+  @IsInt()
+  @Min(1, { message: 'postId must be less than 1 id' })
   postId: number;
 }
 

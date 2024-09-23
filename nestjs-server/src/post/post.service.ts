@@ -22,7 +22,7 @@ export class PostService {
     @InjectRepository(UserPost)
     private userPostRepository: Repository<UserPost>,
   ) {}
-  async createPost(body: PostDTO, userId: number) {
+  async create(body: PostDTO, userId: number) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
@@ -34,7 +34,6 @@ export class PostService {
     const tags = await Promise.all(
       body?.tagArray?.map(async (name) => {
         let tag = await this.tagRepository.findOne({ where: { name } });
-
         return tag;
       }),
     );
@@ -47,8 +46,8 @@ export class PostService {
     post.tags = tags;
     await this.postRepository.save(post);
 
-    this.userRepository
-      .createQueryBuilder()
+    await this.userRepository
+      .createQueryBuilder('user')
       .update(User)
       .set({ post_number: () => 'post_number + 1' })
       .where('id = :id', { id: userId })
@@ -162,6 +161,7 @@ export class PostService {
   }
 
   async getId(id: number) {
+    console.log('id', id);
     const post = await this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.userVotes', 'userVote') // Nối với bảng userVotes
@@ -174,12 +174,16 @@ export class PostService {
       .where('post.id = :id', { id })
       .getOne();
 
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
     delete post?.author?.password;
     delete post?.author?.email;
     delete post?.author?.posts;
 
     // post.view_number += 1;
-    this.postRepository
+    await this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({ view_number: () => 'view_number + 1' })
@@ -339,6 +343,10 @@ export class PostService {
       .skip((page - 1) * limit)
       .getManyAndCount();
 
+    if (!result) {
+      throw new NotFoundException('Post not found');
+    }
+
     const newResult = result?.map((item) => {
       return {
         ...item,
@@ -359,54 +367,6 @@ export class PostService {
       },
     };
   }
-
-  // async getRelatedPosts(postId: number) {
-  //   const post = await this.postRepository.findOne({ where: { id: postId } });
-
-  //   if (!post) {
-  //     throw new NotFoundException('Post not found');
-  //   }
-
-  //   const tags = post.tags_array;
-
-  //   if (!tags || tags.length === 0) {
-  //     return {
-  //       success: true,
-  //       statusCode: 200,
-  //       error: null,
-  //       data: [],
-  //     };
-  //   }
-
-  //   const relatedPosts = await this.postRepository
-  //     .createQueryBuilder('post')
-  //     .innerJoin('post.tags', 'tag') // Kết nối với bảng tags
-  //     .where('post.id != :postId', { postId }) // Loại trừ bài viết hiện tại
-  //     .andWhere((qb) => {
-  //       const subQuery = qb
-  //         .subQuery()
-  //         .select('tag.id')
-  //         .from(Post, 'p')
-  //         .innerJoin('p.tags', 't')
-  //         .where('p.id = :postId')
-  //         .getQuery();
-  //       return 'tag.id IN ' + subQuery; // Kiểm tra xem tag có nằm trong subQuery không
-  //     })
-  //     .getMany();
-
-  //   const newResult = relatedPosts?.map((item, index) => {
-  //     return {
-  //       ...item,
-  //       created_at: formatVietnameseDate(`${item.created_at}`),
-  //     };
-  //   });
-  //   return {
-  //     success: true,
-  //     statusCode: 200,
-  //     error: null,
-  //     data: newResult,
-  //   };
-  // }
 
   async getRelatedPosts(postId: number) {
     // Lấy các bài viết liên quan theo tag

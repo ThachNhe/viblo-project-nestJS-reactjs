@@ -31,7 +31,7 @@ export class AuthService {
     user.password = hashedPassword;
     user.userName = body.userName;
     user.fullName = body.fullName;
-
+    user.roles = [body.role];
     try {
       await this.userRepository.save(user);
       delete user.password;

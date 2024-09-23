@@ -23,14 +23,12 @@ export class PostController {
   @UseGuards(AuthGuard('jwt'))
   create(@Body() body: PostDTO, @Request() req: any) {
     const userId = req.user.userId;
-    return this.PostService.createPost(body, userId);
+    return this.PostService.create(body, userId);
   }
 
   @Get(':postId')
   getId(@Param() params: PostIdDTO) {
-    return params?.postId
-      ? this.PostService.getId(params?.postId)
-      : this.PostService.getRadomId();
+    return this.PostService.getId(params.postId);
   }
 
   @Post(':postId/vote')
@@ -51,6 +49,7 @@ export class PostController {
   @UseGuards(AuthGuard('jwt'))
   deleteBookmark(@Request() req: any, @Param() params: PostIdDTO) {
     const userId = req.user.userId;
+    console.log('userId', userId);
     return this.PostService.deleteBookmark(params.postId, userId);
   }
 

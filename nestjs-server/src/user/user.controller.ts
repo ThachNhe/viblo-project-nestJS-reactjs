@@ -9,6 +9,7 @@ import {
   UseGuards,
   Request,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from '../enums/role.enum';
@@ -16,7 +17,7 @@ import { Roles } from '../auth/strategy/roles.decorator';
 import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
 
 @Controller('users')
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -32,7 +33,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   getUser(@Param() userId: UserIdDTO) {
     return this.userService.getUser(userId);
   }
@@ -55,6 +56,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   blockUser(@Param() id: UserIdDTO) {
     // const { id } = userId;
+    console.log(id);
     return this.userService.blockUser(id);
   }
 
@@ -63,5 +65,11 @@ export class UserController {
   unblockUser(@Param() userId: UserIdDTO) {
     // const { id } = userId;
     return this.userService.unblockUser(userId);
+  }
+
+  @Delete(':id')
+  deleteUserByEmail(@Param() params: any) {
+    console.log(params);
+    return this.userService.deleteUser(params.id);
   }
 }

@@ -1,5 +1,11 @@
-import { IsEmail, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
-
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
+import { Role } from '../../enums/index';
 export class AuthDTORegister {
   @IsEmail()
   @IsNotEmpty()
@@ -14,6 +20,9 @@ export class AuthDTORegister {
 
   @IsNotEmpty()
   userName: string;
+
+  @IsEnum(Role, { message: 'Role must be either admin, user, or moderator' })
+  role: Role;
 }
 
 export class AuthDTOLogin {
