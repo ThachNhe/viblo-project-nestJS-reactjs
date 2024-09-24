@@ -75,7 +75,7 @@ describe('Auth Module (e2e)', () => {
     });
     //REGISTER WITH DUPLICATE DATA
     it('Should register duplicate user', async () => {
-      const registerData: AuthDTORegister = {
+      const registerData = {
         userName: 'newUser',
         email: 'newuser@example.com',
         password: '123',

@@ -49,7 +49,6 @@ export class PostController {
   @UseGuards(AuthGuard('jwt'))
   deleteBookmark(@Request() req: any, @Param() params: PostIdDTO) {
     const userId = req.user.userId;
-    console.log('userId', userId);
     return this.PostService.deleteBookmark(params.postId, userId);
   }
 

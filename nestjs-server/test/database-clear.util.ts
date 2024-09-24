@@ -9,6 +9,12 @@ export class DatabaseClearUtil {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   async clearDatabase(): Promise<void> {
+    await this.dataSource
+      .createQueryBuilder()
+      .delete()
+      .from('user_votes')
+      .execute();
+
     await this.dataSource.createQueryBuilder().delete().from('users').execute();
     const hashedPassword = await argon2.hash('123');
 

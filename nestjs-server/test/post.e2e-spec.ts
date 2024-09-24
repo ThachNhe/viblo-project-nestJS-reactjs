@@ -1,18 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Body } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
 import { DatabaseClearUtil } from './database-clear.util';
 import { PostDatabasePrepareUtil } from './utils/database-post-prepare.util';
-import { error } from 'console';
-import e from 'express';
 
 describe('Post Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
   let token: string;
   let postId: number;
+
+  const postData = {
+    title: 'Post title',
+    contentMarkdown: 'Post content',
+    tagArray: ['nestjs'],
+    status: 'PUBLISHED',
+  };
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -46,16 +51,9 @@ describe('Post Module (e2e)', () => {
   describe('POST /posts', () => {
     //1. Create post successfully
     it('Should create a post successfully', async () => {
-      const createPostDto = {
-        title: 'Post title',
-        contentMarkdown: 'Post content',
-        tagArray: ['nestjs'],
-        status: 'PUBLISHED',
-      };
-
       const response = await requestAgent
         .post('/posts')
-        .send(createPostDto)
+        .send({ ...postData })
         .set('Authorization', `Bearer ${token}`)
         .expect(201);
 
@@ -97,12 +95,9 @@ describe('Post Module (e2e)', () => {
     });
 
     //2. Create post without token
-    it('Should create a post successfully', async () => {
+    it('Should create a post unsuccessfully because Create post without token', async () => {
       const createPostDto = {
-        title: 'Post title',
-        contentMarkdown: 'Post content',
-        tagArray: [],
-        status: 'PUBLISHED',
+        ...postData,
       };
 
       const response = await requestAgent
@@ -119,10 +114,8 @@ describe('Post Module (e2e)', () => {
     //3. Create post with title is empty
     it('Should create a post unsuccessfully because title is empty()', async () => {
       const createPostDto = {
+        ...postData,
         title: '',
-        contentMarkdown: 'Post content',
-        tagArray: ['nestjs'],
-        status: 'PUBLISHED',
       };
 
       const response = await requestAgent
@@ -141,10 +134,8 @@ describe('Post Module (e2e)', () => {
     //4. Create post with content is empty
     it('Should create a post successfully because content is empty()', async () => {
       const createPostDto = {
-        title: 'abc',
+        ...postData,
         contentMarkdown: '',
-        tagArray: ['nestjs'],
-        status: 'PUBLISHED',
       };
 
       const response = await requestAgent
@@ -316,8 +307,9 @@ describe('Post Module (e2e)', () => {
 
     //3. Bookmark post unsuccessfully with wrong postId
     it('Should bookmark a post unsuccessfully because wrong postId', async () => {
+      const invalidPostId = 8723987349;
       const response = await requestAgent
-        .post(`/posts/8723987349/bookmark`)
+        .post(`/posts/${invalidPostId}/bookmark`)
         .set('Authorization', `Bearer ${token}`)
         .expect(404);
 
@@ -331,8 +323,9 @@ describe('Post Module (e2e)', () => {
     //4. Bookmark post unsuccessfully with less than 1 id
 
     it('Should bookmark a post unsuccessfully because id is less than 1', async () => {
+      const invalidPostId = -1;
       const response = await requestAgent
-        .post(`/posts/${-1}/bookmark`)
+        .post(`/posts/${invalidPostId}/bookmark`)
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
       expect(response.body).toEqual({
@@ -401,18 +394,273 @@ describe('Post Module (e2e)', () => {
     });
   });
 
-  describe('GET /posts/:id/related', () => {
-    //1. Get related post successfully
-    // beforeAll(async () => {});
-    // it('Should get related post successfully', async () => {
-    //   const response = await requestAgent.get(`/posts/${postId}/related`).expect(200);
-    //   expect(response.body).toEqual({
-    //     success: true,
-    //     statusCode: 200,
-    //     error: null,
-    //     data: [],
-    //   });
-    // })
+  describe('GET /posts?page=&limit=', () => {
+    //1. Get pagination posts successfully
+    it('Should get pagination post successfully!', async () => {
+      const response = await requestAgent
+        .get('/posts?page=1&limit=10')
+        .expect(200);
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body).toHaveProperty('meta');
+    });
+
+    //2. get pagination posts unsuccessfully with page is string
+    it('Should get pagination post unsuccessfully because page is string', async () => {
+      const response = await requestAgent
+        .get('/posts?page=abc&limit=10')
+        .expect(400);
+
+      expect(response.body).toEqual({
+        message: [
+          'page must not be less than 1',
+          'page must be a number conforming to the specified constraints',
+        ],
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+    });
+
+    //3. get pagination posts unsuccessfully with page is less than 1
+    it('Should get pagination post unsuccessfully because page is less than 1', async () => {
+      const response = await requestAgent
+        .get('/posts?page=0&limit=10')
+        .expect(400);
+
+      expect(response.body).toEqual({
+        message: ['page must not be less than 1'],
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+    });
+
+    //4. get pagination posts unsuccessfully with limit is string
+    it('Should get pagination post unsuccessfully because limit is string', async () => {
+      const response = await requestAgent
+        .get('/posts?page=1&limit=abc')
+        .expect(400);
+
+      expect(response.body).toEqual({
+        message: [
+          'limit must not be less than 1',
+          'limit must be a number conforming to the specified constraints',
+        ],
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+    });
+
+    //5. get pagination posts unsuccessfully with limit is less than 1
+    it('Should get pagination post unsuccessfully because limit is less than 1', async () => {
+      const response = await requestAgent
+        .get('/posts?page=1&limit=0')
+        .expect(400);
+
+      expect(response.body).toEqual({
+        message: ['limit must not be less than 1'],
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+    });
+  });
+
+  describe('POST /posts/:id/vote', () => {
+    //1. Vote post without token
+    it('Should vote a post unsuccessfully because without token', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'UPVOTE' })
+        .expect(401);
+      expect(response.body).toEqual({
+        message: 'Unauthorized',
+        statusCode: 401,
+      });
+    });
+
+    //2.Vote post not VoteType
+    it('Should vote a post unsuccessfully because voteType is not VoteType', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400);
+
+      expect(response.body).toEqual({
+        message: [
+          'voteType must be one of the following values: UPVOTE, DOWNVOTE',
+        ],
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+    });
+
+    //3. Vote post not found
+    it('Should vote a post unsuccessfully because wrong postId', async () => {
+      const response = await requestAgent
+        .post(`/posts/8723987349/vote`)
+        .send({ voteType: 'UPVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
+
+      expect(response.body).toEqual({
+        message: 'Post not found',
+        error: 'Not Found',
+        statusCode: 404,
+      });
+    });
+
+    //4. Vote post successfully with upvote one time
+    it('Should vote a post successfully with upvote one time', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'UPVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', 1);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
+
+    //5. Vote post successfully with upvote second time
+    it('Should vote a post successfully with upvote second time', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'UPVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', 0);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
+    //6. Vote post successfully with upvote repeat time
+    it('Should vote a post successfully with upvote repeat time for next test case', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'UPVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', 1);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
+
+    //7. Vote post successfully with downvote
+    it('Should vote a post successfully with downvote', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'DOWNVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', -1);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
+
+    //7. Vote post successfully with downvote to reset vote_number`
+    it('Should vote a post successfully with downvote to reset vote_number', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'DOWNVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', 0);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
+
+    //================================================================================================
+    //9. Vote post successfully with downvote one time
+    it('Should vote a post successfully with downvote one time', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'DOWNVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', -1);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
+
+    //10. Vote post successfully with downvote second time
+    it('Should vote a post successfully with downvote second time', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'DOWNVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', 0);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
+    //11. Vote post successfully with downvote repeat time
+    it('Should vote a post successfully with downvote one time', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'DOWNVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', -1);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
+
+    //12. Vote post successfully with upvote
+    it('Should vote a post successfully with upvote', async () => {
+      const response = await requestAgent
+        .post(`/posts/${postId}/vote`)
+        .send({ voteType: 'UPVOTE' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('statusCode', 200);
+      expect(response.body).toHaveProperty('error', null);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data).toHaveProperty('vote_number', 1);
+      expect(response.body.data).toHaveProperty('tags_array');
+    });
   });
 
   afterAll(async () => {

@@ -2,6 +2,7 @@ import { Injectable, Body } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import * as argon2 from 'argon2';
+import { Tag } from '../../src/entity';
 export enum Role {
   User = 'USER',
   Admin = 'ADMIN',
@@ -13,6 +14,9 @@ export class PostDatabasePrepareUtil {
 
   async prepare(): Promise<void> {
     // Xóa dữ liệu cũ
+    let userId1 = 0;
+    let userId2 = 0;
+
     await this.dataSource
       .createQueryBuilder()
       .delete()
@@ -25,7 +29,7 @@ export class PostDatabasePrepareUtil {
     // Tạo user mới
     const hashedPassword = await argon2.hash('123');
 
-    const user = await this.dataSource
+    const user1 = await this.dataSource
       .createQueryBuilder()
       .insert()
       .into('users')
@@ -40,8 +44,26 @@ export class PostDatabasePrepareUtil {
       ])
       .execute();
 
+    const user2 = await this.dataSource
+      .createQueryBuilder()
+      .insert()
+      .into('users')
+      .values([
+        {
+          userName: 'thachdinh2',
+          email: 'thachdinh2@gmail.com',
+          password: hashedPassword,
+          fullName: 'Test User',
+          roles: Role.Admin,
+        },
+      ])
+      .execute();
+
+    userId1 = user1.identifiers[0].id;
+    userId2 = user2.identifiers[0].id;
+
     // Tạo tag mới
-    await this.dataSource
+    const insertedTags = await this.dataSource
       .createQueryBuilder()
       .insert()
       .into('tags')
@@ -51,33 +73,65 @@ export class PostDatabasePrepareUtil {
         { name: 'JDK', description: 'Java Development Kit' },
         { name: 'JVM', description: 'Java Virtual-machine' },
       ])
+      .returning('*')
       .execute();
 
+    const tags = insertedTags.generatedMaps as Tag[];
+
+    // console.log('tags', tags);
+
+    // Lấy đối tượng User từ bảng users
+    const userRes1 = await this.dataSource
+      .createQueryBuilder()
+      .select('user')
+      .from('users', 'user')
+      .where('user.id = :id', { id: userId1 })
+      .getOne();
+
+    const userRes2 = await this.dataSource
+      .createQueryBuilder()
+      .select('user')
+      .from('users', 'user')
+      .where('user.id = :id', { id: userId2 })
+      .getOne();
+
     // Tạo post mới
-    // await this.dataSource
-    //   .createQueryBuilder()
-    //   .insert()
-    //   .into('posts')
-    //   .values([
-    //     {
-    //       title: 'Co Ban ve React',
-    //       contentMarkdown: 'React la mot thu vien pho bien',
-    //       tagArray: ['nestjs', 'testing'],
-    //       status: 'PUBLISHED',
-    //     },
-    //     {
-    //       title: 'Co Ban ve Nestjs',
-    //       contentMarkdown: 'Nestjs la mot thu vien pho bien',
-    //       tagArray: ['nestjs', 'JDK'],
-    //       status: 'PUBLISHED',
-    //     },
-    //     {
-    //       title: 'Co Ban ve java',
-    //       contentMarkdown: 'Java la mot ngon ngu lap trinh pho bien',
-    //       tagArray: ['nestjs', 'JVM'],
-    //       status: 'PUBLISHED',
-    //     },
-    //   ])
-    //   .execute();
+    await this.dataSource
+      .createQueryBuilder()
+      .insert()
+      .into('posts')
+      .values([
+        {
+          title: 'First Post',
+          content_markdown: 'This is the content for the first post.',
+          tags_array: ['nestjs', 'testing'],
+          tags: tags,
+          view_number: 0,
+          vote_number: 0,
+          bookmark_number: 0,
+          comment_number: 0,
+          isPublished: true,
+          seriesId: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+          author: userRes1, // Author ID đã có trong bảng `users`
+        },
+        {
+          title: 'Second Post',
+          content_markdown: 'This is the content for the second post.',
+          tags_array: ['nestjs'],
+          tags: tags,
+          view_number: 0,
+          vote_number: 0,
+          bookmark_number: 0,
+          comment_number: 0,
+          isPublished: false,
+          seriesId: 1, // Ví dụ, bài viết thuộc một series
+          created_at: new Date(),
+          updated_at: new Date(),
+          author: userRes2, // Author ID đã có trong bảng `users`
+        },
+      ])
+      .execute();
   }
 }

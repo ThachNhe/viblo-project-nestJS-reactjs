@@ -1,22 +1,28 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CommentDTO {
   @IsNotEmpty()
   @IsString()
+  @ApiProperty()
   content: string;
 
   @IsNotEmpty()
   @IsNumber()
+  @ApiProperty()
   postId: number;
 
   @IsNotEmpty()
   @IsNumber()
+  @ApiProperty()
   parentId: number;
 
+  @ApiProperty()
   replyForUserId: number;
 
   @IsString()
+  @ApiProperty()
   replyForUserName: string;
 }
 
@@ -24,5 +30,6 @@ export class PostIdDTO {
   @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()
+  @ApiProperty()
   postId: number;
 }

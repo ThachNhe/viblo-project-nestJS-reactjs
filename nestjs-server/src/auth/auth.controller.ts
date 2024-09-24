@@ -13,10 +13,13 @@ import { AuthService } from './auth.service';
 import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
 import { Response, Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOkResponse } from '@nestjs/swagger';
+import { RegisterResponseDto } from './dto/response-auth.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('register')
+  @ApiOkResponse({ type: RegisterResponseDto })
   register(@Body() body: AuthDTORegister) {
     return this.authService.register(body);
   }
