@@ -4,12 +4,20 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
 import { AuthDTORegister } from 'src/auth/dto/auth.dto';
-import { DatabaseClearUtil } from './database-clear.util';
+import { DatabaseClearUtil } from './utils/database-clear.util';
+import * as argon2 from 'argon2';
 
 describe('Auth Module (e2e)', () => {
   let app: INestApplication;
   let appModule: AppModule;
   let requestAgent: any;
+  let token: string;
+  const registerData = {
+    email: 'thachdinh10@gmail.com',
+    userName: 'thachdinh10',
+    fullName: 'Dinh van thach',
+    password: '123',
+  };
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -22,6 +30,10 @@ describe('Auth Module (e2e)', () => {
     await app.init();
     requestAgent = request(app.getHttpServer());
     await appModule.clearDatabase();
+    const loginResponse = await requestAgent
+      .post('/auth/login')
+      .send({ email: 'newuser@example.com', password: '123' });
+    token = loginResponse.body.accessToken;
   });
 
   let commonExpectFunction = (body: any, key: any, value: any) => {
@@ -29,14 +41,8 @@ describe('Auth Module (e2e)', () => {
   };
 
   describe('POST /auth/register', () => {
+    //REGISTER SUCCESSFULLY
     it('Should register a user successfully', async () => {
-      const registerData = {
-        email: 'thachdinhOKOK1@gmail.com',
-        password: '123',
-        fullName: 'dinh van thach',
-        userName: 'thachdinhOKOK1',
-      };
-
       const response = await requestAgent
         .post('/auth/register')
         .send(registerData)
@@ -73,6 +79,7 @@ describe('Auth Module (e2e)', () => {
       commonExpectFunction(body, 'statusCode', 400);
       commonExpectFunction(body, 'error', 'Bad Request');
     });
+
     //REGISTER WITH DUPLICATE DATA
     it('Should register duplicate user', async () => {
       const registerData = {
@@ -193,7 +200,10 @@ describe('Auth Module (e2e)', () => {
   describe('POST /auth/logout', () => {
     //LOGOUT
     it('Should logout successfully', async () => {
-      const response = await requestAgent.post('/auth/logout').expect(201);
+      const response = await requestAgent
+        .post('/auth/logout')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(201);
 
       expect(response.body).toEqual({
         success: true,

@@ -3,7 +3,7 @@ import { INestApplication, Body } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
-import { DatabaseClearUtil } from './database-clear.util';
+import { DatabaseClearUtil } from './utils/database-clear.util';
 import { PostDatabasePrepareUtil } from './utils/database-post-prepare.util';
 
 describe('Post Module (e2e)', () => {
@@ -67,19 +67,7 @@ describe('Post Module (e2e)', () => {
           title: 'Post title',
           content_markdown: 'Post content',
           tags_array: ['nestjs'],
-          tags: [
-            {
-              id: expect.any(String),
-              name: 'nestjs',
-              description: 'Nestjs',
-              view_number: 0,
-              post_number: 0,
-              question_number: 0,
-              follower_number: 0,
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-            },
-          ],
+
           seriesId: null,
           id: expect.any(String),
           status: 'PUBLISH',

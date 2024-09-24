@@ -23,7 +23,7 @@ import {
 } from './entity/index';
 
 import { StatisticsModule } from './statistics/statistics.module';
-import { DatabaseClearUtil } from '../test/database-clear.util';
+import { DatabaseClearUtil } from '../test/utils/database-clear.util';
 @Module({
   imports: [
     ConfigModule.forRoot({

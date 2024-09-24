@@ -63,7 +63,9 @@ export class Post {
   })
   comments: Comment[];
 
-  @ManyToMany(() => Tag, (tag) => tag.posts)
+  @ManyToMany(() => Tag, (tag) => tag.posts, {
+    cascade: true,
+  })
   @JoinTable({
     name: 'post_tags',
   })

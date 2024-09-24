@@ -2,7 +2,8 @@ import { Injectable, Body } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import * as argon2 from 'argon2';
-import { Tag } from '../../src/entity';
+import { Tag, Post } from '../../src/entity';
+import { id } from 'date-fns/locale';
 export enum Role {
   User = 'USER',
   Admin = 'ADMIN',
@@ -11,7 +12,8 @@ export enum Role {
 @Injectable()
 export class PostDatabasePrepareUtil {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
-
+  private postRepository = this.dataSource.getRepository(Post);
+  private tagRepository = this.dataSource.getRepository(Tag);
   async prepare(): Promise<void> {
     // Xóa dữ liệu cũ
     let userId1 = 0;
@@ -63,7 +65,7 @@ export class PostDatabasePrepareUtil {
     userId2 = user2.identifiers[0].id;
 
     // Tạo tag mới
-    const insertedTags = await this.dataSource
+    await this.dataSource
       .createQueryBuilder()
       .insert()
       .into('tags')
@@ -76,9 +78,10 @@ export class PostDatabasePrepareUtil {
       .returning('*')
       .execute();
 
-    const tags = insertedTags.generatedMaps as Tag[];
-
-    // console.log('tags', tags);
+    const tags = await this.tagRepository.findBy([
+      { name: 'nestjs' },
+      { name: 'testing' },
+    ]);
 
     // Lấy đối tượng User từ bảng users
     const userRes1 = await this.dataSource
@@ -95,6 +98,7 @@ export class PostDatabasePrepareUtil {
       .where('user.id = :id', { id: userId2 })
       .getOne();
 
+    // console.log('check tags : ', tags);
     // Tạo post mới
     await this.dataSource
       .createQueryBuilder()
@@ -105,7 +109,7 @@ export class PostDatabasePrepareUtil {
           title: 'First Post',
           content_markdown: 'This is the content for the first post.',
           tags_array: ['nestjs', 'testing'],
-          tags: tags,
+          tags: [tags[0]],
           view_number: 0,
           vote_number: 0,
           bookmark_number: 0,
@@ -114,22 +118,30 @@ export class PostDatabasePrepareUtil {
           seriesId: null,
           created_at: new Date(),
           updated_at: new Date(),
-          author: userRes1, // Author ID đã có trong bảng `users`
+          author: userRes1,
         },
+      ])
+      .execute();
+
+    await this.dataSource
+      .createQueryBuilder()
+      .insert()
+      .into('posts')
+      .values([
         {
-          title: 'Second Post',
+          title: 'Second Post adssacsdvds',
           content_markdown: 'This is the content for the second post.',
           tags_array: ['nestjs'],
-          tags: tags,
+          tags: tags[1],
           view_number: 0,
           vote_number: 0,
           bookmark_number: 0,
           comment_number: 0,
           isPublished: false,
-          seriesId: 1, // Ví dụ, bài viết thuộc một series
+          seriesId: 1,
           created_at: new Date(),
           updated_at: new Date(),
-          author: userRes2, // Author ID đã có trong bảng `users`
+          author: userRes2,
         },
       ])
       .execute();
