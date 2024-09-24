@@ -14,7 +14,12 @@ import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
 import { Response, Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOkResponse } from '@nestjs/swagger';
-import { RegisterResponseDto } from './dto/response-auth.dto';
+import {
+  LoginResponseDto,
+  LogoutResponseDTO,
+  RegisterResponseDto,
+} from './dto/response-auth.dto';
+
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -25,6 +30,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @ApiOkResponse({ type: LoginResponseDto })
   login(
     @Body() body: AuthDTOLogin,
     @Res({ passthrough: true }) response: Response,
@@ -43,6 +49,8 @@ export class AuthController {
   }
 
   @Post('logout')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({ type: LogoutResponseDTO })
   logout(@Req() req: Request) {
     return this.authService.logout(req);
   }

@@ -22,7 +22,7 @@ export class TagService {
       success: true,
       statusCode: 200,
       error: null,
-      tag,
+      data: tag,
     };
   }
 

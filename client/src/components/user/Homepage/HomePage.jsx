@@ -44,8 +44,7 @@ function Homepage() {
     location?.state?.data ? location?.state?.data : 17
   );
 
-  // const contentRef = useRef(null);
-  // const [isContentScrolledToEnd, setIsContentScrolledToEnd] = useState(false);
+
 
   useEffect(() => {
     dispatch(actions.getPostById(defaultPostId));
@@ -73,7 +72,6 @@ function Homepage() {
   // Xử lý sự kiện cuộn của phần nội dung bài viết
   useEffect(() => {
     const contentElement = contentRef.current;
-
     if (contentElement) {
       const handleScroll = () => {
         const { scrollHeight, scrollTop, clientHeight } = contentElement;
@@ -153,7 +151,6 @@ function Homepage() {
     const payload = {
       voteType: voteType,
     };
-
     try {
       const voteInfo = await services.votePost(payload, post?.data?.id);
       voteInfo.success && dispatch(actions.getPostById(post?.data?.id));
@@ -183,7 +180,6 @@ function Homepage() {
       console.log("error : ", error);
     }
   };
-  console.log("isContentScrolledToEnd : ", isContentScrolledToEnd);
   return (
     <>
       <div className="flex flex-col min-h-screen border">

@@ -15,6 +15,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { Role } from '../enums/role.enum';
 import { Roles } from '../auth/strategy/roles.decorator';
 import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
+import { ApiOkResponse } from '@nestjs/swagger';
+import {
+  BlockedUserResponseDto,
+  DeleteUserResponseDto,
+  getUserIdResponseDto,
+  GetUsersResponseDto,
+  UnBlockedUserResponseDto,
+} from './dto/user-response.dto';
 
 @Controller('users')
 // @UseGuards(AuthGuard('jwt'))
@@ -28,11 +36,13 @@ export class UserController {
   }
 
   @Get('top')
+  @ApiOkResponse({ type: GetUsersResponseDto })
   async getTopUsers(@Query() query: UserPaginationDTO) {
     return this.userService.getTopUsers(query);
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: getUserIdResponseDto })
   // @UseGuards(AuthGuard('jwt'))
   getUser(@Param() userId: UserIdDTO) {
     return this.userService.getUser(userId);
@@ -48,12 +58,14 @@ export class UserController {
   @Get()
   @UseGuards(AuthGuard('jwt'))
   @Roles(Role.Admin)
+  @ApiOkResponse({ type: GetUsersResponseDto })
   async getUsersService(@Query() query: UserPaginationDTO) {
     return this.userService.getUsersService(query);
   }
 
   @Put(':id/block')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({ type: BlockedUserResponseDto })
   blockUser(@Param() id: UserIdDTO) {
     // const { id } = userId;
     console.log(id);
@@ -62,12 +74,13 @@ export class UserController {
 
   @Put(':id/unblock')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({ type: UnBlockedUserResponseDto })
   unblockUser(@Param() userId: UserIdDTO) {
-    // const { id } = userId;
     return this.userService.unblockUser(userId);
   }
 
   @Delete(':id')
+  @ApiOkResponse({ type: DeleteUserResponseDto })
   deleteUserByEmail(@Param() params: any) {
     console.log(params);
     return this.userService.deleteUser(params.id);

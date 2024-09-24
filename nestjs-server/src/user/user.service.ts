@@ -124,7 +124,7 @@ export class UserService {
       success: true,
       statusCode: 200,
       error: null,
-      data: user,
+      data: 'Block user successfully',
     };
   }
 
@@ -152,7 +152,7 @@ export class UserService {
       success: true,
       statusCode: 200,
       error: null,
-      data: user,
+      data: 'Unblock user successfully',
     };
   }
 
@@ -208,7 +208,7 @@ export class UserService {
       success: true,
       statusCode: 200,
       error: null,
-      data: user,
+      data: 'Delete user successfully',
     };
   }
 }

@@ -105,10 +105,9 @@ function PublishPost() {
       contentMarkdown: markdownText,
       tagArray: tagOptions?.map((item) => item.value),
       status: status,
-      authorId: +UserInfo?.data?.user?.id,
     };
 
-    console.log("Payload: ", payload);
+    // console.log("Payload: ", payload);
 
     try {
       const post = await services.createPost(payload);

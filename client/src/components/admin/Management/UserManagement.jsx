@@ -32,7 +32,6 @@ function UserManagement() {
       console.log("userId : ", userId);
       if (!userId) return;
       const res = await services.blockUser(userId);
-      console.log("res : ", res);
       if (res?.success) {
         dispatch(actions.getPaginationUsers(page, 15));
         toast.success("Khoá người dùng thành công!");

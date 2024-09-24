@@ -6,9 +6,11 @@ export const handlerFileUpload = async (file) => {
   if (!file) return;
   try {
     // get presigned URL from server
-    const response = await axios.put("/minio/presigned-url", {
-      fileName: file.name,
-    });
+    const response = await axios.put(
+      `/minio/presigned-url?fileName=${file.name}`
+    );
+
+    console.log("response:", response);
 
     const presignedUrl = response.presignedURL;
     await axios.put(presignedUrl, file, {
@@ -20,9 +22,8 @@ export const handlerFileUpload = async (file) => {
     const getUrlResponse = await axios.get(
       `/minio/presigned-get-url?fileName=${file.name}`
     );
+    console.log("getUrlResponse:", getUrlResponse);
     return getUrlResponse;
-    // const imageUrl = getUrlResponse;
-    // console.log("Image URL:", imageUrl);
   } catch (error) {
     console.error("error when upload!!:", error);
   }

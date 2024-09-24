@@ -6,6 +6,7 @@ import { formatVietnameseDate } from '../utils/common.function';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommentGateway } from './comment.gateway';
+import { de } from 'date-fns/locale';
 
 @Injectable()
 export class CommentService {
@@ -38,8 +39,7 @@ export class CommentService {
     await this.commentRepository.save(comment);
 
     delete comment?.post;
-    delete comment?.user?.password;
-    delete comment?.user?.email;
+    delete comment?.user;
 
     this.commentsGateway.server.emit('newComment', {
       comment,

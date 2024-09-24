@@ -4,6 +4,12 @@ import { KeywordDTO, TagDTO, TagNameDTO } from './dto/tag.dto';
 import { Roles } from '../auth/strategy/roles.decorator';
 import { Role } from '../enums';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOkResponse } from '@nestjs/swagger';
+import {
+  ExistTagCheckApiResponseDTO,
+  SearchResponseDTO,
+  TagResponseDto,
+} from './dto/tag-response.dto';
 
 @Controller('tags')
 export class TagController {
@@ -12,6 +18,7 @@ export class TagController {
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @Roles(Role.Admin)
+  @ApiOkResponse({ type: TagResponseDto })
   createTag(@Body() body: TagDTO) {
     return this.TagService.create(body);
   }
@@ -22,12 +29,14 @@ export class TagController {
   }
 
   @Get('search')
+  @ApiOkResponse({ type: SearchResponseDTO })
   @UseGuards(AuthGuard('jwt'))
   searchTags(@Query() query: KeywordDTO) {
     return this.TagService.searchTags(query.keyword);
   }
 
   @Get('exist')
+  @ApiOkResponse({ type: ExistTagCheckApiResponseDTO })
   @UseGuards(AuthGuard('jwt'))
   @Roles(Role.Admin)
   isExist(@Query() query: TagNameDTO) {

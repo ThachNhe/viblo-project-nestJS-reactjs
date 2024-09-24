@@ -55,6 +55,8 @@ export class PostService {
 
     delete post.author;
 
+    delete post.tags;
+
     return {
       success: true,
       statusCode: 200,
