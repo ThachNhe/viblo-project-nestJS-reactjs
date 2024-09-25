@@ -6,6 +6,7 @@ export class UserIdDTO {
   @Type(() => Number)
   @IsNumber()
   @ApiProperty()
+  @Min(1)
   id: number;
 }
 
@@ -13,6 +14,7 @@ export class UrlDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
+  @IsUrl()
   avatar: string;
 }
 

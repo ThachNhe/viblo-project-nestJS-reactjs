@@ -1,10 +1,10 @@
+import { de } from 'date-fns/locale';
 import { UserService } from './user.service';
 import {
   Body,
   Controller,
   Get,
   Param,
-  Post,
   Put,
   UseGuards,
   Request,
@@ -22,18 +22,12 @@ import {
   getUserIdResponseDto,
   GetUsersResponseDto,
   UnBlockedUserResponseDto,
+  UploadLoadingResponseDto,
 } from './dto/user-response.dto';
 
 @Controller('users')
-// @UseGuards(AuthGuard('jwt'))
 export class UserController {
   constructor(private userService: UserService) {}
-
-  @Post('authorize')
-  @Roles(Role.User)
-  async authorize() {
-    return 'authorize';
-  }
 
   @Get('top')
   @ApiOkResponse({ type: GetUsersResponseDto })
@@ -43,13 +37,14 @@ export class UserController {
 
   @Get(':id')
   @ApiOkResponse({ type: getUserIdResponseDto })
-  // @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   getUser(@Param() userId: UserIdDTO) {
     return this.userService.getUser(userId);
   }
 
   @Put('/avatar')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({ type: UploadLoadingResponseDto })
   uploadAvatar(@Body() body: UrlDto, @Request() req: any) {
     const userId = req.user.userId;
     return this.userService.uploadAvatar(userId, body?.avatar);
@@ -65,6 +60,7 @@ export class UserController {
 
   @Put(':id/block')
   @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.Admin)
   @ApiOkResponse({ type: BlockedUserResponseDto })
   blockUser(@Param() id: UserIdDTO) {
     // const { id } = userId;
@@ -74,15 +70,19 @@ export class UserController {
 
   @Put(':id/unblock')
   @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.Admin)
   @ApiOkResponse({ type: UnBlockedUserResponseDto })
   unblockUser(@Param() userId: UserIdDTO) {
     return this.userService.unblockUser(userId);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.Admin)
   @ApiOkResponse({ type: DeleteUserResponseDto })
-  deleteUserByEmail(@Param() params: any) {
+  deleteUser(@Param() params: UserIdDTO) {
     console.log(params);
-    return this.userService.deleteUser(params.id);
+    const userId = params.id;
+    return this.userService.deleteUser(userId);
   }
 }

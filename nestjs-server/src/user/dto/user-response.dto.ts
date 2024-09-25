@@ -1,4 +1,6 @@
+import { id } from 'date-fns/locale';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail } from 'class-validator';
 
 export class PostDto {
   @ApiProperty({ example: '308' })
@@ -149,4 +151,36 @@ export class UnBlockedUserResponseDto {
 
   @ApiProperty({ example: 'Unblock user successfully' })
   data: string;
+}
+
+class UserUploadAvatarDto {
+  @ApiProperty()
+  id: string;
+
+  @IsEmail()
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  useName: string;
+
+  @ApiProperty()
+  fullName: string;
+
+  @ApiProperty()
+  avatar: string;
+}
+
+export class UploadLoadingResponseDto {
+  @ApiProperty({ example: true })
+  success: boolean;
+
+  @ApiProperty({ example: 200 })
+  statusCode: number;
+
+  @ApiProperty({ example: null, nullable: true })
+  error: string | null;
+
+  @ApiProperty()
+  data: UserUploadAvatarDto;
 }

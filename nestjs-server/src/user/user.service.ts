@@ -1,4 +1,9 @@
-import { Injectable, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  Query,
+} from '@nestjs/common';
 import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
 import { formatVietnameseDate } from '../utils/common.function';
 import { Role } from '../enums/index';
@@ -16,7 +21,7 @@ export class UserService {
     private postRepository: Repository<Post>,
   ) {}
   async getUser(id: UserIdDTO) {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id: id.id },
       select: [
         'id',
@@ -28,20 +33,23 @@ export class UserService {
         'avatar',
       ],
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: user,
+    };
   }
 
   async uploadAvatar(userId: number, avatar: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      select: [
-        'id',
-        'email',
-        'userName',
-        'fullName',
-        'avatar',
-        'follower_number',
-        'avatar',
-      ],
+      select: ['id', 'email', 'userName', 'fullName', 'avatar'],
     });
 
     user.avatar = avatar;
@@ -104,11 +112,11 @@ export class UserService {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     if (user.isBlocked) {
-      throw new Error('User is already blocked');
+      throw new BadRequestException('User is already blocked');
     }
 
     await this.userRepository.update({ id: userId.id }, { isBlocked: true });
@@ -134,11 +142,11 @@ export class UserService {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     if (!user.isBlocked) {
-      throw new Error('User is already unblocked');
+      throw new BadRequestException('User is already unblocked');
     }
 
     user.isBlocked = false;
@@ -193,13 +201,12 @@ export class UserService {
   }
 
   async deleteUser(id: number) {
-    console.log('userId service', id);
     const user = await this.userRepository.findOne({
       where: { id: id },
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     await this.userRepository.delete({ id: id });

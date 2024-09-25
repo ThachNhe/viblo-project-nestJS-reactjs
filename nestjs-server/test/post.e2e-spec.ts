@@ -1,10 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, Body } from '@nestjs/common';
-import { ValidationPipe } from '@nestjs/common';
-import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
-import { DatabaseClearUtil } from './utils/database-clear.util';
 import { PostDatabasePrepareUtil } from './utils/database-post-prepare.util';
+import { createTestApp } from './utils/test.utils';
 
 describe('Post Module (e2e)', () => {
   let app: INestApplication;
@@ -20,25 +17,10 @@ describe('Post Module (e2e)', () => {
   };
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-      providers: [DatabaseClearUtil, PostDatabasePrepareUtil],
-    }).compile();
+    const { app: testApp } = await createTestApp([PostDatabasePrepareUtil]);
+    app = testApp;
 
-    app = moduleFixture.createNestApplication();
-
-    app.enableCors({
-      origin: true,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-      credentials: true,
-    });
-
-    app.useGlobalPipes(new ValidationPipe());
-    await app.init();
-
-    const postDatabasePrepareUtil = moduleFixture.get<PostDatabasePrepareUtil>(
-      PostDatabasePrepareUtil,
-    );
+    const postDatabasePrepareUtil = app.get(PostDatabasePrepareUtil);
     await postDatabasePrepareUtil.prepare();
 
     requestAgent = request(app.getHttpServer());
