@@ -4,24 +4,15 @@ import { ConfigService } from '@nestjs/config';
 import 'dotenv/config';
 @Injectable()
 export class FileUploadService {
-  public configService: ConfigService;
   private readonly minioClient: Minio.Client;
 
-  constructor() {
-    // this.minioClient = new Minio.Client({
-    //   endPoint: this.configService.get('MINIO_ENDPOINT'),
-    //   port: 9000,
-    //   useSSL: this.configService.get('MINIO_USE_SSL'),
-    //   accessKey: this.configService.get('MINIO_ACCESS_KEY'),
-    //   secretKey: this.configService.get('MINIO_SECRET_KEY'),
-    // });
-
+  constructor(private configService: ConfigService) {
     this.minioClient = new Minio.Client({
-      endPoint: 'localhost',
+      endPoint: this.configService.get('MINIO_ENDPOINT'),
       port: 9000,
-      useSSL: false,
-      accessKey: 'AKIAIOSFODNN7EXAMPLE',
-      secretKey: 'wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY',
+      useSSL: Boolean(this.configService.get('MINIO_USE_SSL')),
+      accessKey: this.configService.get('MINIO_ACCESS_KEY'),
+      secretKey: this.configService.get('MINIO_SECRET_KEY'),
     });
   }
 
