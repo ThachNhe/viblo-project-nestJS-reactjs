@@ -1,11 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
-import { AuthDTORegister } from 'src/auth/dto/auth.dto';
-import { DatabaseClearUtil } from './utils/database-clear.util';
-import * as argon2 from 'argon2';
+import { createTestApp } from './utils/test.utils';
+import { AuthDbPrepareUtil } from './utils/auth-db-prepare.util';
 
 describe('Auth Module (e2e)', () => {
   let app: INestApplication;
@@ -19,17 +16,14 @@ describe('Auth Module (e2e)', () => {
     password: '123',
   };
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-      providers: [DatabaseClearUtil],
-    }).compile();
+    const { app: testApp } = await createTestApp([AuthDbPrepareUtil]);
+    app = testApp;
 
-    app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
-    appModule = app.get<AppModule>(AppModule);
-    await app.init();
+    const authDbPrepareUtil = app.get(AuthDbPrepareUtil);
+
+    authDbPrepareUtil.prepare();
     requestAgent = request(app.getHttpServer());
-    await appModule.clearDatabase();
+
     const loginResponse = await requestAgent
       .post('/auth/login')
       .send({ email: 'newuser@example.com', password: '123' });
@@ -42,7 +36,7 @@ describe('Auth Module (e2e)', () => {
 
   describe('POST /auth/register', () => {
     //REGISTER SUCCESSFULLY
-    it('Should register a user successfully', async () => {
+    it('1. Should register a user successfully', async () => {
       const response = await requestAgent
         .post('/auth/register')
         .send(registerData)
@@ -64,7 +58,7 @@ describe('Auth Module (e2e)', () => {
     });
 
     // REGISTER WITH MISSING DATA
-    it('should return error when data is missing', async () => {
+    it('2. should return error when data is missing', async () => {
       const incompleteData = {
         email: 'thachdinhOK@gmail.com',
       };
@@ -81,7 +75,7 @@ describe('Auth Module (e2e)', () => {
     });
 
     //REGISTER WITH DUPLICATE DATA
-    it('Should register duplicate user', async () => {
+    it('3. Should register duplicate user', async () => {
       const registerData = {
         userName: 'newUser',
         email: 'newuser@example.com',
@@ -101,7 +95,7 @@ describe('Auth Module (e2e)', () => {
     });
 
     //REGISTER WITH INVALID EMAIL
-    it('Should return 400 for invalid email format', async () => {
+    it('4. Should return 400 for invalid email format', async () => {
       const registerData = {
         email: 'invalid-email',
         password: 'securePassword123',
@@ -122,7 +116,7 @@ describe('Auth Module (e2e)', () => {
 
   describe('POST /auth/login', () => {
     //LOGIN USERNAME SUCCESSFULLY
-    it('/auth/login (POST) - should login a user with username successfully', async () => {
+    it('5. Should login a user with username successfully', async () => {
       const response = await requestAgent
         .post('/auth/login')
         .send({
@@ -141,7 +135,7 @@ describe('Auth Module (e2e)', () => {
     });
 
     //lOGIN EMAIL SUCCESSFULLY
-    it('/auth/login (POST) - should login a user with email successfully', async () => {
+    it('6. Should login a user with email successfully', async () => {
       const loginData = {
         email: 'newuser@example.com',
         password: '123',
@@ -162,7 +156,7 @@ describe('Auth Module (e2e)', () => {
     });
 
     //LOGIN WITH MISSING WRONG USERNAME
-    it('/auth/login (POST) - should login a user with wrong username', async () => {
+    it('7. should login a user with wrong username', async () => {
       const loginData = {
         userName: 'thachdinhOK',
         password: '123',
@@ -179,7 +173,7 @@ describe('Auth Module (e2e)', () => {
     });
 
     //LOGIN WITH MISSING WRONG PASSWORD
-    it('/auth/login (POST) - should login a user with password wrong failed', async () => {
+    it('8. Should login a user with password wrong failed', async () => {
       const loginData = {
         email: 'thachdinh@gmail.com',
         password: '1234',
@@ -199,7 +193,7 @@ describe('Auth Module (e2e)', () => {
 
   describe('POST /auth/logout', () => {
     //LOGOUT
-    it('Should logout successfully', async () => {
+    it('1. Should logout successfully', async () => {
       const response = await requestAgent
         .post('/auth/logout')
         .set('Authorization', `Bearer ${token}`)

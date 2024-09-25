@@ -1,10 +1,7 @@
-import { se } from 'date-fns/locale';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { createTestApp } from './utils/test.utils';
 import { CommentDbPrepareUtil } from './utils/comment-db-prepare.utils';
-import * as argon2 from 'argon2';
-import exp from 'constants';
 
 describe('Comment Module (e2e)', () => {
   let app: INestApplication;

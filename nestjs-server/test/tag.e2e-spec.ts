@@ -1,9 +1,7 @@
-import { Post } from './../src/entity/Post';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { createTestApp } from './utils/test.utils';
 import { TagDbPrepareUtil } from './utils/tag-db-prepare.utils';
-import * as argon2 from 'argon2';
 
 describe('Tag Module (e2e)', () => {
   let app: INestApplication;

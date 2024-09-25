@@ -32,7 +32,7 @@ describe('Post Module (e2e)', () => {
 
   describe('POST /posts', () => {
     //1. Create post successfully
-    it('Should create a post successfully', async () => {
+    it('1. Should create a post successfully', async () => {
       const response = await requestAgent
         .post('/posts')
         .send({ ...postData })
@@ -65,7 +65,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //2. Create post without token
-    it('Should create a post unsuccessfully because Create post without token', async () => {
+    it('2. Should create a post unsuccessfully because Create post without token', async () => {
       const createPostDto = {
         ...postData,
       };
@@ -82,7 +82,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //3. Create post with title is empty
-    it('Should create a post unsuccessfully because title is empty()', async () => {
+    it('3. Should create a post unsuccessfully because title is empty()', async () => {
       const createPostDto = {
         ...postData,
         title: '',
@@ -102,7 +102,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //4. Create post with content is empty
-    it('Should create a post successfully because content is empty()', async () => {
+    it('4. Should create a post successfully because content is empty()', async () => {
       const createPostDto = {
         ...postData,
         contentMarkdown: '',
@@ -122,17 +122,10 @@ describe('Post Module (e2e)', () => {
     });
 
     //5. Create post with less than 1 tag
-    it('Should create a post successfully because less than 1 tag', async () => {
-      const createPostDto = {
-        title: 'abc',
-        contentMarkdown: 'sdfsf',
-        tagArray: [],
-        status: 'PUBLISHED',
-      };
-
+    it('5. Should create a post successfully because less than 1 tag', async () => {
       const response = await requestAgent
         .post('/posts')
-        .send(createPostDto)
+        .send({ ...postData, tagArray: [] })
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
 
@@ -144,17 +137,10 @@ describe('Post Module (e2e)', () => {
     });
 
     //6. Create post with more than 5 tags
-    it('Should create a post successfully because more than 5 tags', async () => {
-      const createPostDto = {
-        title: 'abc',
-        contentMarkdown: 'sdfsf',
-        tagArray: ['a', 'b', 'c', 'd', 'e', 'f'],
-        status: 'PUBLISHED',
-      };
-
+    it('6. Should create a post successfully because more than 5 tags', async () => {
       const response = await requestAgent
         .post('/posts')
-        .send(createPostDto)
+        .send({ ...postData, tagArray: ['a', 'b', 'c', 'd', 'e', 'f'] })
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
 
@@ -168,7 +154,7 @@ describe('Post Module (e2e)', () => {
 
   describe('GET /posts/:id', () => {
     //1. Get post successfully
-    it('Should get a post successfully', async () => {
+    it('1. Should get a post successfully', async () => {
       const response = await requestAgent.get(`/posts/${postId}`).expect(200);
 
       expect(response.body).toEqual({
@@ -211,7 +197,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //2. Get post unsuccessfully with wrong id
-    it('Should get a post unsuccessfully because wrong id', async () => {
+    it('2. Should get a post unsuccessfully because wrong id', async () => {
       const response = await requestAgent
         .get(`/posts/${98428234575834}`)
         .expect(404);
@@ -224,7 +210,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //3. Get post unsuccessfully with less than 1 id
-    it('Should get a post unsuccessfully because id is less than 1', async () => {
+    it('3. Should get a post unsuccessfully because id is less than 1', async () => {
       const response = await requestAgent.get(`/posts/-1`).expect(400);
       expect(response.body).toEqual({
         message: ['postId must be more than 1'],
@@ -234,7 +220,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //4. Get post unsuccessfully with id is string
-    it('Should get a post unsuccessfully because id is string', async () => {
+    it('4. Should get a post unsuccessfully because id is string', async () => {
       const response = await requestAgent.get(`/posts/ohskgfjjf`).expect(400);
       expect(response.body).toEqual({
         message: [
@@ -250,7 +236,7 @@ describe('Post Module (e2e)', () => {
 
   describe('POST /posts/:id/bookmark', () => {
     //1. Bookmark post without token
-    it('Should bookmark a post unsuccessfully because without token', async () => {
+    it('1. Should bookmark a post unsuccessfully because without token', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/bookmark`)
         .expect(401);
@@ -261,7 +247,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //2. Bookmark post successfully
-    it('Should bookmark a post successfully', async () => {
+    it('2. Should bookmark a post successfully', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/bookmark`)
         .set('Authorization', `Bearer ${token}`)
@@ -276,7 +262,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //3. Bookmark post unsuccessfully with wrong postId
-    it('Should bookmark a post unsuccessfully because wrong postId', async () => {
+    it('3. Should bookmark a post unsuccessfully because wrong postId', async () => {
       const invalidPostId = 8723987349;
       const response = await requestAgent
         .post(`/posts/${invalidPostId}/bookmark`)
@@ -292,7 +278,7 @@ describe('Post Module (e2e)', () => {
 
     //4. Bookmark post unsuccessfully with less than 1 id
 
-    it('Should bookmark a post unsuccessfully because id is less than 1', async () => {
+    it('4. Should bookmark a post unsuccessfully because id is less than 1', async () => {
       const invalidPostId = -1;
       const response = await requestAgent
         .post(`/posts/${invalidPostId}/bookmark`)
@@ -307,7 +293,7 @@ describe('Post Module (e2e)', () => {
 
     //5 Bookmark post not found with id is string
 
-    it('Should bookmark a post unsuccessfully because id is string', async () => {
+    it('5. Should bookmark a post unsuccessfully because id is string', async () => {
       const response = await requestAgent
         .post(`/posts/ohskgfjjf/bookmark`)
         .set('Authorization', `Bearer ${token}`)
@@ -324,7 +310,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //6. Unbookmark post successfully
-    it('Should unbookmark a post successfully', async () => {
+    it('6. Should unbookmark a post successfully', async () => {
       const response = await requestAgent
         .delete(`/posts/${postId}/bookmark`)
         .set('Authorization', `Bearer ${token}`)
@@ -339,7 +325,7 @@ describe('Post Module (e2e)', () => {
     });
 
     // 7. unbookmark without token
-    it('Should unbookmark a post uncucessfully because wihtout token', async () => {
+    it('7. Should unbookmark a post uncucessfully because wihtout token', async () => {
       const response = await requestAgent
         .delete(`/posts/${postId}/bookmark`)
         .expect(401);
@@ -350,7 +336,7 @@ describe('Post Module (e2e)', () => {
     });
 
     // 8. unbookmark unsuccessfully with wrong postId
-    it('Should unbookmark a post unsuccessfully because wrong postId', async () => {
+    it('8. Should unbookmark a post unsuccessfully because wrong postId', async () => {
       const response = await requestAgent
         .delete(`/posts/8723987349/bookmark`)
         .set('Authorization', `Bearer ${token}`)
@@ -366,7 +352,7 @@ describe('Post Module (e2e)', () => {
 
   describe('GET /posts?page=&limit=', () => {
     //1. Get pagination posts successfully
-    it('Should get pagination post successfully!', async () => {
+    it('1. Should get pagination post successfully!', async () => {
       const response = await requestAgent
         .get('/posts?page=1&limit=10')
         .expect(200);
@@ -378,7 +364,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //2. get pagination posts unsuccessfully with page is string
-    it('Should get pagination post unsuccessfully because page is string', async () => {
+    it('2. Should get pagination post unsuccessfully because page is string', async () => {
       const response = await requestAgent
         .get('/posts?page=abc&limit=10')
         .expect(400);
@@ -394,7 +380,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //3. get pagination posts unsuccessfully with page is less than 1
-    it('Should get pagination post unsuccessfully because page is less than 1', async () => {
+    it('3. Should get pagination post unsuccessfully because page is less than 1', async () => {
       const response = await requestAgent
         .get('/posts?page=0&limit=10')
         .expect(400);
@@ -407,7 +393,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //4. get pagination posts unsuccessfully with limit is string
-    it('Should get pagination post unsuccessfully because limit is string', async () => {
+    it('4. Should get pagination post unsuccessfully because limit is string', async () => {
       const response = await requestAgent
         .get('/posts?page=1&limit=abc')
         .expect(400);
@@ -423,7 +409,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //5. get pagination posts unsuccessfully with limit is less than 1
-    it('Should get pagination post unsuccessfully because limit is less than 1', async () => {
+    it('5. Should get pagination post unsuccessfully because limit is less than 1', async () => {
       const response = await requestAgent
         .get('/posts?page=1&limit=0')
         .expect(400);
@@ -438,7 +424,7 @@ describe('Post Module (e2e)', () => {
 
   describe('POST /posts/:id/vote', () => {
     //1. Vote post without token
-    it('Should vote a post unsuccessfully because without token', async () => {
+    it('1. Should vote a post unsuccessfully because without token', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
@@ -450,7 +436,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //2.Vote post not VoteType
-    it('Should vote a post unsuccessfully because voteType is not VoteType', async () => {
+    it('2. Should vote a post unsuccessfully because voteType is not VoteType', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .set('Authorization', `Bearer ${token}`)
@@ -466,7 +452,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //3. Vote post not found
-    it('Should vote a post unsuccessfully because wrong postId', async () => {
+    it('3. Should vote a post unsuccessfully because wrong postId', async () => {
       const response = await requestAgent
         .post(`/posts/8723987349/vote`)
         .send({ voteType: 'UPVOTE' })
@@ -481,7 +467,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //4. Vote post successfully with upvote one time
-    it('Should vote a post successfully with upvote one time', async () => {
+    it('4. Should vote a post successfully with upvote one time', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
@@ -498,7 +484,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //5. Vote post successfully with upvote second time
-    it('Should vote a post successfully with upvote second time', async () => {
+    it('5. Should vote a post successfully with upvote second time', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
@@ -514,7 +500,7 @@ describe('Post Module (e2e)', () => {
       expect(response.body.data).toHaveProperty('tags_array');
     });
     //6. Vote post successfully with upvote repeat time
-    it('Should vote a post successfully with upvote repeat time for next test case', async () => {
+    it('6. Should vote a post successfully with upvote repeat time for next test case', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
@@ -531,7 +517,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //7. Vote post successfully with downvote
-    it('Should vote a post successfully with downvote', async () => {
+    it('7. Should vote a post successfully with downvote', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
@@ -547,8 +533,8 @@ describe('Post Module (e2e)', () => {
       expect(response.body.data).toHaveProperty('tags_array');
     });
 
-    //7. Vote post successfully with downvote to reset vote_number`
-    it('Should vote a post successfully with downvote to reset vote_number', async () => {
+    //8. Vote post successfully with downvote to reset vote_number`
+    it('8. Should vote a post successfully with downvote to reset vote_number', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
@@ -566,7 +552,7 @@ describe('Post Module (e2e)', () => {
 
     //================================================================================================
     //9. Vote post successfully with downvote one time
-    it('Should vote a post successfully with downvote one time', async () => {
+    it('9. Should vote a post successfully with downvote one time', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
@@ -583,7 +569,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //10. Vote post successfully with downvote second time
-    it('Should vote a post successfully with downvote second time', async () => {
+    it('10. Should vote a post successfully with downvote second time', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
@@ -599,7 +585,7 @@ describe('Post Module (e2e)', () => {
       expect(response.body.data).toHaveProperty('tags_array');
     });
     //11. Vote post successfully with downvote repeat time
-    it('Should vote a post successfully with downvote one time', async () => {
+    it('11. Should vote a post successfully with downvote one time', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
@@ -616,7 +602,7 @@ describe('Post Module (e2e)', () => {
     });
 
     //12. Vote post successfully with upvote
-    it('Should vote a post successfully with upvote', async () => {
+    it('12. Should vote a post successfully with upvote', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })

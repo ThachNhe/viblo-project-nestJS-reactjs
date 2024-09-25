@@ -5,10 +5,10 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 @Injectable()
-export class DatabaseClearUtil {
+export class AuthDbPrepareUtil {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
-  async clearDatabase(): Promise<void> {
+  async prepare(): Promise<void> {
     await this.dataSource
       .createQueryBuilder()
       .delete()

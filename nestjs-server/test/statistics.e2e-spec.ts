@@ -2,7 +2,6 @@ import { INestApplication, Body } from '@nestjs/common';
 import * as request from 'supertest';
 import { createTestApp } from './utils/test.utils';
 import { StatisticDbPrepareUtil } from './utils/statistic-db-prepare.utils';
-import * as argon2 from 'argon2';
 
 describe('Statistic Module (e2e)', () => {
   let app: INestApplication;
