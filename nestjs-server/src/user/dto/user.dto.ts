@@ -14,7 +14,12 @@ export class UrlDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  @IsUrl()
+  // @IsUrl({
+  //   require_protocol: true, // Bắt buộc phải có giao thức (http hoặc https)
+  //   require_valid_protocol: true, // Giao thức phải hợp lệ
+  //   protocols: ['http', 'https'], // Chỉ chấp nhận http và https
+  // })
+  // @IsUrl()
   avatar: string;
 }
 

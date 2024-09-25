@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  Query,
 } from '@nestjs/common';
 import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
 import { formatVietnameseDate } from '../utils/common.function';
@@ -52,6 +51,7 @@ export class UserService {
       select: ['id', 'email', 'userName', 'fullName', 'avatar'],
     });
 
+    console.log('check user : ', user);
     user.avatar = avatar;
 
     await this.userRepository.save(user);

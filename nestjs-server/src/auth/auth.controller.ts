@@ -49,7 +49,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: LogoutResponseDTO })
   logout(@Req() req: Request) {
     return this.authService.logout(req);

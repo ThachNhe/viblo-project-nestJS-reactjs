@@ -13,11 +13,7 @@ export const handlerFileUpload = async (file) => {
     console.log("response:", response);
 
     const presignedUrl = response.presignedURL;
-    await axios.put(presignedUrl, file, {
-      headers: {
-        "Content-Type": file.type,
-      },
-    });
+    await axios.put(presignedUrl, file);
 
     const getUrlResponse = await axios.get(
       `/minio/presigned-get-url?fileName=${file.name}`

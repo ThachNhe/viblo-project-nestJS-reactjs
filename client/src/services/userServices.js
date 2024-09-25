@@ -12,6 +12,7 @@ const userLogoutService = () => {
 };
 
 const uploadAvatar = (body) => {
+  console.log("body service : ", body);
   return axios.put("/users/avatar", body);
 };
 

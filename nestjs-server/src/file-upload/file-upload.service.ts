@@ -9,8 +9,8 @@ export class FileUploadService {
   constructor(private configService: ConfigService) {
     this.minioClient = new Minio.Client({
       endPoint: this.configService.get('MINIO_ENDPOINT'),
-      port: 9000,
-      useSSL: Boolean(this.configService.get('MINIO_USE_SSL')),
+      port: +this.configService.get('MINIO_PORT'),
+      useSSL: this.configService.get('MINIO_USE_SSL') === 'true',
       accessKey: this.configService.get('MINIO_ACCESS_KEY'),
       secretKey: this.configService.get('MINIO_SECRET_KEY'),
     });

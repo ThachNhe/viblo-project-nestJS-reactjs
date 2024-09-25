@@ -46,7 +46,7 @@ export class UserController {
   @ApiOkResponse({ type: UploadLoadingResponseDto })
   uploadAvatar(@Body() body: UrlDto, @Request() req: any) {
     const userId = req.user.userId;
-    return this.userService.uploadAvatar(userId, body?.avatar);
+    return this.userService.uploadAvatar(userId, body.avatar);
   }
 
   @Get()
