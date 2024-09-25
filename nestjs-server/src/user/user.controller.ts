@@ -1,4 +1,3 @@
-import { de } from 'date-fns/locale';
 import { UserService } from './user.service';
 import {
   Body,

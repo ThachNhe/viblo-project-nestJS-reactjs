@@ -1,4 +1,4 @@
-import { Injectable, Request } from '@nestjs/common';
+import { Injectable, NotFoundException, Request } from '@nestjs/common';
 import { CommentDTO, PostIdDTO } from './dto/comment.dto';
 import { AppDataSource } from '../index';
 import { Comment, User, Post } from '../entity';
@@ -6,7 +6,6 @@ import { formatVietnameseDate } from '../utils/common.function';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommentGateway } from './comment.gateway';
-import { de } from 'date-fns/locale';
 
 @Injectable()
 export class CommentService {
@@ -23,9 +22,35 @@ export class CommentService {
       where: { id: userId },
     });
 
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (body.replyForUserId) {
+      const replyForUser = await AppDataSource.getRepository(User).findOne({
+        where: { id: body.replyForUserId },
+      });
+
+      if (!replyForUser) {
+        throw new NotFoundException('Reply for user not found');
+      }
+    }
+
+    const commentParent = await AppDataSource.getRepository(Comment).findOne({
+      where: { id: body.parentId },
+    });
+
+    if (body.parentId && !commentParent) {
+      throw new NotFoundException('Parent comment not found');
+    }
+
     const post = await AppDataSource.getRepository(Post).findOne({
       where: { id: +body.postId },
     });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
 
     const comment = new Comment();
     comment.content = body.content;
@@ -54,7 +79,16 @@ export class CommentService {
     };
   }
 
+  // get comments by post id
   async getCommentsByPostId(params: PostIdDTO) {
+    const post = await AppDataSource.getRepository(Post).findOne({
+      where: { id: params.postId },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
     let results = await this.commentRepository.query(`
       WITH replies AS (
         SELECT
