@@ -5,6 +5,7 @@ import { Roles } from '../auth/strategy/roles.decorator';
 import { Role } from '../enums';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOkResponse } from '@nestjs/swagger';
+
 import {
   ExistTagCheckApiResponseDTO,
   SearchResponseDTO,
@@ -38,7 +39,6 @@ export class TagController {
   @Get('exist')
   @ApiOkResponse({ type: ExistTagCheckApiResponseDTO })
   @UseGuards(AuthGuard('jwt'))
-  @Roles(Role.Admin)
   isExist(@Query() query: TagNameDTO) {
     if (!query.name) {
       throw new Error('tagName is required');

@@ -1,4 +1,3 @@
-import { se } from 'date-fns/locale';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { createTestApp } from './utils/test.utils';
