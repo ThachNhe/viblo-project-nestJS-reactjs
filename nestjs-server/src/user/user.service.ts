@@ -51,7 +51,6 @@ export class UserService {
       select: ['id', 'email', 'userName', 'fullName', 'avatar'],
     });
 
-    console.log('check user : ', user);
     user.avatar = avatar;
 
     await this.userRepository.save(user);
