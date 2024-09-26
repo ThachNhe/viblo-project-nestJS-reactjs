@@ -1,12 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import SocialLogin from "./SocialLogin";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../redux/action/index";
 import toast from "react-hot-toast";
 import { AppContext } from "../../contexts/AppContext";
 const Register = () => {
-
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,24 +15,16 @@ const Register = () => {
   const [confirmInfo, setConfirmInfo] = useState(false);
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state?.auth?.userRegister);
-  const ctx = useContext(AppContext)
+  const ctx = useContext(AppContext);
 
-   useEffect(() => {
-    ctx.setIsHiddenNavbar(true)
+  useEffect(() => {
+    ctx.setIsHiddenNavbar(true);
     return () => {
-      ctx.setIsHiddenNavbar(false)
-    }
-  }, [])
+      ctx.setIsHiddenNavbar(false);
+    };
+  }, []);
 
-  // useEffect(() => {
-  //   if (userInfo?.success) {
-  //     toast.success("Register success!!!");
-  //      navigate('/login');
-  //   }else {
-  //     toast.error("Register failed!!!");
-  //   }
-  // }, [userInfo]);
-
+  useEffect(() => {}, [userInfo]);
 
   const handlerSubmitRegisterForm = (e) => {
     e.preventDefault();
@@ -45,6 +36,12 @@ const Register = () => {
     };
     if (password === confirmPassword) {
       dispatch(actions.userRegister(payload));
+      if (userInfo?.success) {
+        toast.success("Register success!!!");
+        navigate("/login");
+      } else {
+        toast.error("Register failed!!!");
+      }
     }
   };
 

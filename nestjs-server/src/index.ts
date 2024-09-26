@@ -16,10 +16,10 @@ import {
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: 'localhost',
-  port: 5435,
+  port: 5432,
   username: 'root',
   password: '123',
-  database: 'testdb',
+  database: 'viblo-db',
   synchronize: true,
   logging: false,
   entities: [

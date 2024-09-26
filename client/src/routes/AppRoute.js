@@ -4,7 +4,7 @@ import Register from "../components/auth/Register";
 import Login from "../components/auth/Login";
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
-import Homepage from "../components/user/Homepage/HomePage";
+import PostDetail from "../components/user/Homepage/PostDetail";
 import PublishPost from "../components/user/PublishPost";
 import NewestPost from "../components/postNavbar/NewestPost";
 import TrendingPost from "../components/postNavbar/TrendingPost";
@@ -20,7 +20,7 @@ function AppRoutes() {
         <Route path="/admin/*" element={<AdminApp />} />
       </Route>
 
-      <Route path="/homepage" element={<Homepage />} />
+      <Route path="/p/:slug" element={<PostDetail />} />
       <Route path="/" element={<PostPageLayout />}>
         <Route index path="followings" element={<FollowingPost />} />
         <Route path="newest" element={<NewestPost />} />

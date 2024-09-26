@@ -103,11 +103,9 @@ function PublishPost() {
     let payload = {
       title: title,
       contentMarkdown: markdownText,
-      tagArray: tagOptions?.map((item) => item.value),
+      tagArray: selectedOption?.map((item) => item.value),
       status: status,
     };
-
-    // console.log("Payload: ", payload);
 
     try {
       const post = await services.createPost(payload);
@@ -115,7 +113,10 @@ function PublishPost() {
         setMarkdownText("");
         setTitle("");
         setStatus("PUBLIC");
-        navigator("/homepage", { state: { data: post?.data?.id } });
+        console.log("post?.data?.id pub :", post?.data?.id);
+        navigator(`/p/${post?.data?.slug}`, {
+          state: { data: post?.data?.id },
+        });
         toast.success("Tạo bài viết thành công!!");
       }
     } catch (e) {

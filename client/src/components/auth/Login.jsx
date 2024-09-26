@@ -42,7 +42,7 @@ const Login = () => {
       isLogin &&
       userInfo?.data?.user?.roles !== "ADMIN"
     ) {
-      navigate("/homepage");
+      navigate("/followings");
     }
   }, [userInfo, isLogin]);
 

@@ -12,7 +12,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { PostDTO, PostIdDTO, VoteDTO } from './dto/post.dto';
+import { PostDTO, PostIdDTO, VoteDTO, SlugDTO } from './dto/post.dto';
 import { PaginationDto } from './dto/pagination.dto';
 import { ApiOkResponse } from '@nestjs/swagger';
 import {
@@ -40,6 +40,12 @@ export class PostController {
   @ApiOkResponse({ type: GetPostIdApiResponseDto })
   getId(@Param() params: PostIdDTO) {
     return this.PostService.getId(params.postId);
+  }
+
+  @Get('slug/:slug')
+  @ApiOkResponse({ type: GetPostIdApiResponseDto })
+  getBySlug(@Param() params: SlugDTO) {
+    return this.PostService.getBySlug(params.slug);
   }
 
   @Post(':postId/vote')

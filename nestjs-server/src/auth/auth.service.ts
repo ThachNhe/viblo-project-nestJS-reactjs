@@ -65,6 +65,8 @@ export class AuthService {
       ],
     });
 
+    console.log('check user', user);
+
     if (!user) {
       throw new UnauthorizedException();
     }

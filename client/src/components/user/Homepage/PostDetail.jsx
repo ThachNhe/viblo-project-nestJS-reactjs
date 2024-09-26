@@ -19,6 +19,7 @@ import { extractHeadings } from "../../../utils/utils";
 import Banner from "./Banner";
 import NoComment from "./NoComment";
 import { socket } from "../../../socket";
+import { useParams } from "react-router-dom";
 
 const settings = {
   dots: true,
@@ -28,9 +29,9 @@ const settings = {
   slidesToScroll: 1,
 };
 
-function Homepage() {
+function PostDetail() {
   const dispatch = useDispatch();
-  const post = useSelector((state) => state.post.post);
+  // const post = useSelector((state) => state.post.post);
   const comments = useSelector((state) => state.comment.commentByPostId);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const relatedPosts = useSelector((state) => state.post.relatedPosts);
@@ -43,16 +44,14 @@ function Homepage() {
   const [defaultPostId, setDefaultPostId] = useState(
     location?.state?.data ? location?.state?.data : 17
   );
-
-
+  const { slug } = useParams();
+  const postBySlug = useSelector((state) => state.post.postBySlug);
+  console.log("slug : ", slug);
 
   useEffect(() => {
-    dispatch(actions.getPostById(defaultPostId));
-    dispatch(actions.getCommentByPostId(defaultPostId));
-    dispatch(actions.getRelatedPosts(defaultPostId));
-    // Kết nối với sự kiện 'newComment'
+    dispatch(actions.getPostBySlug(slug));
+
     socket.on("newComment", (commentData) => {
-      console.log("newComment : ", commentData);
       if (commentData?.postId === defaultPostId) {
         dispatch(actions.getCommentByPostId(defaultPostId));
       }
@@ -63,6 +62,11 @@ function Homepage() {
     };
   }, []);
   //======================
+
+  useEffect(() => {
+    dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
+    dispatch(actions.getRelatedPosts(postBySlug?.data?.id));
+  }, [postBySlug]);
 
   // Xử lý sự kiện cuộn của nội dung bài viết
   const contentRef = useRef(null);
@@ -83,10 +87,10 @@ function Homepage() {
       };
 
       // Thêm sự kiện cuộn vào phần tử nội dung
-      contentElement.addEventListener('scroll', handleScroll);
+      contentElement.addEventListener("scroll", handleScroll);
 
       return () => {
-        contentElement.removeEventListener('scroll', handleScroll);
+        contentElement.removeEventListener("scroll", handleScroll);
       };
     }
   }, []);
@@ -94,15 +98,15 @@ function Homepage() {
   //======================
 
   useEffect(() => {
-    const user = post?.data?.userVotes.find(
+    const user = postBySlug?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
     );
 
-    const bookmark = post?.data?.bookmarkers.find(
+    const bookmark = postBySlug?.data?.bookmarkers.find(
       (bookmarker) => +bookmarker?.id === +userInfo?.data?.user?.id
     );
 
-    const headings = extractHeadings(post?.data?.content_markdown);
+    const headings = extractHeadings(postBySlug?.data?.content_markdown);
     setToc(headings);
 
     if (+bookmark?.id === +userInfo?.data?.user?.id) {
@@ -127,13 +131,13 @@ function Homepage() {
       setIsUpvote(false);
       setIsDownvote(false);
     }
-  }, [post]);
+  }, [postBySlug]);
 
   const handleCreateComment = async (newComment) => {
     try {
       const commentInfo = await services.createComment(newComment);
       if (commentInfo?.success) {
-        dispatch(actions.getCommentByPostId(post?.data?.id));
+        dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
         toast.success("Bình luận thành công!");
       }
       return commentInfo;
@@ -152,8 +156,9 @@ function Homepage() {
       voteType: voteType,
     };
     try {
-      const voteInfo = await services.votePost(payload, post?.data?.id);
-      voteInfo.success && dispatch(actions.getPostById(post?.data?.id));
+      const voteInfo = await services.votePost(payload, postBySlug?.data?.id);
+      console.log("voteInfo : ", voteInfo);
+      voteInfo.success && dispatch(actions.getPostById(postBySlug?.data?.id));
     } catch (error) {
       console.log("error : ", error);
     }
@@ -162,18 +167,18 @@ function Homepage() {
   const handlerBookmark = async () => {
     try {
       if (isBookmark) {
-        const res = await services.unbookmark(post?.data?.id);
+        const res = await services.unbookmark(postBySlug?.data?.id);
         if (res?.success) {
           // setIsBookmark(false);
-          dispatch(actions.getPostById(post?.data?.id));
+          dispatch(actions.getPostById(postBySlug?.data?.id));
         }
       }
 
       if (!isBookmark) {
-        const res = await services.bookmark(post?.data?.id);
+        const res = await services.bookmark(postBySlug?.data?.id);
         if (res?.success) {
           // setIsBookmark(true);
-          dispatch(actions.getPostById(post?.data?.id));
+          dispatch(actions.getPostById(postBySlug?.data?.id));
         }
       }
     } catch (error) {
@@ -183,19 +188,20 @@ function Homepage() {
   return (
     <>
       <div className="flex flex-col min-h-screen border">
-        {/* Banner */}
-
         <Banner src={"/images/banner.png"} />
         {/* Content */}
         <div className="container mx-auto my-8 px-4 max-w-[1140px] bg-homepage  ">
-          <div className="flex gap-5 flex-1 overflow-auto">
+          <div className="flex gap-2 flex-1 overflow-auto">
             {/* <!-- Nội dung chính --> */}
-            <main  ref={contentRef} className="flex gap-4 w-3/4 h-screen overflow-y-scroll scrollbar-hidden">
+            <main
+              ref={contentRef}
+              className="flex gap-4 w-3/4 h-screen overflow-y-scroll overflow-x-hidden scrollbar-hidden"
+            >
               <PostInfo
                 upvote={isUpvote}
                 downvote={isDownvote}
                 isBookmark={isBookmark}
-                voteNumber={post?.data?.vote_number}
+                voteNumber={postBySlug?.data?.vote_number}
                 handlerUpvote={() => handlerSubmitvote("UPVOTE")}
                 handlerDownvote={() => handlerSubmitvote("DOWNVOTE")}
                 handlerBookmark={handlerBookmark}
@@ -207,27 +213,27 @@ function Homepage() {
                   <div>
                     <div className="flex gap-2 items-center justify-between">
                       <UserInfo
-                        fullName={post?.data?.author?.fullName}
-                        userName={post?.data?.author?.userName}
-                        starNumber={post?.data?.author?.star_number}
-                        followerNumber={post?.data?.author?.follower_number}
-                        postNumber={post?.data?.author?.post_number}
+                        fullName={postBySlug?.data?.author?.fullName}
+                        userName={postBySlug?.data?.author?.userName}
+                        starNumber={postBySlug?.data?.author?.star_number}
+                        followerNumber={postBySlug?.data?.author?.follower_number}
+                        postNumber={postBySlug?.data?.author?.post_number}
                       />
 
                       <div className="flex flex-col gap-2">
-                        <span>Đã đăng vào {post?.data?.createdDate}</span>
+                        <span>Đã đăng vào {postBySlug?.data?.createdDate}</span>
                         <div className=" float-right">
                           <ArticleStats
-                            viewNumber={post?.data?.view_number}
-                            commentNumber={post?.data?.comments?.length}
-                            bookmarkNumber={post?.data?.bookmark_number}
+                            viewNumber={postBySlug?.data?.view_number}
+                            commentNumber={postBySlug?.data?.comments?.length}
+                            bookmarkNumber={postBySlug?.data?.bookmark_number}
                           />
                         </div>
                       </div>
                     </div>
                     <Posts
-                      data={post?.data?.content_markdown}
-                      tags={post?.data?.tags_array}
+                      data={postBySlug?.data?.content_markdown}
+                      tags={postBySlug?.data?.tags_array}
                     />
                   </div>
                 </div>
@@ -236,10 +242,10 @@ function Homepage() {
 
             {/* <!-- Sidebar bên phải --> */}
             <aside
-              className={`flex-grow p-1 rounded-md flex flex-col gap-10 py-2  overflow-y-scroll h-screen custom-scrollbar ${
+              className={`flex-grow p-1 rounded-md flex flex-col gap-10 py-2  overflow-y-scroll h-screen custom-scrollbar overflow-x-hidden ${
                 isContentScrolledToEnd ? "" : "sticky top-96"
               }`}
-              ref={sidebarRef} 
+              ref={sidebarRef}
             >
               <div className="flex-grow p-1 rounded-md flex flex-col gap-10 py-2">
                 <div>
@@ -296,21 +302,24 @@ function Homepage() {
             </aside>
           </div>
           <div className="py-14">
+            {relatedPosts?.data?.length > 0 && (
+              <PostSection
+                post={relatedPosts?.data}
+                sectionName={"Bài viết liên quan"}
+              />
+            )}
 
-          <PostSection
-            post={relatedPosts?.data}
-            sectionName={"Bài viết liên quan"}
-          />
-
-          <PostSection
-            post={relatedPosts?.data}
-            sectionName={"Bài viết khác của văn Thạch"}
-          />
+            {relatedPosts?.data?.length > 0 && (
+              <PostSection
+                post={relatedPosts?.data}
+                sectionName={"Bài viết khác của văn Thạch"}
+              />
+            )}
           </div>
 
           <CommentForm
             title={"Bình luận"}
-            postId={post?.data?.id}
+            postId={postBySlug?.data?.id}
             userId={userInfo?.data?.user?.id}
             parentId={0}
             onCreateComment={handleCreateComment}
@@ -325,7 +334,7 @@ function Homepage() {
                   <CommentSection
                     comment={comment}
                     parentId={comment.id}
-                    postId={post?.data?.id}
+                    postId={postBySlug?.data?.id}
                     userId={userInfo?.data?.user?.id}
                     key={index}
                     handlerOpenResponseForm={handlerOpenResponseForm}
@@ -346,4 +355,4 @@ function Homepage() {
   );
 }
 
-export default Homepage;
+export default PostDetail;

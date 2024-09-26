@@ -31,11 +31,16 @@ import { StatisticsModule } from './statistics/statistics.module';
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get<string>('DB_HOST_TEST'),
-        port: configService.get<number>('DB_PORT_TEST'),
-        username: configService.get<string>('DB_USERNAME_TEST'),
-        password: configService.get<string>('DB_PASSWORD_TEST'),
-        database: configService.get<string>('DB_TEST'),
+        // host: configService.get<string>('DB_HOST_TEST'),
+        // port: configService.get<number>('DB_PORT_TEST'),
+        // username: configService.get<string>('DB_USERNAME_TEST'),
+        // password: configService.get<string>('DB_PASSWORD_TEST'),
+        // database: configService.get<string>('DB_TEST'),
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_MAIN'),
         synchronize: true,
         logging: false,
         entities: [
@@ -61,7 +66,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     CommentModule,
     StatisticsModule,
   ],
-  providers: [], // Add utility to providers
+  providers: [],
   controllers: [],
 })
 export class AppModule implements NestModule {

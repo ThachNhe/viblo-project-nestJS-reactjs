@@ -31,6 +31,13 @@ export class PostDTO {
   tagArray: string[];
 }
 
+export class SlugDTO {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  slug: string;
+}
+
 export class PostIdDTO {
   @IsNotEmpty()
   @Type(() => Number)

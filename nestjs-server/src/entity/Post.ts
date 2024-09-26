@@ -51,6 +51,9 @@ export class Post {
   @Column({ nullable: true })
   seriesId: number;
 
+  @Column({ unique: true })
+  slug: string;
+
   @ManyToOne(() => User, (user) => user.posts, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',

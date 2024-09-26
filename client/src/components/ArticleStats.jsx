@@ -12,7 +12,7 @@ function ArticleStats({ viewNumber, commentNumber, bookmarkNumber, point }) {
   return (
     <div
       className={`flex items-center space-x-4 text-neutral-400 
-      justify-start`}
+      justify-end`}
     >
       {/* Tooltip cho view */}
       <div

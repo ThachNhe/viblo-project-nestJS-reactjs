@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException, Request } from '@nestjs/common';
 import { CommentDTO, PostIdDTO } from './dto/comment.dto';
-import { AppDataSource } from '../index';
 import { Comment, User, Post } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CommentGateway } from './comment.gateway';
 
 @Injectable()
@@ -12,13 +11,20 @@ export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
+
+    @InjectRepository(Post)
+    private postRepository: Repository<Post>,
+
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+
     private readonly commentsGateway: CommentGateway,
   ) {}
 
   // create comment
   async create(body: CommentDTO, @Request() req: any) {
     const userId = req.user.id;
-    const user = await AppDataSource.getRepository(User).findOne({
+    const user = await this.userRepository.findOne({
       where: { id: userId },
     });
 
@@ -27,7 +33,7 @@ export class CommentService {
     }
 
     if (body.replyForUserId) {
-      const replyForUser = await AppDataSource.getRepository(User).findOne({
+      const replyForUser = await this.userRepository.findOne({
         where: { id: body.replyForUserId },
       });
 
@@ -36,7 +42,7 @@ export class CommentService {
       }
     }
 
-    const commentParent = await AppDataSource.getRepository(Comment).findOne({
+    const commentParent = await this.commentRepository.findOne({
       where: { id: body.parentId },
     });
 
@@ -44,7 +50,8 @@ export class CommentService {
       throw new NotFoundException('Parent comment not found');
     }
 
-    const post = await AppDataSource.getRepository(Post).findOne({
+    console.log('post id', body.postId);
+    const post = await this.postRepository.findOne({
       where: { id: +body.postId },
     });
 
@@ -81,7 +88,7 @@ export class CommentService {
 
   // get comments by post id
   async getCommentsByPostId(params: PostIdDTO) {
-    const post = await AppDataSource.getRepository(Post).findOne({
+    const post = await this.postRepository.findOne({
       where: { id: params.postId },
     });
 

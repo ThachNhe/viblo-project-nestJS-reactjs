@@ -3,6 +3,7 @@ const initialState = {
   post: "",
   paginationPosts: [],
   relatedPosts: [],
+  postBySlug: "",
 };
 function postReducer(state = initialState, action) {
   switch (action.type) {
@@ -22,6 +23,12 @@ function postReducer(state = initialState, action) {
       return { ...state };
     case actionTypes.GET_RELATED_POST_FAILED:
       state.relatedPosts = action.payload;
+      return { ...state };
+    case actionTypes.GET_POST_BY_SLUG_SUCCESS:
+      state.postBySlug = action.payload;
+      return { ...state };
+    case actionTypes.GET_POST_BY_SLUG_FAILED:
+      state.postBySlug = action.payload;
       return { ...state };
     default:
       return state;

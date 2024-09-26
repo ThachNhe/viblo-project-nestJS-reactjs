@@ -2,7 +2,6 @@
 import actionType from "./actionType";
 import * as services from "../../services/index";
 import toast from "react-hot-toast";
-import { propTypesIsLastStep } from "@material-tailwind/react/types/components/stepper";
 
 export const getPostById = (id) => {
   return async (dispatch) => {
@@ -16,6 +15,24 @@ export const getPostById = (id) => {
       console.error("Err from get post!!!:", error);
       dispatch({
         type: actionType.GET_POST_ID_FAILED,
+        payload: null,
+      });
+    }
+  };
+};
+
+export const getPostBySlug = (slug) => {
+  return async (dispatch) => {
+    try {
+      const post = await services.getPostBySlug(slug);
+      dispatch({
+        type: actionType.GET_POST_BY_SLUG_SUCCESS,
+        payload: post,
+      });
+    } catch (error) {
+      console.error("Err from get post!!!:", error);
+      dispatch({
+        type: actionType.GET_POST_BY_SLUG_FAILED,
         payload: null,
       });
     }

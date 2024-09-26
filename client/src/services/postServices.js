@@ -28,6 +28,10 @@ const getRelatedPosts = (postId) => {
   return axios.get(`/posts/${postId}/related`);
 };
 
+const getPostBySlug = (slug) => {
+  return axios.get(`/posts/slug/${slug}`);
+};
+
 export {
   createPost,
   getPostById,
@@ -36,4 +40,5 @@ export {
   unbookmark,
   getPaginationPosts,
   getRelatedPosts,
+  getPostBySlug,
 };

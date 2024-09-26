@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PostDTO } from './dto/post.dto';
-import { AppDataSource } from '../index';
 import { Post, User, Tag, UserPost } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
 import { PaginationDto } from './dto/pagination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+var slugify = require('slugify');
 
 @Injectable()
 export class PostService {
@@ -44,6 +44,7 @@ export class PostService {
     post.tags_array = tags.map((tag) => tag.name);
     post.author = user;
     post.tags = tags;
+    post.slug = slugify(body.title, { lower: true });
     await this.postRepository.save(post);
 
     await this.userRepository
@@ -220,6 +221,53 @@ export class PostService {
     };
   }
 
+  async getBySlug(slug: string) {
+    const post = await this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.userVotes', 'userVote') // Nối với bảng userVotes
+      .leftJoin('userVote.user', 'user') // Nối với bảng user nhưng không lấy toàn bộ
+      .addSelect(['user.id']) // Chỉ lấy trường user.id
+      .leftJoinAndSelect('post.comments', 'comments') // Nối với bảng comments để lấy tất cả comments
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoin('post.bookmarkers', 'bookmarkers')
+      .addSelect(['bookmarkers.id'])
+      .where('post.slug = :slug', { slug })
+      .getOne();
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    delete post?.author?.password;
+    delete post?.author?.email;
+    delete post?.author?.posts;
+
+    // post.view_number += 1;
+    await this.postRepository
+      .createQueryBuilder()
+      .update(Post)
+      .set({ view_number: () => 'view_number + 1' })
+      .where('slug = :slug', { slug })
+      .execute();
+
+    await this.postRepository.save(post);
+
+    const updatedPost = {
+      ...post,
+      createdDate: formatVietnameseDate(`${post.created_at}`),
+    };
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: updatedPost,
+    };
+  }
+
   async bookmark(postId: number, userId: number) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
@@ -293,7 +341,7 @@ export class PostService {
   }
 
   async getPaginationPosts(paginationDto: PaginationDto) {
-    const postRepository = AppDataSource.getRepository(Post);
+    const postRepository = this.postRepository;
     const { page = 1, limit = 10 } = paginationDto;
     console.log(page, limit);
     const [result, total] = await postRepository
@@ -334,51 +382,7 @@ export class PostService {
     };
   }
 
-  // async getRelatedPosts(postId: number) {
-  //   // Lấy các bài viết liên quan theo tag
-  //   const post = await this.postRepository.findOne({ where: { id: postId } });
-
-  //   if (!post) {
-  //     throw new NotFoundException('Post not found');
-  //   }
-  //   const relatedPosts = await this.postRepository
-  //     .createQueryBuilder('post')
-  //     .innerJoin('post.tags', 'tag') // Kết nối với bảng tags
-  //     .leftJoin('post.author', 'author')
-  //     .addSelect([
-  //       'author.id',
-  //       'author.userName',
-  //       'author.fullName',
-  //       'author.avatar',
-  //     ])
-  //     .where('post.id != :postId', { postId }) // Loại trừ bài viết hiện tại
-  //     .andWhere((qb) => {
-  //       const subQuery = qb
-  //         .subQuery()
-  //         .select('tag.id')
-  //         .from(Post, 'p')
-  //         .innerJoin('p.tags', 't')
-  //         .where('p.id = :postId')
-  //         .getQuery();
-  //       return 'tag.id IN ' + subQuery; // Kiểm tra xem tag có nằm trong subQuery không
-  //     })
-  //     .getMany();
-
-  //   const newResult = relatedPosts?.map((item, index) => {
-  //     return {
-  //       ...item,
-  //       created_at: formatVietnameseDate(`${item.created_at}`),
-  //     };
-  //   });
-  //   return {
-  //     success: true,
-  //     statusCode: 200,
-  //     error: null,
-  //     data: newResult,
-  //   };
-  // }
-
-  async getRelatedPosts(postId: number): Promise<Post[]> {
+  async getRelatedPosts(postId: number) {
     // Lấy bài viết hiện tại và các tags của nó
     const currentPost = await this.postRepository.findOne({
       where: { id: postId },
@@ -389,8 +393,6 @@ export class PostService {
       throw new NotFoundException(`Post with id ${postId} not found`);
     }
 
-    console.log('currentPost', currentPost);
-
     // Lấy danh sách tag ids từ bài viết hiện tại
     const tagIds = currentPost.tags.map((tag) => tag.id);
 
@@ -400,11 +402,25 @@ export class PostService {
     const relatedPosts = await this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
+      .leftJoin('post.author', 'author')
+      .addSelect([
+        'author.id',
+        'author.userName',
+        'author.fullName',
+        'author.avatar',
+      ])
       .where('tag.id IN (:...tagIds)', { tagIds })
       .andWhere('post.id != :postId', { postId }) // Loại trừ bài viết hiện tại
       .orderBy('post.created_at', 'DESC') // Có thể sắp xếp theo thời gian tạo
       .getMany();
+    // console.log('relatedPosts length : ', relatedPosts.length);
+    // console.log('relatedPosts : ', relatedPosts);
 
-    return relatedPosts;
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: relatedPosts,
+    };
   }
 }
