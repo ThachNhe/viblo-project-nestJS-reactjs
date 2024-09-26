@@ -50,7 +50,6 @@ export class CommentService {
       throw new NotFoundException('Parent comment not found');
     }
 
-    console.log('post id', body.postId);
     const post = await this.postRepository.findOne({
       where: { id: +body.postId },
     });

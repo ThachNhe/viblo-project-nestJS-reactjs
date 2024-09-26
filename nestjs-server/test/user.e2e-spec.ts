@@ -224,7 +224,6 @@ describe('Auth Module (e2e)', () => {
   describe('Delete /users/:id', () => {
     // 1. delete user successfully
     it('1. Should delete user successfully', async () => {
-      console.log('check userid', userId1);
       const res = await requestAgent
         .delete(`/users/${userId1}`)
         .set('Authorization', `Bearer ${adminToken}`)

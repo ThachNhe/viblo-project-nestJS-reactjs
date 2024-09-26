@@ -29,7 +29,6 @@ function UserManagement() {
 
   const handleBlockUser = async (userId) => {
     try {
-      console.log("userId : ", userId);
       if (!userId) return;
       const res = await services.blockUser(userId);
       if (res?.success) {

@@ -1,4 +1,4 @@
-import TagButton from "./TagButton"
+import TagButton from "./TagButton";
 import Avatar from "./navbar/Avatar";
 import { TbCaretUpDownFilled } from "react-icons/tb";
 import ArticleStats from "./ArticleStats";
@@ -11,13 +11,18 @@ function PostCard({
   viewNumber,
   commentNumber,
   bookmarkNumber,
-  voteNumber
+  voteNumber,
+  slug,
+  handlerClick,
 }) {
   return (
-
     <div className="flex gap-2 border-b py-1 w-full">
       <div>
-        <Avatar imgURL={imgURL ? imgURL : "/images/avatar.png"} height={37} width={37} />
+        <Avatar
+          imgURL={imgURL ? imgURL : "/images/avatar.png"}
+          height={37}
+          width={37}
+        />
       </div>
       <div className="flex flex-col gap-1 flex-grow">
         <div className="flex gap-3 items-center">
@@ -27,7 +32,12 @@ function PostCard({
           <span className="text-xs text-neutral-500">{date}</span>
         </div>
         <div>
-          <p className="font-medium text-gray-700 hover:text-blue-400">{title}</p>
+          <span
+            className="font-medium text-gray-700 hover:text-blue-400 cursor-pointer"
+            onClick={() => handlerClick(slug)}
+          >
+            {title}
+          </span>
         </div>
 
         <div className="flex flex-col gap-1">

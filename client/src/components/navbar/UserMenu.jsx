@@ -53,7 +53,6 @@ const UserMenu = () => {
     const imgURL = await handlerFileUpload(file);
 
     try {
-      console.log("imgURL", imgURL.imageURL);
       const res = await services.uploadAvatar({ avatar: imgURL.imageURL });
 
       if (res.success) {

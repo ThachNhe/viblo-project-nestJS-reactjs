@@ -41,19 +41,15 @@ function PostDetail() {
   const [isBookmark, setIsBookmark] = useState(false);
   const location = useLocation();
   const [toc, setToc] = useState([]);
-  const [defaultPostId, setDefaultPostId] = useState(
-    location?.state?.data ? location?.state?.data : 17
-  );
   const { slug } = useParams();
   const postBySlug = useSelector((state) => state.post.postBySlug);
-  console.log("slug : ", slug);
 
   useEffect(() => {
     dispatch(actions.getPostBySlug(slug));
 
     socket.on("newComment", (commentData) => {
-      if (commentData?.postId === defaultPostId) {
-        dispatch(actions.getCommentByPostId(defaultPostId));
+      if (commentData?.postId === postBySlug?.data?.id) {
+        dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
       }
     });
 
@@ -98,16 +94,18 @@ function PostDetail() {
   //======================
 
   useEffect(() => {
+    console.log("has benen called");
     const user = postBySlug?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
     );
 
+    
+    const headings = extractHeadings(postBySlug?.data?.content_markdown);
+    setToc(headings);
+
     const bookmark = postBySlug?.data?.bookmarkers.find(
       (bookmarker) => +bookmarker?.id === +userInfo?.data?.user?.id
     );
-
-    const headings = extractHeadings(postBySlug?.data?.content_markdown);
-    setToc(headings);
 
     if (+bookmark?.id === +userInfo?.data?.user?.id) {
       setIsBookmark(true);
@@ -157,8 +155,7 @@ function PostDetail() {
     };
     try {
       const voteInfo = await services.votePost(payload, postBySlug?.data?.id);
-      console.log("voteInfo : ", voteInfo);
-      voteInfo.success && dispatch(actions.getPostById(postBySlug?.data?.id));
+      voteInfo.success && dispatch(actions.getPostBySlug(slug));
     } catch (error) {
       console.log("error : ", error);
     }
@@ -169,16 +166,14 @@ function PostDetail() {
       if (isBookmark) {
         const res = await services.unbookmark(postBySlug?.data?.id);
         if (res?.success) {
-          // setIsBookmark(false);
-          dispatch(actions.getPostById(postBySlug?.data?.id));
+          dispatch(actions.getPostBySlug(slug));
         }
       }
 
       if (!isBookmark) {
         const res = await services.bookmark(postBySlug?.data?.id);
         if (res?.success) {
-          // setIsBookmark(true);
-          dispatch(actions.getPostById(postBySlug?.data?.id));
+          dispatch(actions.getPostBySlug(slug));
         }
       }
     } catch (error) {

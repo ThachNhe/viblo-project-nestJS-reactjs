@@ -3,7 +3,6 @@ import { markdownConfig } from "../../utils/config";
 
 function PostViewModal({ isOpen, closeModal, content }) {
   return (
-    console.log("PostViewModal: ", isOpen),
     (
       <>
         {isOpen && (

@@ -42,7 +42,6 @@ const PostManagement = () => {
     setOpenPostViewModal(true);
     setContent_markdown(content_markdown);
   };
-  console.log("page : ", page);
 
   return (
     <div

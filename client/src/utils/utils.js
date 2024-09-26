@@ -10,15 +10,12 @@ export const handlerFileUpload = async (file) => {
       `/minio/presigned-url?fileName=${file.name}`
     );
 
-    console.log("response:", response);
-
     const presignedUrl = response.presignedURL;
     await axios.put(presignedUrl, file);
 
     const getUrlResponse = await axios.get(
       `/minio/presigned-get-url?fileName=${file.name}`
     );
-    console.log("getUrlResponse:", getUrlResponse);
     return getUrlResponse;
   } catch (error) {
     console.error("error when upload!!:", error);

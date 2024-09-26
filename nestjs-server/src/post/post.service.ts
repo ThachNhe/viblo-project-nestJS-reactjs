@@ -163,7 +163,6 @@ export class PostService {
       .createQueryBuilder('post')
       .where('post.id = :id', { id: postId })
       .getOne();
-    // console.log(newPost);
     delete newPost.comments;
 
     return {
@@ -343,7 +342,6 @@ export class PostService {
   async getPaginationPosts(paginationDto: PaginationDto) {
     const postRepository = this.postRepository;
     const { page = 1, limit = 10 } = paginationDto;
-    console.log(page, limit);
     const [result, total] = await postRepository
       .createQueryBuilder('post')
       .leftJoin('post.author', 'author')
@@ -396,8 +394,6 @@ export class PostService {
     // Lấy danh sách tag ids từ bài viết hiện tại
     const tagIds = currentPost.tags.map((tag) => tag.id);
 
-    console.log('tagIds : ', tagIds);
-
     // Tìm các bài viết khác có ít nhất 1 tag trùng
     const relatedPosts = await this.postRepository
       .createQueryBuilder('post')
@@ -413,8 +409,6 @@ export class PostService {
       .andWhere('post.id != :postId', { postId }) // Loại trừ bài viết hiện tại
       .orderBy('post.created_at', 'DESC') // Có thể sắp xếp theo thời gian tạo
       .getMany();
-    // console.log('relatedPosts length : ', relatedPosts.length);
-    // console.log('relatedPosts : ', relatedPosts);
 
     return {
       success: true,

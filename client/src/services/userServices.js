@@ -12,7 +12,6 @@ const userLogoutService = () => {
 };
 
 const uploadAvatar = (body) => {
-  console.log("body service : ", body);
   return axios.put("/users/avatar", body);
 };
 
@@ -21,7 +20,6 @@ const getPaginationUsers = (page, limit) => {
 };
 
 const blockUser = (userId) => {
-  console.log("userId service : ", userId);
   return axios.put(`/users/${userId}/block`);
 };
 

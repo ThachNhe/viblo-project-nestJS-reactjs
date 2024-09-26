@@ -4,6 +4,7 @@ const initialState = {
   userInfo: {},
   isLogin: false,
 };
+
 function authReducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.USER_REGISTER_SUCCESS:
@@ -27,8 +28,7 @@ function authReducer(state = initialState, action) {
     case actionTypes.USER_LOGOUT_SUCCESS:
       state.userInfo = null;
       state.isLogin = false;
-      console.log("logout success redux userinfo : ", state.userInfo);
-      console.log("logout success redux islogin: ", state.isLogin);
+
       return { ...state };
 
     default:

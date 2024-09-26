@@ -62,7 +62,6 @@ function PublishPost() {
 
   // Handle select change
   const handleSelectChange = (selected) => {
-    console.log("Selected: ", selected);
     setSelectedOption(selected);
   };
 
@@ -113,7 +112,6 @@ function PublishPost() {
         setMarkdownText("");
         setTitle("");
         setStatus("PUBLIC");
-        console.log("post?.data?.id pub :", post?.data?.id);
         navigator(`/p/${post?.data?.slug}`, {
           state: { data: post?.data?.id },
         });

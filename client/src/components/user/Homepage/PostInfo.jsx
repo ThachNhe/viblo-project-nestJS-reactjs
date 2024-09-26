@@ -62,8 +62,8 @@ function PostInfo({
          ring-gray-400 hover:ring-blue-300 group shadow-md"
           >
             <IoBookmark
-              className={`text-2xl group-hover:text-blue-gray-700 cursor-pointer
-                ${isBookmark ? "text-blue-500" : "group-hover:text-neutral-500"}
+              className={`text-2xl cursor-pointer
+                ${isBookmark ? "text-blue-500 hover:text-blue-600" : "group-hover:text-neutral-600"}
                 `}
               onClick={handlerBookmark}
             />

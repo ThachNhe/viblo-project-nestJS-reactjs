@@ -6,7 +6,7 @@ import * as actions from "../../../redux/action/index";
 import { useLocation } from "react-router-dom";
 import PostCard from "../../PostCard";
 
-function Items({ currentItems }) {
+function Items({ currentItems, handlerShowPostDetail }) {
   return (
     <>
       {currentItems &&
@@ -23,6 +23,9 @@ function Items({ currentItems }) {
               bookmarkNumber={item.bookmark_number}
               voteNumber={item.vote_number}
               imgURL={item?.author?.avatar}
+              key={index}
+              slug={item.slug}
+              handlerClick={handlerShowPostDetail}
             />
           );
         })}
@@ -64,9 +67,13 @@ const FollowingPost = () => {
     }
   };
 
+  const handlerShowPostDetail = (slug) => {
+    navigate(`/p/${slug}`);
+  }
+
   return (
     <>
-      <Items currentItems={paginationPosts?.data} />
+      <Items currentItems={paginationPosts?.data} handlerShowPostDetail = {handlerShowPostDetail}  />
       <ReactPaginate
         breakLabel="..."
         nextLabel=">"

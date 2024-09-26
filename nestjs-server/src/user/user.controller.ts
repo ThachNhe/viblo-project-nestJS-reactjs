@@ -62,8 +62,6 @@ export class UserController {
   @Roles(Role.Admin)
   @ApiOkResponse({ type: BlockedUserResponseDto })
   blockUser(@Param() id: UserIdDTO) {
-    // const { id } = userId;
-    console.log(id);
     return this.userService.blockUser(id);
   }
 
@@ -80,7 +78,6 @@ export class UserController {
   @Roles(Role.Admin)
   @ApiOkResponse({ type: DeleteUserResponseDto })
   deleteUser(@Param() params: UserIdDTO) {
-    console.log(params);
     const userId = params.id;
     return this.userService.deleteUser(userId);
   }

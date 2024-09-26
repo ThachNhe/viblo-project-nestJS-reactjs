@@ -46,7 +46,6 @@ describe('Comment Module (e2e)', () => {
       .expect(201);
 
     postId = postRes.body.data.id;
-    console.log('postId', postId);
     commentBody = {
       content: 'Bai viet hay qua',
       postId: +postId,
