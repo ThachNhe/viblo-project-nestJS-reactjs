@@ -1,13 +1,19 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { markdownConfig } from "../../../utils/config";
+import remarkGfm from "remark-gfm";
+import remarkHeadingId from "remark-heading-id";
+import remarkSlug from 'remark-slug';
+
 
 function Posts({ data, tags }) {
+  
   return (
     <div className="flex flex-col gap-6 py-5 px-3">
       <div className="prose lg:prose-xl text-xs">
         <ReactMarkdown
           components={markdownConfig}
+          remarkPlugins={[remarkGfm, remarkSlug]}
         >
           {data}
         </ReactMarkdown>

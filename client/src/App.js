@@ -25,9 +25,11 @@ function App() {
   return (
     <StoreProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Navbar isHomePage={ctx?.isHomePage} />
-        <AppRoutes />
-        <Toaster position="top-center" />
+        <div className="overflow-y-scroll overflow-x-hidden scrollbar-hidden">
+          <Navbar isHomePage={ctx?.isHomePage} />
+          <AppRoutes />
+          <Toaster position="top-center" />
+        </div>
       </PersistGate>
     </StoreProvider>
   );

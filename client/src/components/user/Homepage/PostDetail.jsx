@@ -13,13 +13,13 @@ import * as actions from "../../../redux/action/index";
 import * as services from "../../../services/index";
 import CommentSection from "./CommentSection.";
 import toast from "react-hot-toast";
-import { useLocation } from "react-router-dom";
 import Slider from "react-slick";
 import { extractHeadings } from "../../../utils/utils";
 import Banner from "./Banner";
 import NoComment from "./NoComment";
 import { socket } from "../../../socket";
 import { useParams } from "react-router-dom";
+import TableOfContents from "./TableOfContent";
 
 const settings = {
   dots: true,
@@ -31,7 +31,6 @@ const settings = {
 
 function PostDetail() {
   const dispatch = useDispatch();
-  // const post = useSelector((state) => state.post.post);
   const comments = useSelector((state) => state.comment.commentByPostId);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const relatedPosts = useSelector((state) => state.post.relatedPosts);
@@ -39,10 +38,64 @@ function PostDetail() {
   const [isUpvote, setIsUpvote] = useState(false);
   const [isDownvote, setIsDownvote] = useState(false);
   const [isBookmark, setIsBookmark] = useState(false);
-  const location = useLocation();
-  const [toc, setToc] = useState([]);
   const { slug } = useParams();
   const postBySlug = useSelector((state) => state.post.postBySlug);
+  const [headings, setHeadings] = useState([]);
+  const [activeHeading, setActiveHeading] = useState("");
+
+  // Sử dụng hiệu ứng để trích xuất tiêu đề khi mount component
+  useEffect(() => {
+    const headingsFromMarkdown = extractHeadings(
+      postBySlug?.data?.content_markdown
+    );
+    setHeadings(headingsFromMarkdown);
+  }, [postBySlug]);
+
+  // Cuộn mượt mà tới phần nội dung khi nhấn vào mục lục
+  const scrollToSection = (id) => {
+    setActiveHeading(id);
+    const element = document.getElementById(id);
+    const headerOffset = 80;
+    const elementPosition = element?.getBoundingClientRect().top || 0;
+    const offsetPosition = elementPosition + window.scrollY - headerOffset;
+    console.log("offsetPosition : ", offsetPosition);
+    if (element) {
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // Theo dõi phần tiêu đề hiện tại khi cuộn trang
+// useEffect(() => {
+//   const handleScroll = () => {
+//     const scrollPosition = window.scrollY + 100; // Thêm offset để tính toán chính xác hơn
+
+//     // Tìm heading cuối cùng mà người dùng đã cuộn qua
+//     const currentHeading = headings.reduce((acc, heading) => {
+//       const element = document.getElementById(heading.id);
+//       if (element && element.offsetTop <= scrollPosition) {
+//         return heading.id;
+//       }
+//       console.log("acc : ", acc);
+//       return acc;
+//     }, "");
+
+//     if (currentHeading !== activeHeading) {
+//       setActiveHeading(currentHeading);
+//     }
+//   };
+
+//   window.addEventListener("scroll", handleScroll);
+//   // Gọi handleScroll ngay lập tức để set active heading ban đầu
+//   handleScroll();
+
+//   return () => {
+//     window.removeEventListener("scroll", handleScroll);
+//   };
+// }, [headings, activeHeading]);
+
 
   useEffect(() => {
     dispatch(actions.getPostBySlug(slug));
@@ -91,17 +144,14 @@ function PostDetail() {
     }
   }, []);
 
-  //======================
+  useEffect(() => {
+    dispatch(actions.getPostBySlug(slug));
+  }, [slug]);
 
   useEffect(() => {
-    console.log("has benen called");
     const user = postBySlug?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
     );
-
-    
-    const headings = extractHeadings(postBySlug?.data?.content_markdown);
-    setToc(headings);
 
     const bookmark = postBySlug?.data?.bookmarkers.find(
       (bookmarker) => +bookmarker?.id === +userInfo?.data?.user?.id
@@ -180,6 +230,7 @@ function PostDetail() {
       console.log("error : ", error);
     }
   };
+
   return (
     <>
       <div className="flex flex-col min-h-screen border">
@@ -211,7 +262,9 @@ function PostDetail() {
                         fullName={postBySlug?.data?.author?.fullName}
                         userName={postBySlug?.data?.author?.userName}
                         starNumber={postBySlug?.data?.author?.star_number}
-                        followerNumber={postBySlug?.data?.author?.follower_number}
+                        followerNumber={
+                          postBySlug?.data?.author?.follower_number
+                        }
                         postNumber={postBySlug?.data?.author?.post_number}
                       />
 
@@ -237,35 +290,17 @@ function PostDetail() {
 
             {/* <!-- Sidebar bên phải --> */}
             <aside
-              className={`flex-grow p-1 rounded-md flex flex-col gap-10 py-2  overflow-y-scroll h-screen custom-scrollbar overflow-x-hidden ${
+              className={`w-1/3 p-1 rounded-md flex flex-col gap-10 py-2  overflow-y-scroll h-screen custom-scrollbar overflow-x-hidden ${
                 isContentScrolledToEnd ? "" : "sticky top-96"
               }`}
               ref={sidebarRef}
             >
               <div className="flex-grow p-1 rounded-md flex flex-col gap-10 py-2">
-                <div>
-                  <div className="flex gap-4">
-                    <h4 className="text-md mb-4 uppercase font-medium">
-                      Mục lục
-                    </h4>
-                    <hr className="flex-grow text-red-full text-red-900 mt-4" />
-                  </div>
-                  <div>
-                    <ul>
-                      {toc.map((heading, index) => (
-                        <li
-                          key={index}
-                          style={{ marginLeft: (heading.depth - 1) * 20 }}
-                          className="font-medium text-gray-600 text-sm"
-                        >
-                          <span className="hover:text-cyan-600 cursor-pointer">
-                            {heading.text}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                <TableOfContents
+                  headings={headings}
+                  activeHeading={activeHeading}
+                  onClick={scrollToSection}
+                />
                 <div className="w-72">
                   <div className="flex gap-4">
                     <h4 className="text-md mb-4 uppercase text-blue-600 hover:underline font-medium">
@@ -277,13 +312,13 @@ function PostDetail() {
                     <Slider {...settings}>
                       <div>
                         <ProposedCourse
-                          courseName={"Java"}
+                          courseName={"Lập trình C cơ bản với CTO"}
                           time={"thg 8 26, 2024 3:04 SA"}
                           tags={[
                             { name: "Abstract" },
                             { name: "Control Structures" },
                           ]}
-                          level={"Cơ bản"}
+                          level={"cơ bản"}
                           viewNumber={10}
                           studentNumber={35}
                           questionNumber={99}

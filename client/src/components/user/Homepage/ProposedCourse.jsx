@@ -14,8 +14,8 @@ function ProposedCourse({
   docNumber,
 }) {
   return (
-    <div className="flex flex-col gap-2 py-1">
-      <div className="flex justify-between py-3 px-2">
+    <div className="flex flex-col gap-1 py-1">
+      <div className="flex justify-between py-2">
         <div className="flex flex-col gap-2">
           <span className="hover:text-cyan-600 font-medium">{courseName}</span>
           <span className="text-neutral-500 text-xs font-medium">{time}</span>
@@ -40,7 +40,7 @@ function ProposedCourse({
         </div>
       </div>
 
-      <div className="flex gap-4 items-center text-gray-500 ">
+      <div className="flex gap-4 items-center text-gray-500 justify-between">
         <div className="flex gap-1 items-center">
           <FaRegEye />
           <span>{viewNumber}</span>

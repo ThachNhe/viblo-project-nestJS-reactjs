@@ -1,4 +1,3 @@
-import ArticleStats from "../../ArticleStats";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
 function CarInfo({
@@ -9,13 +8,17 @@ function CarInfo({
   bookmarkNumber,
   point,
   createdAt,
+  slug,
+  handlerShowPostDetail,
 }) {
   return (
     <div className="max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-sm overflow-visible">
       {/* Tiêu đề bài viết */}
       <div className="mb-2">
         <a>
-          <span className="block font-medium hover:text-blue-500 cursor-pointer text-base text-neutral-800 truncate ">
+          <span className="block font-medium hover:text-blue-500 cursor-pointer text-base text-neutral-800 truncate "
+            onClick={() => handlerShowPostDetail(slug)}
+          >
             {title}
           </span>
         </a>
@@ -64,7 +67,11 @@ function CarInfo({
 
         {/* Lượt bình luận */}
         <div className="flex items-center space-x-1 overflow-visible">
-          <span role="img" aria-label="comments" data-tooltip-id="commentNumber">
+          <span
+            role="img"
+            aria-label="comments"
+            data-tooltip-id="commentNumber"
+          >
             💬
           </span>
           <span>{commentNumber}</span>
@@ -82,7 +89,7 @@ function CarInfo({
             ⬆️
           </span>
           <span>{point}</span>
-           <ReactTooltip
+          <ReactTooltip
             id="point"
             place="top"
             content={`Điểm: ${point}`}
