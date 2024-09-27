@@ -65,8 +65,6 @@ export class AuthService {
       ],
     });
 
-    console.log('check user', user);
-
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -154,10 +152,6 @@ export class AuthService {
       secret: this.configService.get('JWT_REFRESH_KEY'),
     });
 
-    // if (!payload) {
-    //   throw new BadRequestException('Invalid token');
-    // }
-    console.log('check payload', payload);
     const newAccessToken = await this.getAccessToken(
       payload.email,
       +payload.sub,

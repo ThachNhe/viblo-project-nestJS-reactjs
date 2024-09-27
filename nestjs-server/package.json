@@ -41,6 +41,7 @@
     "crypto": "^1.0.1",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
+    "firebase-admin": "^12.5.0",
     "husky": "^9.1.4",
     "nestjs-minio-client": "^2.2.0",
     "passport": "^0.7.0",

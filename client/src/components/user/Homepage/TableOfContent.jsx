@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 
 function TableOfContents({ headings, activeHeading, onClick }) {
-  console.log("activeHeading", activeHeading);
   return (
     <nav className="">
       <h3 className="font-bold text-lg">Mục Lục</h3>

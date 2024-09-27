@@ -23,6 +23,7 @@ import {
 } from './entity/index';
 
 import { StatisticsModule } from './statistics/statistics.module';
+import { FirebaseModule } from './firebase/firebase.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -65,6 +66,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     TagModule,
     CommentModule,
     StatisticsModule,
+    FirebaseModule,
   ],
   providers: [],
   controllers: [],
