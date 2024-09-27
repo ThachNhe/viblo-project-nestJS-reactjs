@@ -95,11 +95,18 @@ export class AuthService {
       user.roles,
     );
 
+    response.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      path: '/',
+    });
+
     response.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: false,
       sameSite: 'strict',
-      path: './',
+      path: '/',
     });
 
     return {
@@ -144,7 +151,7 @@ export class AuthService {
   // request new access token
   async requestNewAccessToken(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
-
+    console.log('refreshToken', refreshToken);
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
