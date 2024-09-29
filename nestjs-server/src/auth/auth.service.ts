@@ -1,5 +1,9 @@
 import { ConfigService } from '@nestjs/config';
-import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
+import {
+  AuthDTORegister,
+  AuthDTOLogin,
+  ResetPasswordDto,
+} from './dto/auth.dto';
 import { Response, Request } from 'express';
 import { Role } from '../enums/role.enum';
 import {
@@ -14,11 +18,15 @@ import { User } from '../entity/User';
 import { Repository } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
+import { MailService } from './mail.service';
+import { error } from 'console';
+
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mailService: MailService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
@@ -194,6 +202,63 @@ export class AuthService {
       statusCode: 200,
       data: {
         message: 'Logout success!',
+      },
+    };
+  }
+
+  // forgot password service
+  async forgotPassword(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+    };
+
+    const token = await this.jwtService.signAsync(payload, {
+      expiresIn: '1h',
+      secret: this.configService.get('JWT_RESET_KEY'),
+    });
+
+    await this.mailService.sendResetPasswordMail(user.email, token);
+
+    return {
+      success: true,
+      statusCode: 200,
+      data: {
+        message: 'Reset password link sent to your email',
+      },
+    };
+  }
+
+  async resetPassword(body: ResetPasswordDto) {
+    const payload = await this.jwtService.verify(body.token, {
+      secret: this.configService.get('JWT_RESET_KEY'),
+    });
+    // console.log('payload', payload);
+    const user = await this.userRepository.findOne({
+      where: { id: payload.sub, email: body.email },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const hashedPassword = await argon2.hash(body.newPassword);
+    user.password = hashedPassword;
+    await this.userRepository.save(user);
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: {
+        message: 'Password reset successfully',
       },
     };
   }

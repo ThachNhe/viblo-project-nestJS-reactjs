@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom";
 
 function TableOfContents({ headings, activeHeading, onClick }) {
-  return (
-    <nav className="">
-      <h3 className="font-bold text-lg">Mục Lục</h3>
-      <ul className="mt-4 space-y-2">
+  // Hàm render các tiêu đề theo cấp độ
+  const renderHeadings = (headings, level = 1) => {
+    return (
+      <ul className="flex flex-col gap-3">
         {headings.map((heading) => (
-          <li key={heading.id}>
+          // className={``}
+          <li key={heading.id} className={`ml-${heading.level * 4}`}>
             <a
               href={`#${heading.id}`}
               onClick={() => onClick(heading.id)}
@@ -14,31 +15,38 @@ function TableOfContents({ headings, activeHeading, onClick }) {
                 activeHeading === heading.id
                   ? "text-blue-600 font-bold"
                   : "text-gray-700"
-              } hover:text-blue-400`}
+              } hover:text-blue-400
+              block ${
+                heading.level === 0
+                  ? "text-lg"
+                  : heading.level === 1
+                  ? "text-base"
+                  : "text-sm"
+              } ${
+                activeHeading === heading.id
+                  ? "text-blue-600 font-bold"
+                  : "text-gray-700"
+              } hover:text-blue-400
+                 `}
             >
               {heading.text}
             </a>
-            {/* Render các mục con nếu có */}
-            {heading.subHeadings && (
-              <ul className="ml-4">
-                {heading.subHeadings.map((subHeading) => (
-                  <li key={subHeading.id}>
-                    <NavLink
-                      to={`#${subHeading.id}`}
-                      onClick={() => onClick(subHeading.id)}
-                      className={`block text-xs ${
-                        activeHeading === subHeading.id
-                          ? "text-blue-600 font-bold"
-                          : "text-gray-500"
-                      } hover:text-blue-400`}
-                    ></NavLink>
-                  </li>
-                ))}
-              </ul>
-            )}
           </li>
         ))}
       </ul>
+    );
+  };
+
+  return (
+    <nav>
+      <div className="flex gap-4">
+        <h3 className="font-medium text-lg uppercase text-neutral-700">
+          Mục Lục
+        </h3>
+        <hr className="flex-grow text-red-ful mt-4 text-neutral-900" />
+      </div>
+
+      <div className="mt-4">{renderHeadings(headings)}</div>
     </nav>
   );
 }

@@ -31,6 +31,14 @@ const getTopAuthors = (page, limit) => {
   return axios.get(`/users/top?page=${page}&limit=${limit}`);
 };
 
+const forgotPassword = (body) => {
+  return axios.post("/auth/forgot-password", body);
+};
+
+const resetPassword = (body) => {
+  return axios.post("/auth/reset-password", body);
+};
+
 export {
   userLoginService,
   userRegisterService,
@@ -40,4 +48,6 @@ export {
   blockUser,
   unblockUser,
   getTopAuthors,
+  forgotPassword,
+  resetPassword,
 };

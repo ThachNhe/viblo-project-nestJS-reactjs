@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
 import Banner from "../user/Homepage/Banner";
-import PostRoute from "../../routes/PostRoute";
 import PostNavbar from "./PostNavBar";
 
 const TrendingPost = ({ isHomePage }) => {

@@ -7,7 +7,12 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDTORegister, AuthDTOLogin } from './dto/auth.dto';
+import {
+  AuthDTORegister,
+  AuthDTOLogin,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+} from './dto/auth.dto';
 import { Response, Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOkResponse } from '@nestjs/swagger';
@@ -50,5 +55,15 @@ export class AuthController {
   @ApiOkResponse({ type: LogoutResponseDTO })
   logout(@Req() req: Request) {
     return this.authService.logout(req);
+  }
+
+  @Post('forgot-password')
+  forgetPassword(@Body() body: ForgotPasswordDto) {
+    return this.authService.forgotPassword(body.email);
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body() body: ResetPasswordDto) {
+    return this.authService.resetPassword(body);
   }
 }

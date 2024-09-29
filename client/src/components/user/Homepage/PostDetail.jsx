@@ -42,6 +42,10 @@ function PostDetail() {
   const postBySlug = useSelector((state) => state.post.postBySlug);
   const [headings, setHeadings] = useState([]);
   const [activeHeading, setActiveHeading] = useState("");
+  // Xử lý sự kiện cuộn của nội dung bài viết
+  const contentRef = useRef(null);
+  const sidebarRef = useRef(null);
+  const [isContentScrolledToEnd, setIsContentScrolledToEnd] = useState(false);
 
   // Sử dụng hiệu ứng để trích xuất tiêu đề khi mount component
   useEffect(() => {
@@ -58,7 +62,6 @@ function PostDetail() {
     const headerOffset = 80;
     const elementPosition = element?.getBoundingClientRect().top || 0;
     const offsetPosition = elementPosition + window.scrollY - headerOffset;
-    console.log("offsetPosition : ", offsetPosition);
     if (element) {
       window.scrollTo({
         top: offsetPosition,
@@ -110,17 +113,12 @@ function PostDetail() {
       socket.off("newComment");
     };
   }, []);
-  //======================
 
   useEffect(() => {
     dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
     dispatch(actions.getRelatedPosts(postBySlug?.data?.id));
   }, [postBySlug]);
 
-  // Xử lý sự kiện cuộn của nội dung bài viết
-  const contentRef = useRef(null);
-  const sidebarRef = useRef(null);
-  const [isContentScrolledToEnd, setIsContentScrolledToEnd] = useState(false);
 
   // Xử lý sự kiện cuộn của phần nội dung bài viết
   useEffect(() => {
@@ -236,12 +234,12 @@ function PostDetail() {
       <div className="flex flex-col min-h-screen border">
         <Banner src={"/images/banner.png"} />
         {/* Content */}
-        <div className="container mx-auto my-8 px-4 max-w-[1140px] bg-homepage  ">
+        <div className="container mx-auto my-8 px-4 max-w-[1190px] bg-homepage">
           <div className="flex gap-2 flex-1 overflow-auto">
             {/* <!-- Nội dung chính --> */}
             <main
               ref={contentRef}
-              className="flex gap-4 w-3/4 h-screen overflow-y-scroll overflow-x-hidden scrollbar-hidden"
+              className="flex gap-4 w-5/6 h-screen overflow-y-scroll overflow-x-hidden scrollbar-hidden"
             >
               <PostInfo
                 upvote={isUpvote}

@@ -45,3 +45,27 @@ export class AuthDTOLogin {
   @ApiProperty()
   password: string;
 }
+
+export class ForgotPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  token: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  newPassword: string;
+}

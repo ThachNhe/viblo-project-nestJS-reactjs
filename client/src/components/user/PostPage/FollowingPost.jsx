@@ -69,11 +69,14 @@ const FollowingPost = () => {
 
   const handlerShowPostDetail = (slug) => {
     navigate(`/p/${slug}`);
-  }
+  };
 
   return (
     <>
-      <Items currentItems={paginationPosts?.data} handlerShowPostDetail = {handlerShowPostDetail}  />
+      <Items
+        currentItems={paginationPosts?.data}
+        handlerShowPostDetail={handlerShowPostDetail}
+      />
       <ReactPaginate
         breakLabel="..."
         nextLabel=">"

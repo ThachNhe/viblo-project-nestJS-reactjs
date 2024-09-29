@@ -19,26 +19,37 @@ export const handlerFileUpload = async (file) => {
     console.error("error when upload!!:", error);
   }
 };
-
 export const extractHeadings = (markdown) => {
-  const headingRegex = /^###? (.*)$/gm; // Tìm các tiêu đề h2 và h3
-  const matches = [...markdown.matchAll(headingRegex)];
+  try {
+    const headingRegex = /^(##?) (.*)$/gm; // Tìm các tiêu đề h2 và h3
+    const matches = [...markdown.matchAll(headingRegex)];
 
-  const headingData = matches.map((match) => {
-    const text = match[1].replace(/\*\*|__/g, "");
-    const id = text
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(".", "")
-      .replace("(", "")
-      .replace(")", ""); // Tạo id từ tiêu đề
-    return {
-      id,
-      text,
-      level: match[0].startsWith("##") ? 2 : 3, // Đoán level dựa trên dấu #
-    };
-  });
+    const headingData = matches
+      .map((match) => {
+        const text = match[2].replace(/\*\*|__/g, "").trim(); // Loại bỏ định dạng markdown
 
-  return headingData;
+        // Kiểm tra nếu text không rỗng
+        if (!text) return null;
+
+        const id = text
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(".", "")
+          .replace("(", "")
+          .replace(")", ""); // Tạo id từ tiêu đề
+
+        const level = match[1].length === 1 ? 0 : match[1].length === 2 ? 1 : 2;
+
+        return {
+          id,
+          text,
+          level, // Cấp độ từ 1 đến 3
+        };
+      })
+      .filter(Boolean); // Loại bỏ các giá trị null
+
+    return headingData;
+  } catch (e) {
+    console.log("error when extracting headings:", e);
+  }
 };
