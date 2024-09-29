@@ -104,7 +104,7 @@ function PostDetail() {
     dispatch(actions.getPostBySlug(slug));
 
     socket.on("newComment", (commentData) => {
-      if (commentData?.postId === postBySlug?.data?.id) {
+      if (+commentData?.postId === +postBySlug?.data?.id) {
         dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
       }
     });
@@ -146,6 +146,7 @@ function PostDetail() {
     dispatch(actions.getPostBySlug(slug));
   }, [slug]);
 
+
   useEffect(() => {
     const user = postBySlug?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
@@ -184,6 +185,7 @@ function PostDetail() {
       const commentInfo = await services.createComment(newComment);
       if (commentInfo?.success) {
         dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
+        dispatch(actions.getPostBySlug(slug));
         toast.success("Bình luận thành công!");
       }
       return commentInfo;

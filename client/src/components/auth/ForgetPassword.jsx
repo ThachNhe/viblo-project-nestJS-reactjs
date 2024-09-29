@@ -57,7 +57,6 @@ const ForgetPassword = () => {
         setEmail("");
         toast.success("Vui lòng kiểm tra email của bạn để đặt lại mật khẩu")
       }
-      console.log("check res : ", res)
     } catch (error) {
       console.log("check error : ", error)
     }

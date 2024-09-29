@@ -38,11 +38,11 @@ const UserMenu = () => {
     dispatch(actions.logout());
   };
 
-  useEffect(() => {
-    if (!isLogin) {
-      navigate("/login");
-    }
-  }, [isLogin]);
+  // useEffect(() => {
+  //   if (!isLogin) {
+  //     navigate("/login");
+  //   }
+  // }, [isLogin]);
 
   const toggleOpen = useCallback(() => {
     setIsOpenUserMenu((prev) => !prev);

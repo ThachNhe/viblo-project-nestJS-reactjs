@@ -35,7 +35,6 @@ const Register = () => {
     try {
       if (password === confirmPassword) {
         const res = await services.userRegisterService(payload);
-        console.log("res register", res);
         if (res.success) {
           toast.success("Register success!!!");
           navigate("/login");

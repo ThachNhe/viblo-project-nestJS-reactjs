@@ -9,7 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ROLES_KEY } from './roles.decorator';
-import { Role } from 'src/enums/role.enum';
+import { Role } from '../../../src/enums/role.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -34,11 +34,6 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const authorizationHeader = request.headers['authorization'];
 
-    // Kiểm tra nếu không có header authorization hoặc header không đúng định dạng
-    if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException();
-    }
-
     // Lấy token từ header
     const jwt = authorizationHeader.split(' ')[1];
     if (!jwt) {
@@ -46,11 +41,14 @@ export class RolesGuard implements CanActivate {
     }
 
     // Xác thực JWT và lấy payload
-    let payload;
+    let payload: any;
+
     try {
       payload = await this.jwtService.verifyAsync(jwt, {
         secret: this.configService.get('JWT_ACCESS_KEY'),
       });
+      console.log('payload', payload);
+      console.log('requiredRoles : ', requiredRoles);
     } catch (error) {
       throw new UnauthorizedException();
     }
