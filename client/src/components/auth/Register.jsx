@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import SocialLogin from "./SocialLogin";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import * as actions from "../../redux/action/index";
+import * as services from "../../services/index";
 import toast from "react-hot-toast";
 import { AppContext } from "../../contexts/AppContext";
 const Register = () => {
@@ -14,7 +14,6 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmInfo, setConfirmInfo] = useState(false);
   const dispatch = useDispatch();
-  const userInfo = useSelector((state) => state?.auth?.userRegister);
   const ctx = useContext(AppContext);
 
   useEffect(() => {
@@ -24,9 +23,7 @@ const Register = () => {
     };
   }, []);
 
-  useEffect(() => {}, [userInfo]);
-
-  const handlerSubmitRegisterForm = (e) => {
+  const handlerSubmitRegisterForm =  async (e) => {
     e.preventDefault();
     const payload = {
       email,
@@ -34,14 +31,20 @@ const Register = () => {
       password,
       fullName,
     };
-    if (password === confirmPassword) {
-      dispatch(actions.userRegister(payload));
-      if (userInfo?.success) {
-        toast.success("Register success!!!");
-        navigate("/login");
-      } else {
-        toast.error("Register failed!!!");
+
+    try {
+      if (password === confirmPassword) {
+        const res = await services.userRegisterService(payload);
+        console.log("res register", res);
+        if (res.success) {
+          toast.success("Register success!!!");
+          navigate("/login");
+        } else {
+          toast.error("Register failed!!!");
+        }
       }
+    } catch (error) {
+      console.log("error register", error);
     }
   };
 
@@ -54,7 +57,7 @@ const Register = () => {
         className="cursor-pointer"
         src="/images/viblo.svg"
       />
-      <div className="flex flex-col  justify-start w-[650px] min-h-72 bg-white rounded-lg shadow-lg p-4 gap-4 text-blue-900">
+      <div className="flex flex-col  justify-start w-[650px] min-h-72 bg-white rounded-lg shadow-lg p-4 gap-4 text-blue-900 border">
         <h1 className="text-xl font-medium">Đăng ký tài khoản cho Viblo</h1>
         <span className="text-sm">
           Chào mừng bạn đến <span className="font-medium">Nền tảng Viblo!</span>{" "}

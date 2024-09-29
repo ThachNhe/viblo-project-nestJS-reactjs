@@ -38,7 +38,7 @@ function AppRoutes() {
         <Route path="/publish/post" element={<PublishPost />} />
       </Route>
       <Route path="/newest" element={<NewestPost />} />
-      {/* <Route path="*" element={<Navigate to="/homepage" />} /> */}
+      <Route path="*" element={<Navigate to="/followings" />} />
     </Routes>
   );
 }

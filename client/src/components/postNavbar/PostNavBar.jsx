@@ -19,7 +19,7 @@ const PostNavbar = () => {
         <Container>
           <div className="flex items-center gap-20 justify-center ">
             <div>
-              <ul className="flex gap-6 items-center mx-auto uppercase font-semibold  text-post-nav-bar justify-center  ">
+              <ul className="flex gap-6 items-center mx-auto uppercase font-semibold  text-post-nav-bar justify-center text-sm">
                 <li className="hover:underline hover:underline-offset-8 hover:decoration-2 text-gray-200">
                   <NavLink
                     to="/followings"

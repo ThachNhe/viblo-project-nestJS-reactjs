@@ -13,7 +13,6 @@ function ResetPassword() {
    const [isValidEmail, setIsValidEmail] = useState(null);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const { token } = useParams();
-  console.log("check token : ", token)
   useEffect(() => {
     ctx.setIsHiddenNavbar(true);
     return () => {
@@ -21,7 +20,6 @@ function ResetPassword() {
     };
   });
 
-// Hàm kiểm tra định dạng email hợp lệ
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
