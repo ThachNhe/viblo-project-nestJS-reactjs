@@ -121,7 +121,7 @@ export class AuthService {
       statusCode: 200,
       success: true,
       error: null,
-      accessToken: accessToken,
+      // accessToken: accessToken,
       data: {
         user,
       },

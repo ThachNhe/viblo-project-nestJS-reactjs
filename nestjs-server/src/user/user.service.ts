@@ -217,4 +217,25 @@ export class UserService {
       data: 'Delete user successfully',
     };
   }
+
+  async saveNotificationToken(userId: number, token: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.notificationToken = token;
+
+    this.userRepository.save(user);
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: 'Save notification token successfully',
+    };
+  }
 }

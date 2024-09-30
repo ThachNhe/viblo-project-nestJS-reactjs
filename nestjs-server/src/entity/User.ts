@@ -60,6 +60,9 @@ export class User {
   @Column({ default: false })
   isBlocked: boolean;
 
+  @Column({ default: '' })
+  notificationToken: string;
+
   @OneToMany(() => Post, (post) => post.author, {
     cascade: true,
     eager: true,

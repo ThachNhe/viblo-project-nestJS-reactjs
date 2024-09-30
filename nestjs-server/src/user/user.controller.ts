@@ -9,11 +9,17 @@ import {
   Request,
   Query,
   Delete,
+  Post,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from '../enums/role.enum';
 import { Roles } from '../auth/strategy/roles.decorator';
-import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
+import {
+  NotificationTokenDTO,
+  UrlDto,
+  UserIdDTO,
+  UserPaginationDTO,
+} from './dto/user.dto';
 import { ApiOkResponse } from '@nestjs/swagger';
 import {
   BlockedUserResponseDto,
@@ -80,5 +86,16 @@ export class UserController {
   deleteUser(@Param() params: UserIdDTO) {
     const userId = params.id;
     return this.userService.deleteUser(userId);
+  }
+
+  @Put('save-notification-token')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({ type: String })
+  saveNotificationToken(
+    @Body() body: NotificationTokenDTO,
+    @Request() req: any,
+  ) {
+    const userId = req.user.userId;
+    return this.userService.saveNotificationToken(userId, body.token);
   }
 }

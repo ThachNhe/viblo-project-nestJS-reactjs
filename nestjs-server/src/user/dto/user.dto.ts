@@ -33,3 +33,10 @@ export class UserPaginationDTO {
   @ApiProperty()
   limit: number;
 }
+
+export class NotificationTokenDTO {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  token: string;
+}
