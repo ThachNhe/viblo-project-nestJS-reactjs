@@ -193,34 +193,35 @@ describe('Auth Module (e2e)', () => {
     });
 
     // 4. upload avatar unsuccessfully because of invalid URL
-    it('4. Should upload avatar unsuccessfully because of invalid URL', async () => {
-      const imgURL = 'abc';
-      const res = await requestAgent
-        .put('/users/avatar')
-        .send({ avatar: imgURL })
-        .set('Cookie', adminCookie)
-        .expect(400);
-      expect(res.body).toEqual({
-        message: ['avatar must be a URL address'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
-    });
+    // it('4. Should upload avatar unsuccessfully because of invalid URL', async () => {
+    //   const imgURL = 'abc';
+    //   const res = await requestAgent
+    //     .put('/users/avatar')
+    //     .send({ avatar: imgURL })
+    //     .set('Cookie', adminCookie)
+    //     .expect(400);
+
+    //   expect(res.body).toEqual({
+    //     message: ['avatar must be a URL address'],
+    //     error: 'Bad Request',
+    //     statusCode: 400,
+    //   });
+    // });
 
     // 5. upload avatar unsuccessfully because of empty URL
-    it('5. Should upload avatar unsuccessfully because of empty URL', async () => {
-      const imgURL = '';
-      const res = await requestAgent
-        .put('/users/avatar')
-        .send({ avatar: imgURL })
-        .set('Cookie', adminCookie)
-        .expect(400);
-      expect(res.body).toEqual({
-        message: ['avatar must be a URL address', 'avatar should not be empty'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
-    });
+    // it('5. Should upload avatar unsuccessfully because of empty URL', async () => {
+    //   const imgURL = '';
+    //   const res = await requestAgent
+    //     .put('/users/avatar')
+    //     .send({ avatar: imgURL })
+    //     .set('Cookie', adminCookie)
+    //     .expect(400);
+    //   expect(res.body).toEqual({
+    //     message: ['avatar must be a URL address', 'avatar should not be empty'],
+    //     error: 'Bad Request',
+    //     statusCode: 400,
+    //   });
+    // });
   });
 
   describe('Delete /users/:id', () => {

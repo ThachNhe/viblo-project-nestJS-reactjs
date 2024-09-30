@@ -91,6 +91,8 @@ function UserManagement() {
     }
   };
 
+  console.log("paginatingUsers?.data?.meta?.totalPages  : ", paginatingUsers?.data?.meta?.totalPages)
+
   return (
     <>
       <Breadcrumb pageName="Quản lý người dùng" />
@@ -210,7 +212,7 @@ function UserManagement() {
           nextLabel=">"
           onPageChange={handlePageChange}
           pageRangeDisplayed={5}
-          pageCount={paginatingUsers?.data?.meta?.totalPages || 2}
+          pageCount={paginatingUsers?.meta?.totalPages || 2}
           previousLabel="<"
           renderOnZeroPageCount={null}
           containerClassName={"flex justify-center my-5"}

@@ -47,6 +47,7 @@ function TagManagement() {
         });
         if (res.success) {
           toast.success("Tạo tag thành công!!!");
+           dispatch(actions.tagStatistic());
           setTagDescription("");
           setTagName("");
         }

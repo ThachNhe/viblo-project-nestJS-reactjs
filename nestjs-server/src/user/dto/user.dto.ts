@@ -14,7 +14,7 @@ export class UrlDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  @IsUrl()
+  // @IsUrl()
   avatar: string;
 }
 

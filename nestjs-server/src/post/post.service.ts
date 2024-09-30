@@ -193,6 +193,7 @@ export class PostService {
     delete post?.author?.password;
     delete post?.author?.email;
     delete post?.author?.posts;
+    await this.postRepository.save(post);
 
     // post.view_number += 1;
     await this.postRepository
@@ -201,8 +202,6 @@ export class PostService {
       .set({ view_number: () => 'view_number + 1' })
       .where('id = :id', { id })
       .execute();
-
-    await this.postRepository.save(post);
 
     const updatedPost = {
       ...post,
@@ -242,14 +241,14 @@ export class PostService {
     delete post?.author?.posts;
 
     // post.view_number += 1;
+    await this.postRepository.save(post);
+
     await this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({ view_number: () => 'view_number + 1' })
       .where('slug = :slug', { slug })
       .execute();
-
-    await this.postRepository.save(post);
 
     const updatedPost = {
       ...post,
