@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 
 export async function createTestApp(providers: any[] = []) {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,6 +18,7 @@ export async function createTestApp(providers: any[] = []) {
   });
 
   app.useGlobalPipes(new ValidationPipe());
+  app.use(cookieParser());
   await app.init();
 
   return { app };

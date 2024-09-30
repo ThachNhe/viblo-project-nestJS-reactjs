@@ -6,9 +6,12 @@ import { StatisticDbPrepareUtil } from './utils/statistic-db-prepare.utils';
 describe('Statistic Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
-  let userId: number;
-  let adminToken: string;
-  let userToken: string;
+  // let userId: number;
+  let adminCookie: string;
+  let userCookie: string;
+
+  // let adminToken: string;
+  // let userToken: string;
 
   beforeAll(async () => {
     const { app: testApp } = await createTestApp([StatisticDbPrepareUtil]);
@@ -20,12 +23,14 @@ describe('Statistic Module (e2e)', () => {
     const loginAdminResponse = await requestAgent
       .post('/auth/login')
       .send({ email: 'thachdinh@gmail.com', password: '123' });
-    adminToken = loginAdminResponse.body.accessToken;
+    // adminToken = loginAdminResponse.body.accessToken;
+    adminCookie = loginAdminResponse.headers['set-cookie'];
 
     const loginResponse = await requestAgent
       .post('/auth/login')
       .send({ email: 'dieuvy@gmail.com', password: '123' });
-    userToken = loginResponse.body.accessToken;
+
+    userCookie = loginResponse.headers['set-cookie'];
   });
 
   describe('GET /statistics/tags', () => {
@@ -37,9 +42,10 @@ describe('Statistic Module (e2e)', () => {
 
     // 2 get statistic tags with invalid token
     it('2. Should return 401 because of invalid token', async () => {
+      const invalidToken = 'invalid_token';
       const res = await requestAgent
         .get('/statistics/tags')
-        .set('Authorization', 'Bearer invalid_token')
+        .set('Cookie', `${invalidToken}`)
         .expect(401);
 
       expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
@@ -49,7 +55,7 @@ describe('Statistic Module (e2e)', () => {
     it('3. Should return 403 because of user is not admin', async () => {
       const res = await requestAgent
         .get('/statistics/tags')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(403);
 
       expect(res.body).toEqual({
@@ -63,7 +69,7 @@ describe('Statistic Module (e2e)', () => {
     it('Should return statistic tags', async () => {
       const res = await requestAgent
         .get('/statistics/tags')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(200);
 
       expect(res.body).toEqual({
@@ -89,7 +95,7 @@ describe('Statistic Module (e2e)', () => {
     it('2. Should return 401 because of invalid token', async () => {
       const res = await requestAgent
         .get('/statistics/common')
-        .set('Authorization', 'Bear invalid token')
+        .set('Cookie', 'invalid token')
         .expect(401);
       expect(res.body).toEqual({ statusCode: 401, message: 'Unauthorized' });
     });
@@ -98,8 +104,9 @@ describe('Statistic Module (e2e)', () => {
     it('3. Should return 403 because of user is not admin', async () => {
       const res = await requestAgent
         .get('/statistics/common')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(403);
+
       expect(res.body).toEqual({
         statusCode: 403,
         error: 'Forbidden',
@@ -111,7 +118,7 @@ describe('Statistic Module (e2e)', () => {
     it('4. Should return statistic common', async () => {
       const res = await requestAgent
         .get('/statistics/common')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(200);
 
       expect(res.body).toEqual({

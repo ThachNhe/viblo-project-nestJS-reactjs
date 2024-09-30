@@ -3,7 +3,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import * as argon2 from 'argon2';
 import { Tag, Post } from '../../src/entity';
-import { id } from 'date-fns/locale';
+var slugify = require('slugify');
 export enum Role {
   User = 'USER',
   Admin = 'ADMIN',
@@ -119,6 +119,7 @@ export class PostDatabasePrepareUtil {
           created_at: new Date(),
           updated_at: new Date(),
           author: userRes1,
+          slug: slugify('First Post', { lower: true }),
         },
       ])
       .execute();
@@ -129,7 +130,7 @@ export class PostDatabasePrepareUtil {
       .into('posts')
       .values([
         {
-          title: 'Second Post adssacsdvds',
+          title: 'Second Post',
           content_markdown: 'This is the content for the second post.',
           tags_array: ['nestjs'],
           tags: tags[1],
@@ -142,6 +143,7 @@ export class PostDatabasePrepareUtil {
           created_at: new Date(),
           updated_at: new Date(),
           author: userRes2,
+          slug: slugify('Second Post', { lower: true }),
         },
       ])
       .execute();

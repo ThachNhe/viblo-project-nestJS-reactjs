@@ -92,7 +92,6 @@ export class StatisticDbPrepareUtil {
         {
           title: 'First Post',
           content_markdown: 'This is the content for the first post.',
-
           tags: [],
           view_number: 0,
           vote_number: 0,
@@ -100,6 +99,7 @@ export class StatisticDbPrepareUtil {
           comment_number: 0,
           isPublished: true,
           seriesId: null,
+          slug: 'first-post',
           created_at: new Date(),
           updated_at: new Date(),
         },

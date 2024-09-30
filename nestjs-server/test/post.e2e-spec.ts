@@ -1,4 +1,4 @@
-import { INestApplication, Body } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { PostDatabasePrepareUtil } from './utils/database-post-prepare.util';
 import { createTestApp } from './utils/test.utils';
@@ -6,14 +6,15 @@ import { createTestApp } from './utils/test.utils';
 describe('Post Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
-  let token: string;
   let postId: number;
+  let cookie: string;
 
   const postData = {
     title: 'Post title',
     contentMarkdown: 'Post content',
     tagArray: ['nestjs'],
     status: 'PUBLISHED',
+    slug: 'post-title',
   };
 
   beforeAll(async () => {
@@ -24,10 +25,12 @@ describe('Post Module (e2e)', () => {
     await postDatabasePrepareUtil.prepare();
 
     requestAgent = request(app.getHttpServer());
+
     const loginResponse = await requestAgent
       .post('/auth/login')
       .send({ email: 'thachdinh@gmail.com', password: '123' });
-    token = loginResponse.body.accessToken;
+
+    cookie = loginResponse.headers['set-cookie'];
   });
 
   describe('POST /posts', () => {
@@ -36,7 +39,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post('/posts')
         .send({ ...postData })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       postId = response.body.data.id;
@@ -49,7 +52,6 @@ describe('Post Module (e2e)', () => {
           title: 'Post title',
           content_markdown: 'Post content',
           tags_array: ['nestjs'],
-
           seriesId: null,
           id: expect.any(String),
           status: 'PUBLISH',
@@ -60,6 +62,7 @@ describe('Post Module (e2e)', () => {
           isPublished: false,
           created_at: expect.any(String),
           updated_at: expect.any(String),
+          slug: expect.any(String),
         },
       });
     });
@@ -91,7 +94,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post('/posts')
         .send(createPostDto)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(400);
 
       expect(response.body).toEqual({
@@ -111,7 +114,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post('/posts')
         .send(createPostDto)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(400);
 
       expect(response.body).toEqual({
@@ -126,7 +129,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post('/posts')
         .send({ ...postData, tagArray: [] })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(400);
 
       expect(response.body).toEqual({
@@ -141,7 +144,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post('/posts')
         .send({ ...postData, tagArray: ['a', 'b', 'c', 'd', 'e', 'f'] })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(400);
 
       expect(response.body).toEqual({
@@ -173,6 +176,7 @@ describe('Post Module (e2e)', () => {
           comment_number: 0,
           isPublished: false,
           seriesId: null,
+          slug: expect.any(String),
           created_at: expect.any(String),
           updated_at: expect.any(String),
           userVotes: [],
@@ -240,6 +244,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/bookmark`)
         .expect(401);
+
       expect(response.body).toEqual({
         message: 'Unauthorized',
         statusCode: 401,
@@ -250,7 +255,7 @@ describe('Post Module (e2e)', () => {
     it('2. Should bookmark a post successfully', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/bookmark`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toEqual({
@@ -266,7 +271,7 @@ describe('Post Module (e2e)', () => {
       const invalidPostId = 8723987349;
       const response = await requestAgent
         .post(`/posts/${invalidPostId}/bookmark`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(404);
 
       expect(response.body).toEqual({
@@ -282,7 +287,7 @@ describe('Post Module (e2e)', () => {
       const invalidPostId = -1;
       const response = await requestAgent
         .post(`/posts/${invalidPostId}/bookmark`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(400);
       expect(response.body).toEqual({
         message: ['postId must be more than 1'],
@@ -296,7 +301,7 @@ describe('Post Module (e2e)', () => {
     it('5. Should bookmark a post unsuccessfully because id is string', async () => {
       const response = await requestAgent
         .post(`/posts/ohskgfjjf/bookmark`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(400);
       expect(response.body).toEqual({
         message: [
@@ -313,7 +318,7 @@ describe('Post Module (e2e)', () => {
     it('6. Should unbookmark a post successfully', async () => {
       const response = await requestAgent
         .delete(`/posts/${postId}/bookmark`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(200);
 
       expect(response.body).toEqual({
@@ -329,6 +334,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .delete(`/posts/${postId}/bookmark`)
         .expect(401);
+
       expect(response.body).toEqual({
         message: 'Unauthorized',
         statusCode: 401,
@@ -339,7 +345,7 @@ describe('Post Module (e2e)', () => {
     it('8. Should unbookmark a post unsuccessfully because wrong postId', async () => {
       const response = await requestAgent
         .delete(`/posts/8723987349/bookmark`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(404);
 
       expect(response.body).toEqual({
@@ -429,6 +435,7 @@ describe('Post Module (e2e)', () => {
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
         .expect(401);
+
       expect(response.body).toEqual({
         message: 'Unauthorized',
         statusCode: 401,
@@ -439,7 +446,7 @@ describe('Post Module (e2e)', () => {
     it('2. Should vote a post unsuccessfully because voteType is not VoteType', async () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(400);
 
       expect(response.body).toEqual({
@@ -456,7 +463,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/8723987349/vote`)
         .send({ voteType: 'UPVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(404);
 
       expect(response.body).toEqual({
@@ -471,7 +478,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);
@@ -488,7 +495,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);
@@ -504,7 +511,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);
@@ -521,7 +528,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);
@@ -538,7 +545,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);
@@ -556,7 +563,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);
@@ -573,7 +580,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);
@@ -589,7 +596,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'DOWNVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);
@@ -606,7 +613,7 @@ describe('Post Module (e2e)', () => {
       const response = await requestAgent
         .post(`/posts/${postId}/vote`)
         .send({ voteType: 'UPVOTE' })
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(201);
 
       expect(response.body).toHaveProperty('success', true);

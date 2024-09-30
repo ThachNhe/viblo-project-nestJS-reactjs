@@ -2,12 +2,13 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { createTestApp } from './utils/test.utils';
 import { CommentDbPrepareUtil } from './utils/comment-db-prepare.utils';
+import { use } from 'passport';
 
 describe('Comment Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
-  let user1Token: string;
-  let user2Token: string;
+  let user1Cookie: string;
+  let user2Cookie: string;
   let userId1: number;
   let userId2: number;
   let postId: number;
@@ -25,14 +26,18 @@ describe('Comment Module (e2e)', () => {
     const user1Res = await requestAgent
       .post('/auth/login')
       .send({ email: 'dieuvy@gmail.com', password: '123' });
-    user1Token = user1Res.body.accessToken;
+
     userId1 = user1Res.body.data.user.id;
+    user1Cookie = user1Res.headers['set-cookie'];
     // User2 login
     const user2Res = await requestAgent
       .post('/auth/login')
       .send({ email: 'thachdinh@gmail.com', password: '123' });
-    user2Token = user2Res.body.accessToken;
+
+    user2Cookie = user2Res.headers['set-cookie'];
+    // user2Token = user2Res.body.accessToken;
     userId2 = user2Res.body.data.user.id;
+
     // Create Post
     const postRes = await requestAgent
       .post('/posts')
@@ -42,7 +47,7 @@ describe('Comment Module (e2e)', () => {
         tagArray: ['nestjs'],
         status: 'PUBLISHED',
       })
-      .set('Authorization', `Bearer ${user1Token}`)
+      .set('Cookie', user1Cookie) // Gửi cookie hoàn chỉnh
       .expect(201);
 
     postId = postRes.body.data.id;
@@ -70,7 +75,7 @@ describe('Comment Module (e2e)', () => {
       const res = await requestAgent
         .post('/comments')
         .send(commentBody)
-        .set('Authorization', 'Bearer invalid_token');
+        .set('Cookie', 'Bearer invalid_token');
       expect(res.body).toEqual({
         message: 'Unauthorized',
         statusCode: 401,
@@ -82,7 +87,8 @@ describe('Comment Module (e2e)', () => {
       const res = await requestAgent
         .post('/comments')
         .send(commentBody)
-        .set('Authorization', `Bearer ${user2Token}`);
+        .set('Cookie', user2Cookie);
+
       expect(res.body).toEqual({
         success: true,
         statusCode: 200,
@@ -108,7 +114,7 @@ describe('Comment Module (e2e)', () => {
           ...commentBody,
           postId: 99900000,
         })
-        .set('Authorization', `Bearer ${user2Token}`)
+        .set('Cookie', user2Cookie)
         .expect(404);
 
       expect(res.body).toEqual({
@@ -126,7 +132,7 @@ describe('Comment Module (e2e)', () => {
           ...commentBody,
           replyForUserId: 99900000,
         })
-        .set('Authorization', `Bearer ${user2Token}`)
+        .set('Cookie', user2Cookie)
         .expect(404);
 
       expect(res.body).toEqual({
@@ -145,7 +151,7 @@ describe('Comment Module (e2e)', () => {
           ...commentBody,
           parentId: invalidParentId,
         })
-        .set('Authorization', `Bearer ${user2Token}`)
+        .set('Cookie', user2Cookie)
         .expect(400);
 
       expect(res.body).toEqual({
@@ -166,7 +172,7 @@ describe('Comment Module (e2e)', () => {
           ...commentBody,
           parentId: invalidParentId,
         })
-        .set('Authorization', `Bearer ${user2Token}`)
+        .set('Cookie', user2Cookie)
         .expect(404);
 
       expect(res.body).toEqual({
@@ -184,7 +190,7 @@ describe('Comment Module (e2e)', () => {
           ...commentBody,
           content: '',
         })
-        .set('Authorization', `Bearer ${user2Token}`)
+        .set('Cookie', user2Cookie)
         .expect(400);
 
       expect(res.body).toEqual({
@@ -226,6 +232,7 @@ describe('Comment Module (e2e)', () => {
       const res = await requestAgent
         .get(`/comments/${invalidPostId}`)
         .expect(400);
+
       expect(res.body).toEqual({
         message: ['postId must not be less than 1'],
         error: 'Bad Request',

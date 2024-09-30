@@ -26,18 +26,17 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    // Nếu không có role nào yêu cầu, cho phép truy cập
     if (!requiredRoles) {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
-    const authorizationHeader = request.headers['authorization'];
+    const request = await context.switchToHttp().getRequest();
 
-    // Lấy token từ header
-    const jwt = authorizationHeader.split(' ')[1];
+    // Lấy token từ cookie thay vì từ header Authorization
+    const jwt = request.cookies['accessToken'];
+
     if (!jwt) {
-      throw new UnauthorizedException('Token is missing');
+      throw new UnauthorizedException();
     }
 
     // Xác thực JWT và lấy payload
@@ -47,8 +46,6 @@ export class RolesGuard implements CanActivate {
       payload = await this.jwtService.verifyAsync(jwt, {
         secret: this.configService.get('JWT_ACCESS_KEY'),
       });
-      console.log('payload', payload);
-      console.log('requiredRoles : ', requiredRoles);
     } catch (error) {
       throw new UnauthorizedException();
     }
@@ -56,6 +53,9 @@ export class RolesGuard implements CanActivate {
     // Lấy role từ payload và kiểm tra xem có trùng với requiredRoles không
     const userRole = payload.role;
     const hasRole = requiredRoles.includes(userRole);
+    // console.log('userRole', userRole);
+
+    // console.log('requiredRoles : ', requiredRoles);
 
     if (!hasRole) {
       throw new ForbiddenException('You do not have the required role');

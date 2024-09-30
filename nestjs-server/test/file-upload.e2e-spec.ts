@@ -7,7 +7,7 @@ import axios from 'axios';
 describe('FileUpload Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
-  let token: string;
+  let cookie: string;
   let userId: number;
 
   beforeAll(async () => {
@@ -19,12 +19,12 @@ describe('FileUpload Module (e2e)', () => {
 
     requestAgent = request(app.getHttpServer());
 
-    // User1 login
-    const user1Res = await requestAgent
+    //login
+    const res = await requestAgent
       .post('/auth/login')
       .send({ email: 'dieuvy@gmail.com', password: '123' });
-    token = user1Res.body.accessToken;
-    userId = user1Res.body.data.user.id;
+    userId = res.body.data.user.id;
+    cookie = res.headers['set-cookie'];
   });
 
   describe('PUT /minio/presigned-url', () => {
@@ -33,6 +33,7 @@ describe('FileUpload Module (e2e)', () => {
       const res = await requestAgent
         .put('/minio/presigned-url')
         .send({ fileName: 'test.jpg' });
+
       expect(res.status).toBe(401);
       expect(res.body).toEqual({
         statusCode: 401,
@@ -44,8 +45,9 @@ describe('FileUpload Module (e2e)', () => {
     it('2. Presigned URL is unsuccessfully generated because of invalid token', async () => {
       const res = await requestAgent
         .put('/minio/presigned-url')
-        .set('Authorization', 'Bearer invalidToken')
+        .set('cookie', 'invalidToken')
         .expect(401);
+
       expect(res.body).toEqual({
         statusCode: 401,
         message: 'Unauthorized',
@@ -57,7 +59,8 @@ describe('FileUpload Module (e2e)', () => {
       const emptyFileName = '';
       const res = await requestAgent
         .put(`/minio/presigned-url?fileName=${emptyFileName}`)
-        .set('Authorization', `Bearer ${token}`);
+        .set('Cookie', cookie);
+
       expect(res.status).toBe(400);
       expect(res.body).toEqual({
         message: ['fileName should not be empty'],
@@ -71,7 +74,7 @@ describe('FileUpload Module (e2e)', () => {
       const fileName = 'testfile.txt';
       const res = await requestAgent
         .put(`/minio/presigned-url?fileName=${fileName}`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(200);
       expect(res.body.presignedURL).toMatch(/^https?:\/\/.*$/);
 
@@ -98,7 +101,7 @@ describe('FileUpload Module (e2e)', () => {
       const invalidToken = 'invalidToken';
       const res = await requestAgent
         .get('/minio/presigned-get-url')
-        .set('Authorization', `Bearer ${invalidToken}`)
+        .set('Cookie', `${invalidToken}`)
         .expect(401);
 
       expect(res.body).toEqual({
@@ -113,7 +116,7 @@ describe('FileUpload Module (e2e)', () => {
 
       const getUrlResponse = await request(app.getHttpServer())
         .get(`/minio/presigned-get-url?fileName=${fileName}`)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
         .expect(200);
 
       expect(getUrlResponse.body.status).toBe('success');

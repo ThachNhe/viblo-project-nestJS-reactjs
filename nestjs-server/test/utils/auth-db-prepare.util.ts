@@ -14,7 +14,7 @@ export class AuthDbPrepareUtil {
       .delete()
       .from('user_votes')
       .execute();
-
+    await this.dataSource.createQueryBuilder().delete().from('posts').execute();
     await this.dataSource.createQueryBuilder().delete().from('users').execute();
     const hashedPassword = await argon2.hash('123');
 

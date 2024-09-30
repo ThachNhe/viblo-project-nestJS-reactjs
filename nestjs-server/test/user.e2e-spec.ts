@@ -7,8 +7,8 @@ import * as argon2 from 'argon2';
 describe('Auth Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
-  let adminToken: string;
-  let userToken: string;
+  let adminCookie: string;
+  let userCookie: string;
   let userId1: number;
   let userId2: number;
 
@@ -41,12 +41,12 @@ describe('Auth Module (e2e)', () => {
     const loginAdmin = await requestAgent
       .post('/auth/login')
       .send({ email: 'thachdinh@gmail.com', password: '123' });
-    adminToken = loginAdmin.body.accessToken;
+    adminCookie = loginAdmin.headers['set-cookie'];
 
     const userLogin = await requestAgent
       .post('/auth/login')
       .send({ email: 'khanhtran@gmail.com', password: '123' });
-    userToken = userLogin.body.accessToken;
+    userCookie = userLogin.headers['set-cookie'];
   });
 
   describe('GET /user/:id', () => {
@@ -63,7 +63,7 @@ describe('Auth Module (e2e)', () => {
     it('2. Should get a user successfully', async () => {
       const users = await requestAgent
         .get(`/users/${userId1}`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(200);
       expect(users.body).toEqual({
         success: true,
@@ -86,7 +86,7 @@ describe('Auth Module (e2e)', () => {
       const invalidUserId = 10000000000;
       const res = await requestAgent
         .get(`/users/${invalidUserId}`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(404);
       expect(res.body).toEqual({
         message: 'User not found',
@@ -111,7 +111,7 @@ describe('Auth Module (e2e)', () => {
     it('5. Should get a user with id is less than 1', async () => {
       const res = await requestAgent
         .get(`/users/0`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
       expect(res.body).toEqual({
         message: ['id must not be less than 1'],
@@ -124,7 +124,7 @@ describe('Auth Module (e2e)', () => {
     it('6. Should get a user with id is not a number', async () => {
       const res = await requestAgent
         .get(`/users/abc`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
       expect(res.body).toEqual({
         message: [
@@ -145,6 +145,7 @@ describe('Auth Module (e2e)', () => {
         .put('/users/avatar')
         .send({ avatar: imgURL })
         .expect(401);
+
       expect(res.body).toEqual({
         statusCode: 401,
         message: 'Unauthorized',
@@ -157,7 +158,7 @@ describe('Auth Module (e2e)', () => {
       const res = await requestAgent
         .put('/users/avatar')
         .send({ avatar: imgURL })
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(200);
 
       expect(res.body).toEqual({
@@ -182,8 +183,9 @@ describe('Auth Module (e2e)', () => {
       const res = await requestAgent
         .put('/users/avatar')
         .send({ avatar: imgURL })
-        .set('Authorization', `Bearer invalid_token`)
+        .set('Cookie', `Invalid_token`)
         .expect(401);
+
       expect(res.body).toEqual({
         statusCode: 401,
         message: 'Unauthorized',
@@ -196,7 +198,7 @@ describe('Auth Module (e2e)', () => {
       const res = await requestAgent
         .put('/users/avatar')
         .send({ avatar: imgURL })
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
       expect(res.body).toEqual({
         message: ['avatar must be a URL address'],
@@ -211,7 +213,7 @@ describe('Auth Module (e2e)', () => {
       const res = await requestAgent
         .put('/users/avatar')
         .send({ avatar: imgURL })
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
       expect(res.body).toEqual({
         message: ['avatar must be a URL address', 'avatar should not be empty'],
@@ -226,8 +228,9 @@ describe('Auth Module (e2e)', () => {
     it('1. Should delete user successfully', async () => {
       const res = await requestAgent
         .delete(`/users/${userId1}`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(200);
+
       expect(res.body).toEqual({
         success: true,
         statusCode: 200,
@@ -249,7 +252,7 @@ describe('Auth Module (e2e)', () => {
     it('3. Should delete user unsuccessfully because of invalid adminToken', async () => {
       const res = await requestAgent
         .delete(`/users/${userId1}`)
-        .set('Authorization', `Bearer invalid_token`)
+        .set('Cookie', `Invalid_token`)
         .expect(401);
       expect(res.body).toEqual({
         statusCode: 401,
@@ -262,7 +265,7 @@ describe('Auth Module (e2e)', () => {
       const invalidUserId = 10000000000;
       const res = await requestAgent
         .delete(`/users/${invalidUserId}`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(404);
       expect(res.body).toEqual({
         message: 'User not found',
@@ -275,7 +278,7 @@ describe('Auth Module (e2e)', () => {
     it('5. Should delete user unsuccessfully because of id is less than 1', async () => {
       const res = await requestAgent
         .delete(`/users/0`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
       expect(res.body).toEqual({
         message: ['id must not be less than 1'],
@@ -289,7 +292,7 @@ describe('Auth Module (e2e)', () => {
       const invalidUserId = 'abc';
       const res = await requestAgent
         .delete(`/users/${invalidUserId}`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
       expect(res.body).toEqual({
         message: [
@@ -305,7 +308,7 @@ describe('Auth Module (e2e)', () => {
     it('7. Should delete user unsuccessfully because userId1 is empty', async () => {
       const res = await requestAgent
         .delete(`/users/`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(404);
       expect(res.body).toEqual({
         message: 'Cannot DELETE /users/',
@@ -318,7 +321,7 @@ describe('Auth Module (e2e)', () => {
     it('8. Should delete user unsuccessfully because user is not Admin', async () => {
       const res = await requestAgent
         .delete(`/users/${userId1}`)
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(403);
       expect(res.body).toEqual({
         message: 'You do not have the required role',
@@ -342,7 +345,7 @@ describe('Auth Module (e2e)', () => {
     it('2. Should block user unsuccessfully because of invalid adminToken', async () => {
       const res = await requestAgent
         .put(`/users/${userId1}/block`)
-        .set('Authorization', `Bearer invalid_token`)
+        .set('Cookie', `Invalid_token`)
         .expect(401);
       expect(res.body).toEqual({
         statusCode: 401,
@@ -354,8 +357,9 @@ describe('Auth Module (e2e)', () => {
     it('3. Should block user successfully', async () => {
       const res = await requestAgent
         .put(`/users/${userId2}/block`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(200);
+
       expect(res.body).toEqual({
         success: true,
         statusCode: 200,
@@ -368,7 +372,7 @@ describe('Auth Module (e2e)', () => {
     it('4. Should block user has already been blocked', async () => {
       const res = await requestAgent
         .put(`/users/${userId2}/block`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
       expect(res.body).toEqual({
         message: 'User is already blocked',
@@ -382,7 +386,7 @@ describe('Auth Module (e2e)', () => {
       const invalidUserId = 10000000000;
       const res = await requestAgent
         .put(`/users/${invalidUserId}/block`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(404);
       expect(res.body).toEqual({
         message: 'User not found',
@@ -396,7 +400,7 @@ describe('Auth Module (e2e)', () => {
       const invalidUserId = 0;
       const res = await requestAgent
         .put(`/users/${invalidUserId}/block`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
       expect(res.body).toEqual({
         message: ['id must not be less than 1'],
@@ -410,8 +414,9 @@ describe('Auth Module (e2e)', () => {
       const invalidUserId = 'abc';
       const res = await requestAgent
         .put(`/users/${invalidUserId}/block`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
+
       expect(res.body).toEqual({
         message: [
           'id must not be less than 1',
@@ -426,7 +431,7 @@ describe('Auth Module (e2e)', () => {
     it('8. Should block user unsuccessfully because userId1 is empty', async () => {
       const res = await requestAgent
         .put(`/users/block`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(404);
       expect(res.body).toEqual({
         message: 'Cannot PUT /users/block',
@@ -439,7 +444,7 @@ describe('Auth Module (e2e)', () => {
     it('9. Should block user unsuccessfully because user is not Admin', async () => {
       const res = await requestAgent
         .put(`/users/${userId1}/block`)
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(403);
       expect(res.body).toEqual({
         message: 'You do not have the required role',
@@ -465,7 +470,7 @@ describe('Auth Module (e2e)', () => {
     it('2. Should unblock user unsuccessfully because of invalid adminToken', async () => {
       const res = await requestAgent
         .put(`/users/${userId1}/unblock`)
-        .set('Authorization', `Bearer invalid_token`)
+        .set('Cookie', `Invalid_token`)
         .expect(401);
       expect(res.body).toEqual({
         statusCode: 401,
@@ -477,7 +482,7 @@ describe('Auth Module (e2e)', () => {
     it('3. Should unblock user successfully', async () => {
       const res = await requestAgent
         .put(`/users/${userId2}/unblock`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(200);
       expect(res.body).toEqual({
         success: true,
@@ -491,7 +496,7 @@ describe('Auth Module (e2e)', () => {
     it('4. Should unblock user has already been unblocked', async () => {
       const res = await requestAgent
         .put(`/users/${userId2}/unblock`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(400);
 
       expect(res.body).toEqual({
@@ -506,7 +511,7 @@ describe('Auth Module (e2e)', () => {
       const invalidUserId = 10000000000;
       const res = await requestAgent
         .put(`/users/${invalidUserId}/unblock`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .expect(404);
       expect(res.body).toEqual({
         message: 'User not found',
@@ -519,7 +524,7 @@ describe('Auth Module (e2e)', () => {
     it('6. Should unblock user unsuccessfully because user is not Admin', async () => {
       const res = await requestAgent
         .put(`/users/${userId1}/unblock`)
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(403);
 
       expect(res.body).toEqual({
@@ -552,6 +557,7 @@ describe('Auth Module (e2e)', () => {
       const res = await requestAgent
         .get(`/users/top?page=${page}&limit=${limit}`)
         .expect(400);
+
       expect(res.body).toEqual({
         message: ['page must not be less than 1'],
         error: 'Bad Request',

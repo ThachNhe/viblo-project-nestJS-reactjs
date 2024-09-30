@@ -243,7 +243,7 @@ export class AuthService {
     });
     // console.log('payload', payload);
     const user = await this.userRepository.findOne({
-      where: { id: payload.sub, email: body.email },
+      where: { id: payload.sub, email: payload.email },
     });
 
     if (!user) {

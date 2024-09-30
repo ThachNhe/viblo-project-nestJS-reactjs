@@ -6,9 +6,10 @@ import { TagDbPrepareUtil } from './utils/tag-db-prepare.utils';
 describe('Tag Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
-  let userId: number;
-  let adminToken: string;
-  let userToken: string;
+  // let adminToken: string;
+  // let userToken: string;
+  let adminCookie: string;
+  let userCookie: string;
 
   let TagDTO = {
     name: 'nestjs',
@@ -26,12 +27,13 @@ describe('Tag Module (e2e)', () => {
     const loginAdminResponse = await requestAgent
       .post('/auth/login')
       .send({ email: 'thachdinh@gmail.com', password: '123' });
-    adminToken = loginAdminResponse.body.accessToken;
+    // adminToken = loginAdminResponse.body.accessToken;
+    adminCookie = loginAdminResponse.headers['set-cookie'];
 
     const loginResponse = await requestAgent
       .post('/auth/login')
       .send({ email: 'dieuvy@gmail.com', password: '123' });
-    userToken = loginResponse.body.accessToken;
+    userCookie = loginResponse.headers['set-cookie'];
   });
 
   describe('POST /tags', () => {
@@ -50,7 +52,7 @@ describe('Tag Module (e2e)', () => {
     it('2. should return 401 when create tag with invalid adminToken', async () => {
       const res = await requestAgent
         .post('/tags')
-        .set('Authorization', 'Bearer invalid_token')
+        .set('Cookie', 'invalid_token')
         .send(TagDTO)
         .expect(401);
 
@@ -64,7 +66,7 @@ describe('Tag Module (e2e)', () => {
     it('3. should return 403 when create tag with user is not admin', async () => {
       const res = await requestAgent
         .post('/tags')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .send(TagDTO)
         .expect(403);
 
@@ -79,9 +81,10 @@ describe('Tag Module (e2e)', () => {
     it('4. should return 400 when create tag with name is empty', async () => {
       const res = await requestAgent
         .post('/tags')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .send({ ...TagDTO, name: '' })
         .expect(400);
+
       expect(res.body).toEqual({
         statusCode: 400,
         message: ['name should not be empty'],
@@ -94,9 +97,10 @@ describe('Tag Module (e2e)', () => {
     it('5. should return 201 when create tag with valid data', async () => {
       const res = await requestAgent
         .post('/tags')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Cookie', adminCookie)
         .send(TagDTO)
         .expect(201);
+
       expect(res.body).toEqual({
         success: true,
         statusCode: 200,
@@ -121,6 +125,7 @@ describe('Tag Module (e2e)', () => {
     // 1. Search tag without token
     it('1. should return 401 when search tag without token', async () => {
       const res = await requestAgent.get('/tags/search').expect(401);
+
       expect(res.body).toEqual({
         statusCode: 401,
         message: 'Unauthorized',
@@ -131,7 +136,7 @@ describe('Tag Module (e2e)', () => {
     it('2. should return 401 when search tag with invalid token', async () => {
       const res = await requestAgent
         .get('/tags/search')
-        .set('Authorization', 'Bearer invalid_token')
+        .set('Cookie', 'invalid_token')
         .expect(401);
 
       expect(res.body).toEqual({
@@ -146,7 +151,7 @@ describe('Tag Module (e2e)', () => {
       const keyword = '';
       const res = await requestAgent
         .get(`/tags/search?keyword=${keyword}`)
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(400);
 
       expect(res.body).toEqual({
@@ -161,8 +166,9 @@ describe('Tag Module (e2e)', () => {
       const keyword = 'nest';
       const res = await requestAgent
         .get(`/tags/search?keyword=${keyword}`)
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(200);
+
       expect(res.body).toEqual({
         success: true,
         statusCode: 200,
@@ -192,6 +198,7 @@ describe('Tag Module (e2e)', () => {
       const res = await requestAgent
         .get(`/tags/exist?name=${name}`)
         .expect(401);
+
       expect(res.body).toEqual({
         statusCode: 401,
         message: 'Unauthorized',
@@ -203,7 +210,7 @@ describe('Tag Module (e2e)', () => {
       const name = 'nestjs';
       const res = await requestAgent
         .get(`/tags/exist?name=${name}`)
-        .set('Authorization', 'Bearer invalid_token')
+        .set('Cookie', 'Invalid_token')
         .expect(401);
 
       expect(res.body).toEqual({
@@ -217,7 +224,7 @@ describe('Tag Module (e2e)', () => {
       const name = '';
       const res = await requestAgent
         .get(`/tags/exist?name=${name}`)
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(400);
 
       expect(res.body).toEqual({
@@ -232,7 +239,7 @@ describe('Tag Module (e2e)', () => {
       const name = 'nestjs';
       const res = await requestAgent
         .get(`/tags/exist?name=${name}`)
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Cookie', userCookie)
         .expect(200);
       expect(res.body).toEqual({
         success: true,
