@@ -39,6 +39,10 @@ const resetPassword = (body) => {
   return axios.post("/auth/reset-password", body);
 };
 
+const saveNotificationToken = (body) => {
+  return axios.put("/users/save-notification-token", body);
+};
+
 export {
   userLoginService,
   userRegisterService,
@@ -50,4 +54,5 @@ export {
   getTopAuthors,
   forgotPassword,
   resetPassword,
+  saveNotificationToken,
 };

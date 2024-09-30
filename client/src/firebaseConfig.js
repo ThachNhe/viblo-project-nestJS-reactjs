@@ -1,9 +1,9 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyAuMqxKncjiQgvb3lJn_RJuLGUVs4xIWxs",
-  authDomain: "test-a1976.firebaseapp.com",
-  projectId: "test-a1976",
-  storageBucket: "test-a1976.appspot.com",
-  messagingSenderId: "1014387989297",
-  appId: "1:1014387989297:web:e05258cfcc6a4e4219ee10",
-  measurementId: "G-J3GG2MDZMW",
+  apiKey: "AIzaSyB9txBOO3g8V2KWn4mMQ_G1eA_woWNOp7Q",
+  authDomain: "viblo-fb.firebaseapp.com",
+  projectId: "viblo-fb",
+  storageBucket: "viblo-fb.appspot.com",
+  messagingSenderId: "109860985300",
+  appId: "1:109860985300:web:5471f85ba47ff42e3fde41",
+  measurementId: "G-54V92WZF3V",
 };

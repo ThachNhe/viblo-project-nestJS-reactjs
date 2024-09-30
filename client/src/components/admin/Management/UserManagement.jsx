@@ -91,7 +91,6 @@ function UserManagement() {
     }
   };
 
-  console.log("paginatingUsers?.data?.meta?.totalPages  : ", paginatingUsers?.data?.meta?.totalPages)
 
   return (
     <>
