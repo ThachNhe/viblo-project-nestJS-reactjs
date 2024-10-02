@@ -24,8 +24,8 @@ export class NotificationDetail {
   })
   notification: Notification;
 
-  @ManyToOne(() => User, (user) => user.notifications)
-  user: User;
+  @ManyToOne(() => User, (user) => user.notificationDetails)
+  NotiForUser: User;
 
   @CreateDateColumn({
     type: 'timestamp',

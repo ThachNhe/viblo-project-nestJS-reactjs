@@ -1,24 +1,110 @@
 "use client";
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext , useState} from "react";
 import Container from "../Container";
 import Logo from "./Logo";
 import Search from "./Search";
 import MainMenu from "./MainMenu";
 import Auth from "./Auth";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import WriteMenu from "./WriteMenu";
 import DropdownCommonNotification from "./DropdownCommonNotification";
 import DropdownPersonalNotification from "./DropdownPersonalNotification";
 import { AppContext } from "../../contexts/AppContext";
+import * as actions from "../../redux/action/index";
+import { useDispatch } from "react-redux";
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { firebaseConfig } from "../../firebaseConfig";
+import * as services from "../../services/index";
+import toast from "react-hot-toast";
 
 const Navbar = ({ isHomePage }) => {
-  const navigator = useNavigate();
+  const dispatch = useDispatch();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
+  const usersNotifications = useSelector(
+    (state) => state.notification.userNotifications
+  );
+  const [unReadNumber, setUnReadNumber] = useState(0);
   const ctx = useContext(AppContext);
 
+  const fapp = initializeApp(firebaseConfig);
+  const messaging = getMessaging(fapp);
+
   useEffect(() => {
-  }, [navigator, isLogin]);
+    dispatch(actions.getUsersNotifications());
+  }, []);
+
+  useEffect(() => {
+    const unRead = usersNotifications?.data?.filter((noti) => !noti.isRead).length;
+  
+    setUnReadNumber(unRead);
+  }, [usersNotifications]);
+
+  const handlerMarkAsRead = async (notificationId) => {
+    try {
+      const res = await services.markAsRead(notificationId);
+      res?.success && dispatch(actions.getUsersNotifications());
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    async function requestPermission() {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        console.log("Notification permission granted.");
+        try {
+          const currentToken = await getToken(messaging, {
+            vapidKey:
+              "BE5Os3Ulf1vmx_wXRvCSW47s5QMtbiHJbpQ-NpWic2r1k32OZmnk6GIgmx4R3uQM5oOTNFOtWIebFAxsRKs7nyg",
+          });
+          if (currentToken) {
+            const res = await services.saveNotificationToken({
+              token: currentToken,
+            });
+          } else {
+            console.log(
+              "No registration token available. Request permission to generate one."
+            );
+          }
+          console.log("Current token: ", currentToken);
+        } catch (error) {
+          console.error("An error occurred while retrieving token: ", error);
+        }
+      } else {
+        console.log("Notification permission denied.");
+      }
+    }
+
+    // Đăng ký service worker cho thông báo background
+    // if ("serviceWorker" in navigator) {
+    //   navigator.serviceWorker
+    //     .register("/firebase-messaging-sw.js")
+    //     .then((registration) => {
+    //       console.log(
+    //         "Service Worker registered with scope:",
+    //         registration.scope
+    //       );
+    //     })
+    //     .catch((error) => {
+    //       console.log(
+    //         "An error occurred while registering service worker: ",
+    //         error
+    //       );
+    //     });
+    // }
+    requestPermission();
+    // Listen for foreground messages
+    onMessage(messaging, (payload) => {
+      console.log("Message received. ", payload);
+      dispatch(actions.getUsersNotifications());
+
+      toast.success(`${payload.data.commenter} ${payload.notification.body}`, {
+        duration: 5000,
+      });
+    });
+  }, [messaging]);
 
   return (
     <div
@@ -26,7 +112,7 @@ const Navbar = ({ isHomePage }) => {
       ${ctx.isHiddenNavbar ? "hidden" : " "} 
     `}
     >
-      <div className=" py-1">
+      <div className="py-1 shadow-lg ">
         <Container isHomePage={isHomePage}>
           <div
             className="
@@ -46,7 +132,10 @@ const Navbar = ({ isHomePage }) => {
               {isHomePage && <Search />}
 
               <DropdownCommonNotification />
-              <DropdownPersonalNotification />
+              <DropdownPersonalNotification data={usersNotifications?.data} 
+              handlerMarkAsRead = {handlerMarkAsRead}
+              unReadNumber={unReadNumber}
+              />
               <WriteMenu />
               <Auth isLogin={isLogin} />
             </div>

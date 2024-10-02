@@ -20,6 +20,8 @@ import NoComment from "./NoComment";
 import { socket } from "../../../socket";
 import { useParams } from "react-router-dom";
 import TableOfContents from "./TableOfContent";
+import BannerImg from "../../../images/cover/banner.png"
+import { useLocation } from "react-router-dom";
 
 const settings = {
   dots: true,
@@ -34,18 +36,63 @@ function PostDetail() {
   const comments = useSelector((state) => state.comment.commentByPostId);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const relatedPosts = useSelector((state) => state.post.relatedPosts);
+  const postBySlug = useSelector((state) => state.post.postBySlug);
   const [responseId, setResponseId] = useState(0);
   const [isUpvote, setIsUpvote] = useState(false);
   const [isDownvote, setIsDownvote] = useState(false);
   const [isBookmark, setIsBookmark] = useState(false);
   const { slug } = useParams();
-  const postBySlug = useSelector((state) => state.post.postBySlug);
   const [headings, setHeadings] = useState([]);
   const [activeHeading, setActiveHeading] = useState("");
   // Xử lý sự kiện cuộn của nội dung bài viết
   const contentRef = useRef(null);
   const sidebarRef = useRef(null);
   const [isContentScrolledToEnd, setIsContentScrolledToEnd] = useState(false);
+  const location = useLocation();
+  const { commentId, scrollTrigger } = location.state || {};
+
+  useEffect(() => {
+    dispatch(actions.getPostBySlug(slug));
+    dispatch(actions.getUsersNotifications());
+    socket.on("newComment", (commentData) => {
+      if (+commentData?.postId === +postBySlug?.data?.id) {
+        dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
+      }
+    });
+    return () => {
+      socket.off("newComment");
+    };
+  }, []);
+
+  useEffect(() => {
+    const contentElement = contentRef.current;
+    if (contentElement) {
+      const handleScroll = () => {
+        const { scrollHeight, scrollTop, clientHeight } = contentElement;
+        if (scrollHeight - scrollTop === clientHeight) {
+          setIsContentScrolledToEnd(true); // Đã cuộn hết phần nội dung
+        } else {
+          setIsContentScrolledToEnd(false);
+        }
+      };
+
+      // Thêm sự kiện cuộn vào phần tử nội dung
+      contentElement.addEventListener("scroll", handleScroll);
+
+      return () => {
+        contentElement.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (commentId && comments?.data?.length > 0) {
+      const commentElement = document.getElementById(`comment-${commentId}`);
+      if (commentElement) {
+        commentElement.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [commentId, comments, scrollTrigger]);
 
   // Sử dụng hiệu ứng để trích xuất tiêu đề khi mount component
   useEffect(() => {
@@ -71,83 +118,37 @@ function PostDetail() {
   };
 
   // Theo dõi phần tiêu đề hiện tại khi cuộn trang
-// useEffect(() => {
-//   const handleScroll = () => {
-//     const scrollPosition = window.scrollY + 100; // Thêm offset để tính toán chính xác hơn
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollPosition = window.scrollY + 100; // Thêm offset để tính toán chính xác hơn
 
-//     // Tìm heading cuối cùng mà người dùng đã cuộn qua
-//     const currentHeading = headings.reduce((acc, heading) => {
-//       const element = document.getElementById(heading.id);
-//       if (element && element.offsetTop <= scrollPosition) {
-//         return heading.id;
-//       }
-//       console.log("acc : ", acc);
-//       return acc;
-//     }, "");
+  //     // Tìm heading cuối cùng mà người dùng đã cuộn qua
+  //     const currentHeading = headings.reduce((acc, heading) => {
+  //       const element = document.getElementById(heading.id);
+  //       if (element && element.offsetTop <= scrollPosition) {
+  //         return heading.id;
+  //       }
+  //       console.log("acc : ", acc);
+  //       return acc;
+  //     }, "");
 
-//     if (currentHeading !== activeHeading) {
-//       setActiveHeading(currentHeading);
-//     }
-//   };
+  //     if (currentHeading !== activeHeading) {
+  //       setActiveHeading(currentHeading);
+  //     }
+  //   };
 
-//   window.addEventListener("scroll", handleScroll);
-//   // Gọi handleScroll ngay lập tức để set active heading ban đầu
-//   handleScroll();
+  //   window.addEventListener("scroll", handleScroll);
+  //   // Gọi handleScroll ngay lập tức để set active heading ban đầu
+  //   handleScroll();
 
-//   return () => {
-//     window.removeEventListener("scroll", handleScroll);
-//   };
-// }, [headings, activeHeading]);
-
-
-  useEffect(() => {
-    dispatch(actions.getPostBySlug(slug));
-
-    socket.on("newComment", (commentData) => {
-      if (+commentData?.postId === +postBySlug?.data?.id) {
-        dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
-      }
-    });
-
-    return () => {
-      socket.off("newComment");
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [headings, activeHeading]);
 
   useEffect(() => {
     dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
     dispatch(actions.getRelatedPosts(postBySlug?.data?.id));
-  }, [postBySlug]);
-
-
-  // Xử lý sự kiện cuộn của phần nội dung bài viết
-  useEffect(() => {
-    const contentElement = contentRef.current;
-    if (contentElement) {
-      const handleScroll = () => {
-        const { scrollHeight, scrollTop, clientHeight } = contentElement;
-        if (scrollHeight - scrollTop === clientHeight) {
-          setIsContentScrolledToEnd(true); // Đã cuộn hết phần nội dung
-        } else {
-          setIsContentScrolledToEnd(false);
-        }
-      };
-
-      // Thêm sự kiện cuộn vào phần tử nội dung
-      contentElement.addEventListener("scroll", handleScroll);
-
-      return () => {
-        contentElement.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    dispatch(actions.getPostBySlug(slug));
-  }, [slug]);
-
-
-  useEffect(() => {
     const user = postBySlug?.data?.userVotes.find(
       (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
     );
@@ -180,12 +181,20 @@ function PostDetail() {
     }
   }, [postBySlug]);
 
+  // Xử lý sự kiện cuộn của phần nội dung bài viết
+
+  useEffect(() => {
+    dispatch(actions.getPostBySlug(slug));
+  }, [slug]);
+
+
   const handleCreateComment = async (newComment) => {
     try {
       const commentInfo = await services.createComment(newComment);
       if (commentInfo?.success) {
         dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
         dispatch(actions.getPostBySlug(slug));
+        // dispatch(actions.getUsersNotifications());
         toast.success("Bình luận thành công!");
       }
       return commentInfo;
@@ -234,7 +243,7 @@ function PostDetail() {
   return (
     <>
       <div className="flex flex-col min-h-screen border">
-        <Banner src={"/images/banner.png"} />
+        <Banner src={BannerImg} />
         {/* Content */}
         <div className="container mx-auto my-8 px-4 max-w-[1190px] bg-homepage">
           <div className="flex gap-2 flex-1 overflow-auto">
@@ -266,6 +275,7 @@ function PostDetail() {
                           postBySlug?.data?.author?.follower_number
                         }
                         postNumber={postBySlug?.data?.author?.post_number}
+                         userAvatar={postBySlug?.data?.author?.avatar}
                       />
 
                       <div className="flex flex-col gap-2">

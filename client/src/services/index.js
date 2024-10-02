@@ -3,3 +3,4 @@ export * from "./tagServices";
 export * from "./postServices";
 export * from "./commentServices";
 export * from "./statisticServices";
+export * from "./notificationServices";

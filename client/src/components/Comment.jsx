@@ -9,12 +9,11 @@ function Comment({
   userName,
   date,
   content,
-  submitComment,
   handlerOpenResponseForm,
   commentId,
   handlerOpenResToResForm,
   replyForUserName,
-  replyForUserId
+  userAvatar,
 }) {
 
   const handlerResponse = () => {
@@ -29,10 +28,10 @@ function Comment({
 
   return (
     <>
-      <div className="flex flex-col gap-2 rounded-md p-2 ">
+      <div id={`comment-${commentId}`} className="flex flex-col gap-2 rounded-md p-2 ">
         <div className="flex items-center gap-2">
           <Avatar
-           imgURL={"/images/avatar.png"} height={37} width={37}
+           imgURL={userAvatar} height={37} width={37}
           />
           <div className="flex flex-col gap-1">
             <div className="flex gap-2 items-center">

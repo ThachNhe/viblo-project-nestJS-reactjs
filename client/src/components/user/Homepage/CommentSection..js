@@ -29,7 +29,7 @@ function CommentSection({
           isAnswer={true}
           handlerOpenResponseForm={handlerOpenResponseForm}
           commentId={commentId}
-
+          userAvatar={comment?.authoravatar}
           // submitComment={submitComment}
         />
         {responseId === commentId && (
@@ -39,7 +39,7 @@ function CommentSection({
               postId={postId}
               userId={userId}
               parentId={parentId}
-              replyForUserId={""}
+              replyForUserId={comment.authorId}
               replyForUserName={comment.authorusername}
             />
           </div>
@@ -60,6 +60,7 @@ function CommentSection({
                 handlerOpenResponseForm={() => console.log("")}
                 replyForUserName={comment?.replyForUserName}
                 replyForUserId={comment?.replyForUserId}
+                userAvatar={comment.authoravatar}
               />
               {resId === comment.id && (
                 <div className="px-5">

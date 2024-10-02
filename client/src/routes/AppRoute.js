@@ -14,7 +14,80 @@ import PostPageLayout from "../components/layouts/PostPageLayout";
 import FollowingPost from "../components/user/PostPage/FollowingPost";
 import ResetPassword from "../components/auth/ResetPassword";
 
+// import { useEffect } from "react";
+// import { initializeApp } from "firebase/app";
+// import { getMessaging, getToken, onMessage } from "firebase/messaging";
+// import { firebaseConfig } from "../firebaseConfig";
+// import * as services from "../services/index";
+// import toast from "react-hot-toast";
+// import { useDispatch } from "react-redux";
+// import * as actions from "../redux/action/index";
+
 function AppRoutes() {
+  // const fapp = initializeApp(firebaseConfig);
+  // const messaging = getMessaging(fapp);
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   // console.log(
+  //   //   "process.env.REACT_APP_FIREBASE_VAPID_KEY : ",
+  //   //   process.env.REACT_APP_FIREBASE_VAPID_KEY
+  //   // );
+  //   async function requestPermission() {
+  //     const permission = await Notification.requestPermission();
+  //     if (permission === "granted") {
+  //       console.log("Notification permission granted.");
+  //       try {
+  //         const currentToken = await getToken(messaging, {
+  //           vapidKey:
+  //             "BE5Os3Ulf1vmx_wXRvCSW47s5QMtbiHJbpQ-NpWic2r1k32OZmnk6GIgmx4R3uQM5oOTNFOtWIebFAxsRKs7nyg",
+  //         });
+  //         if (currentToken) {
+  //           const res = await services.saveNotificationToken({
+  //             token: currentToken,
+  //           });
+  //         } else {
+  //           console.log(
+  //             "No registration token available. Request permission to generate one."
+  //           );
+  //         }
+  //         console.log("Current token: ", currentToken);
+  //       } catch (error) {
+  //         console.error("An error occurred while retrieving token: ", error);
+  //       }
+  //     } else {
+  //       console.log("Notification permission denied.");
+  //     }
+  //   }
+
+  //   // Đăng ký service worker cho thông báo background
+  //   if ("serviceWorker" in navigator) {
+  //     navigator.serviceWorker
+  //       .register("/firebase-messaging-sw.js")
+  //       .then((registration) => {
+  //         console.log(
+  //           "Service Worker registered with scope:",
+  //           registration.scope
+  //         );
+  //       })
+  //       .catch((error) => {
+  //         console.log(
+  //           "An error occurred while registering service worker: ",
+  //           error
+  //         );
+  //       });
+  //   }
+  //   requestPermission();
+  //   // Listen for foreground messages
+  //   onMessage(messaging, (payload) => {
+  //     console.log("Message received. ", payload);
+  //     dispatch(actions.getUsersNotifications());
+
+  //     toast.success(`${payload.data.commenter} ${payload.notification.body}`, {
+  //       duration: 5000,
+  //     });
+  //   });
+  // }, [messaging]);
   return (
     <Routes>
       <Route element={<AdminRoute />}>

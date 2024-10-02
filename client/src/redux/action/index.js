@@ -4,3 +4,4 @@ export * from "./adminAction";
 export * from "./postAction";
 export * from "./commentAction";
 export * from "./statisticAction";
+export * from "./notificationAction";

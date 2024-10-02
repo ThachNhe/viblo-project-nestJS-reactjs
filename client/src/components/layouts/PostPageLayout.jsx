@@ -5,6 +5,8 @@ import PostNavbar from "../postNavbar/PostNavBar";
 import ProposedCourse from "../user/Homepage/ProposedCourse";
 import Footer from "../user/Homepage/Footer";
 import { Outlet } from "react-router-dom";
+import BannerImg from '../../images/cover/banner.png';
+
 
 const settings = {
   dots: true,
@@ -17,15 +19,15 @@ const settings = {
 const PostPageLayout = ({ children }) => {
   return (
     <>
-      <div className="flex flex-col min-h-screen border">
-        <Banner src={"/images/banner.png"} />
+      <div className="flex flex-col min-h-screen">
+        <Banner src={BannerImg} />
         <div className="bg-post-nav-bar">
           <PostNavbar />
         </div>
         <div className="container mx-auto my-8 px-4 max-w-[1140px] ">
           <main className="flex gap-5 flex-1 h-screen">
             {/* CHILDREN SECTION */}
-            <div className="flex flex-col gap-4 w-3/4 overflow-y-scroll scrollbar-hidden">
+            <div className="flex flex-col gap-2 w-3/4 overflow-y-scroll scrollbar-hidden">
               <Outlet />
             </div>
             {/* CHILDREN SECTION */}

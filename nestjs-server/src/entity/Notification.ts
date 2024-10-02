@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { NotificationDetail } from './NotificationDetail';
+import { NotificationDetail, User } from './index';
 
 @Entity({ name: 'notifications' })
 export class Notification {
@@ -17,15 +17,23 @@ export class Notification {
   @Column()
   content: string;
 
+  @Column({ default: 0 })
+  commentId: number;
+
+  @Column({ default: '' })
+  post_slug: string;
+
   @OneToMany(
     () => NotificationDetail,
     (notificationDetail) => notificationDetail.notification,
     {
       cascade: true,
-      eager: true,
     },
   )
   details: NotificationDetail[];
+
+  @ManyToOne(() => User, (user) => user.notificationDetails)
+  author: User;
 
   @CreateDateColumn({
     type: 'timestamp',

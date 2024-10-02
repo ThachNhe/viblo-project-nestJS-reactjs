@@ -46,12 +46,22 @@ const CommonNotification = () => {
       <div className="flex flex-row items-center gap-3">
         <div onClick={() => toggleOpen()} className="p-2">
           <div className="relative inline-block">
-            <span
+            {/* <span
               className="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red-500
          text-white text-xs font-semibold rounded-full px-1  "
             >
               7
-            </span>
+            </span> */}
+            <span
+                className={`absolute -top-0.5 right-0 z-1 h-3 w-3 rounded-full bg-red-500 items-center ${
+                  "inline"
+                }`}
+              >
+                <span className="absolute -z-1 inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75 
+                 ">
+                  <span className="animate-none text-xs text-white text-center ml-0.5">5</span>
+                </span>
+              </span>
             <div className="group cursor-pointer">
               <svg
                 height={23}

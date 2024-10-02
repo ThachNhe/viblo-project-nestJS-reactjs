@@ -11,10 +11,11 @@ function UserInfo({
   starNumber,
   followerNumber,
   postNumber,
+  userAvatar
 }) {
   return (
     <div className="flex gap-2 p-1 items-center">
-      <Avatar imgURL={"/images/avatar.png"} height={37} width={37} />
+      <Avatar imgURL={userAvatar} height={37} width={37} />
       <div className="flex flex-col gap-1 ">
         <div className="flex gap-2 items-center">
           <span className=" text-blue-400 hover:underline font-medium">

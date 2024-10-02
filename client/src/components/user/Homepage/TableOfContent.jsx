@@ -5,7 +5,7 @@ function TableOfContents({ headings, activeHeading, onClick }) {
   const renderHeadings = (headings, level = 1) => {
     return (
       <ul className="flex flex-col gap-3">
-        {headings.map((heading) => (
+        {headings?.map((heading) => (
           // className={``}
           <li key={heading.id} className={`ml-${heading.level * 4}`}>
             <a

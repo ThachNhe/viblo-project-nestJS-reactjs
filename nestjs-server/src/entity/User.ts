@@ -18,6 +18,7 @@ import {
   Series,
   Comment,
   Post,
+  Notification,
 } from './index';
 
 import { Role } from '../enums/index';
@@ -83,9 +84,12 @@ export class User {
 
   @OneToMany(
     () => NotificationDetail,
-    (notificationDetail) => notificationDetail.user,
+    (notificationDetail) => notificationDetail.NotiForUser,
   )
-  notifications: NotificationDetail[];
+  notificationDetails: NotificationDetail[];
+
+  @OneToMany(() => Notification, (notification) => notification.author)
+  notifications: Notification[];
 
   @ManyToMany(() => Tag, (tag) => tag.followers)
   tags: Tag[];

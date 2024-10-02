@@ -1,4 +1,5 @@
 // import Image from 'next/image';
+import defaultAvatar from '../../../src/images/user/avatar.png';
 const Avatar = ({ imgURL, height, width }) => {
   return (
     <div >
@@ -7,7 +8,7 @@ const Avatar = ({ imgURL, height, width }) => {
         width={width}
         alt="avatar"
         className="rounded-full box-border  cursor-pointer object-fill align-middle "
-        src={imgURL}
+        src={imgURL || defaultAvatar }
       />
     </div>
   );
