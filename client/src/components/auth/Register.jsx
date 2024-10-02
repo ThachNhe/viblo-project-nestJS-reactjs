@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import SocialLogin from "./SocialLogin";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import * as services from "../../services/index";
 import toast from "react-hot-toast";
 import { AppContext } from "../../contexts/AppContext";
@@ -13,7 +12,6 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmInfo, setConfirmInfo] = useState(false);
-  const dispatch = useDispatch();
   const ctx = useContext(AppContext);
 
   useEffect(() => {

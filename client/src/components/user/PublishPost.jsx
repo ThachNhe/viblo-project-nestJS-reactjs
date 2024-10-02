@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import MDEditor, { commands } from "@uiw/react-md-editor";
 import * as actions from "../../redux/action/index";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import React from "react";
 import { FaLock } from "react-icons/fa";
 import * as services from "../../services/index";
@@ -9,22 +9,15 @@ import toast from "react-hot-toast";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
-import { initFlowbite } from "flowbite";
 import { AppContext } from "../../contexts/AppContext";
 import { handlerFileUpload } from "../../utils/utils";
-
-const checkboxSelect = [
-  { id: "PUBLIC", type: "checkbox", label: "Công khai" },
-  { id: "LINK", type: "checkbox", label: "Bất kì ai với link" },
-  { id: "PRIVATE", type: "checkbox", label: "Chỉ mình tôi" },
-];
+import { privacyOptions } from "../../utils/index";
 
 function PublishPost() {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const [title, setTitle] = useState("");
   const [markdownText, setMarkdownText] = useState("");
-  const UserInfo = useSelector((state) => state.auth.userInfo);
   const [status, setStatus] = useState("PUBLIC");
   const navigator = useNavigate();
   const ctx = useContext(AppContext);
@@ -52,7 +45,6 @@ function PublishPost() {
     .filter((cmd) => cmd.name !== "image");
 
   useEffect(() => {
-    initFlowbite();
     dispatch(actions.getAllTag());
     ctx.setIsHomePage(false);
     return () => {
@@ -238,7 +230,7 @@ function PublishPost() {
                     </span>
                     <span>Hiển thị:</span>
                     <div className="flex flex-col gap-2">
-                      {checkboxSelect.map((item, index) => {
+                      {privacyOptions?.map((item, index) => {
                         return (
                           <div className="flex items-center me-4" key={index}>
                             <input

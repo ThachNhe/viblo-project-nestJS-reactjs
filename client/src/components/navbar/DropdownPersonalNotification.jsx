@@ -84,7 +84,7 @@ const DropdownPersonalNotification = ({
                 return (
                   <div
                     key={index}
-                    className={`flex items-center gap-1 px-2 border-t cursor-pointer
+                    className={`flex items-center gap-1 px-2 border-b cursor-pointer
                       ${
                         notification?.isRead
                           ? ""

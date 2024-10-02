@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 function TableOfContents({ headings, activeHeading, onClick }) {
   // Hàm render các tiêu đề theo cấp độ
-  const renderHeadings = (headings, level = 1) => {
+  const renderHeadings = (headings) => {
     return (
       <ul className="flex flex-col gap-3">
         {headings?.map((heading) => (

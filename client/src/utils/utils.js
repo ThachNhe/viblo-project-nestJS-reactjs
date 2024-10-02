@@ -19,6 +19,7 @@ export const handlerFileUpload = async (file) => {
     console.error("error when upload!!:", error);
   }
 };
+
 export const extractHeadings = (markdown) => {
   try {
     const headingRegex = /^(##?) (.*)$/gm; // Tìm các tiêu đề h2 và h3

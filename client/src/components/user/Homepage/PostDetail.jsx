@@ -11,7 +11,7 @@ import ProposedCourse from "./ProposedCourse";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../../redux/action/index";
 import * as services from "../../../services/index";
-import CommentSection from "./CommentSection.";
+import CommentSection from "./CommentSection";
 import toast from "react-hot-toast";
 import Slider from "react-slick";
 import { extractHeadings } from "../../../utils/utils";

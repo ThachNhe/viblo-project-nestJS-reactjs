@@ -1,9 +1,9 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyB9txBOO3g8V2KWn4mMQ_G1eA_woWNOp7Q",
-  authDomain: "viblo-fb.firebaseapp.com",
-  projectId: "viblo-fb",
-  storageBucket: "viblo-fb.appspot.com",
-  messagingSenderId: "109860985300",
-  appId: "1:109860985300:web:5471f85ba47ff42e3fde41",
-  measurementId: "G-54V92WZF3V",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STATGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };

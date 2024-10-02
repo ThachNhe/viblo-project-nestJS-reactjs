@@ -12,8 +12,8 @@ function CommentSection({
   onCreateComment,
   parentId,
 }) {
+  
   const [resId, setResId] = useState();
-
   const handlerOpenResToResForm = (commentId) => {
     setResId(commentId);
   };

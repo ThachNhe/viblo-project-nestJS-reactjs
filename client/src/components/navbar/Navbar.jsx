@@ -49,6 +49,7 @@ const Navbar = ({ isHomePage }) => {
     }
   }
 
+
   useEffect(() => {
     async function requestPermission() {
       const permission = await Notification.requestPermission();
@@ -57,10 +58,10 @@ const Navbar = ({ isHomePage }) => {
         try {
           const currentToken = await getToken(messaging, {
             vapidKey:
-              "BE5Os3Ulf1vmx_wXRvCSW47s5QMtbiHJbpQ-NpWic2r1k32OZmnk6GIgmx4R3uQM5oOTNFOtWIebFAxsRKs7nyg",
+             process.env.REACT_APP_FIREBASE_API_KEY,
           });
           if (currentToken) {
-            const res = await services.saveNotificationToken({
+           await services.saveNotificationToken({
               token: currentToken,
             });
           } else {
@@ -78,22 +79,22 @@ const Navbar = ({ isHomePage }) => {
     }
 
     // Đăng ký service worker cho thông báo background
-    // if ("serviceWorker" in navigator) {
-    //   navigator.serviceWorker
-    //     .register("/firebase-messaging-sw.js")
-    //     .then((registration) => {
-    //       console.log(
-    //         "Service Worker registered with scope:",
-    //         registration.scope
-    //       );
-    //     })
-    //     .catch((error) => {
-    //       console.log(
-    //         "An error occurred while registering service worker: ",
-    //         error
-    //       );
-    //     });
-    // }
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then((registration) => {
+          console.log(
+            "Service Worker registered with scope:",
+            registration.scope
+          );
+        })
+        .catch((error) => {
+          console.log(
+            "An error occurred while registering service worker: ",
+            error
+          );
+        });
+    }
     requestPermission();
     // Listen for foreground messages
     onMessage(messaging, (payload) => {

@@ -14,7 +14,6 @@ const Login = () => {
   const [password, setPassword] = useState();
   const userInfo = useSelector((state) => state?.auth?.userInfo);
   const isLogin = useSelector((state) => state?.auth?.isLogin);
-
   const ctx = useContext(AppContext);
 
   useEffect(() => {

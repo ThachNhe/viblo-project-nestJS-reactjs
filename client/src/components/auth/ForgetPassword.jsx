@@ -3,9 +3,6 @@ import { AppContext } from "../../contexts/AppContext";
 import debounce from "lodash/debounce"
 import * as  services from '../../services/index'
 import toast from "react-hot-toast";
-import { set } from "lodash";
-const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -49,7 +46,6 @@ const ForgetPassword = () => {
       alert("Email không hợp lệ");
       return;
     }
-
     try {
       const payload = {email}
       const res = await services.forgotPassword(payload);

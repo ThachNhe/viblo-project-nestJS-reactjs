@@ -237,6 +237,7 @@ export class AuthService {
     };
   }
 
+  // reset password service
   async resetPassword(body: ResetPasswordDto) {
     const payload = await this.jwtService.verify(body.token, {
       secret: this.configService.get('JWT_RESET_KEY'),
