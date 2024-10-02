@@ -23,7 +23,6 @@ import {
 } from './entity/index';
 
 import { StatisticsModule } from './statistics/statistics.module';
-// import { FirebaseModule } from './firebase/firebase.module';
 import { NotificationModule } from './notification/notification.module';
 @Module({
   imports: [

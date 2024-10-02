@@ -9,7 +9,6 @@ import {
   Request,
   Query,
   Delete,
-  Post,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from '../enums/role.enum';

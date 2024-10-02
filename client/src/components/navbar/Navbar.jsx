@@ -26,6 +26,7 @@ const Navbar = ({ isHomePage }) => {
   );
   const [unReadNumber, setUnReadNumber] = useState(0);
   const ctx = useContext(AppContext);
+  // console.log("firebaseConfig", firebaseConfig);
 
   const fapp = initializeApp(firebaseConfig);
   const messaging = getMessaging(fapp);
@@ -58,7 +59,7 @@ const Navbar = ({ isHomePage }) => {
         try {
           const currentToken = await getToken(messaging, {
             vapidKey:
-             process.env.REACT_APP_FIREBASE_API_KEY,
+             process.env.REACT_APP_VAPID_KEY,
           });
           if (currentToken) {
            await services.saveNotificationToken({

@@ -1,4 +1,4 @@
-import { Controller, Body, Put, Query, Get, UseGuards } from '@nestjs/common';
+import { Controller, Put, Query, Get, UseGuards } from '@nestjs/common';
 import { FileUploadService } from './file-upload.service';
 import { ApiOkResponse } from '@nestjs/swagger';
 import {
@@ -16,14 +16,12 @@ export class MinioController {
   @ApiOkResponse({ type: PresignedUrlResponseDTO })
   @UseGuards(AuthGuard('jwt'))
   async getPresignedUrl(@Query() query: FileUploadDTO) {
-    const bucketName = 'test';
     const objectName = query.fileName;
-    const expirySeconds = 60 * 60 * 60;
 
     const presignedURL = await this.minioService.generatePresignedUrl(
-      bucketName,
+      process.env.MINIO_BUCKET_NAME,
       objectName,
-      expirySeconds,
+      +process.env.MINIO_EXPIRES,
     );
 
     return {
@@ -36,13 +34,11 @@ export class MinioController {
   @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: ImageUrlResponseDTO })
   async getPresignedGetUrl(@Query() query: FileUploadDTO) {
-    const bucketName = 'test';
     const objectName = query.fileName;
-    const expirySeconds = 60 * 60 * 60;
     const imageURL = await this.minioService.generatePresignedGetUrl(
-      bucketName,
+      process.env.MINIO_BUCKET_NAME,
       objectName,
-      expirySeconds,
+      +process.env.MINIO_EXPIRES,
     );
     return {
       status: 'success',

@@ -380,7 +380,6 @@ export class PostService {
   }
 
   async getRelatedPosts(postId: number) {
-    // Lấy bài viết hiện tại và các tags của nó
     const currentPost = await this.postRepository.findOne({
       where: { id: postId },
       relations: ['tags'],
@@ -390,10 +389,8 @@ export class PostService {
       throw new NotFoundException(`Post with id ${postId} not found`);
     }
 
-    // Lấy danh sách tag ids từ bài viết hiện tại
     const tagIds = currentPost.tags.map((tag) => tag.id);
 
-    // Tìm các bài viết khác có ít nhất 1 tag trùng
     const relatedPosts = await this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
@@ -405,8 +402,8 @@ export class PostService {
         'author.avatar',
       ])
       .where('tag.id IN (:...tagIds)', { tagIds })
-      .andWhere('post.id != :postId', { postId }) // Loại trừ bài viết hiện tại
-      .orderBy('post.created_at', 'DESC') // Có thể sắp xếp theo thời gian tạo
+      .andWhere('post.id != :postId', { postId })
+      .orderBy('post.created_at', 'DESC')
       .getMany();
 
     return {

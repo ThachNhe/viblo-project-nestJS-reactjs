@@ -6,8 +6,6 @@ import { TagDbPrepareUtil } from './utils/tag-db-prepare.utils';
 describe('Tag Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
-  // let adminToken: string;
-  // let userToken: string;
   let adminCookie: string;
   let userCookie: string;
 

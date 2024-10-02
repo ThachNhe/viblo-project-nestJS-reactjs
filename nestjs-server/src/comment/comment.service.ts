@@ -109,60 +109,56 @@ export class CommentService {
       postId: body.postId,
     });
 
-    //create notification
+    // send && create notification author
+    if (post.author.id !== userId && !replyForUser) {
+      const notiForAuthor = await this.userRepository.findOne({
+        where: { id: post.author.id },
+      });
 
-    console.log('post.author.id : ', post.author.id);
-    console.log('userId : ', userId);
-    console.log('replyForUser?.id : ', replyForUser?.id);
+      const content = `đã bình luận bài viết của bạn`;
 
+      const notification =
+        await this.notificationService.createCommentNotification(
+          content,
+          user,
+          comment.id,
+          post.slug,
+        );
+
+      await this.notificationService.createCommentNotificationDetail(
+        notification,
+        notiForAuthor,
+      );
+
+      await this.notificationService.sendNotificationToUser(
+        post.author.notificationToken,
+        post.id,
+        user.fullName,
+        commentType.POST,
+      );
+    }
+
+    // send && create notification commenter
     if (replyForUser && replyForUser.id !== userId) {
-      console.log('come this case1!!');
-      const notification = new Notification();
-      notification.content = `đã nhắc đến bạn trong một bình luận`;
-      notification.author = user;
-      notification.commentId = comment.id;
-      notification.post_slug = post.slug;
+      const content = `đã nhắc đến bạn trong một bình luận`;
+      const notification =
+        await this.notificationService.createCommentNotification(
+          content,
+          user,
+          comment.id,
+          post.slug,
+        );
 
-      await this.notificationRepository.save(notification);
-      // send && create notification commenter
-      const notificationDetail = new NotificationDetail();
-      notificationDetail.notification = notification;
-      notificationDetail.NotiForUser = replyForUser;
-
-      await this.notificationDetailRepository.save(notificationDetail);
+      await this.notificationService.createCommentNotificationDetail(
+        notification,
+        replyForUser,
+      );
 
       await this.notificationService.sendNotificationToUser(
         replyForUser.notificationToken,
         post.id,
         user.fullName,
         commentType.REPLY,
-      );
-    }
-
-    if (post.author.id !== userId && !replyForUser) {
-      console.log('come this case2!!');
-      const notification = new Notification();
-      notification.content = `đã bình luận bài viết của bạn`;
-      notification.author = user;
-      notification.commentId = comment.id;
-      notification.post_slug = post.slug;
-
-      await this.notificationRepository.save(notification);
-      // send && create notification to author
-      const notiForAuthor = await this.userRepository.findOne({
-        where: { id: post.author.id },
-      });
-
-      const notificationDetail = new NotificationDetail();
-      notificationDetail.notification = notification;
-      notificationDetail.NotiForUser = notiForAuthor;
-
-      await this.notificationDetailRepository.save(notificationDetail);
-      await this.notificationService.sendNotificationToUser(
-        post.author.notificationToken,
-        post.id,
-        user.fullName,
-        commentType.POST,
       );
     }
 

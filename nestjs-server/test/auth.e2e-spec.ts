@@ -1,12 +1,10 @@
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
 import { createTestApp } from './utils/test.utils';
 import { AuthDbPrepareUtil } from './utils/auth-db-prepare.util';
 
 describe('Auth Module (e2e)', () => {
   let app: INestApplication;
-  let appModule: AppModule;
   let requestAgent: any;
   let token: string;
   const registerData = {
@@ -15,6 +13,7 @@ describe('Auth Module (e2e)', () => {
     fullName: 'Dinh van thach',
     password: '123',
   };
+
   beforeAll(async () => {
     const { app: testApp } = await createTestApp([AuthDbPrepareUtil]);
     app = testApp;

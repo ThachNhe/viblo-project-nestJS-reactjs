@@ -6,12 +6,8 @@ import { StatisticDbPrepareUtil } from './utils/statistic-db-prepare.utils';
 describe('Statistic Module (e2e)', () => {
   let app: INestApplication;
   let requestAgent: any;
-  // let userId: number;
   let adminCookie: string;
   let userCookie: string;
-
-  // let adminToken: string;
-  // let userToken: string;
 
   beforeAll(async () => {
     const { app: testApp } = await createTestApp([StatisticDbPrepareUtil]);

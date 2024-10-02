@@ -4,7 +4,7 @@ import * as admin from 'firebase-admin';
 import * as serviceAccount from '../config/serviceAccountKey.json';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NotificationDetail, Notification } from '../entity';
+import { NotificationDetail, Notification, User } from '../entity';
 import { formatVietnameseDate } from 'src/utils/common.function';
 @Injectable()
 export class NotificationService {
@@ -22,6 +22,36 @@ export class NotificationService {
         ),
       });
     }
+  }
+
+  async createCommentNotification(
+    content: string,
+    author: User,
+    commentId: number,
+    post_slug: string,
+  ) {
+    if (!author || !commentId || !post_slug || !content) {
+      throw new Error('Missing required fields');
+    }
+    const notification = new Notification();
+    notification.content = content;
+    notification.author = author;
+    notification.commentId = commentId;
+    notification.post_slug = post_slug;
+    return await this.notificationRepository.save(notification);
+  }
+
+  async createCommentNotificationDetail(
+    notification: Notification,
+    replyForUser: User,
+  ) {
+    if (!notification || !replyForUser) {
+      throw new Error('Missing required fields');
+    }
+    const notificationDetail = new NotificationDetail();
+    notificationDetail.notification = notification;
+    notificationDetail.NotiForUser = replyForUser;
+    await this.notificationDetailRepository.save(notificationDetail);
   }
 
   async sendNotificationToUser(
@@ -45,6 +75,8 @@ export class NotificationService {
         },
         token: token,
       };
+
+      console.log('message', message);
 
       return admin.messaging().send(message);
     } catch (error) {

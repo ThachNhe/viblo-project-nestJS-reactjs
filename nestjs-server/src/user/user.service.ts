@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UrlDto, UserIdDTO, UserPaginationDTO } from './dto/user.dto';
+import { UserIdDTO, UserPaginationDTO } from './dto/user.dto';
 import { formatVietnameseDate } from '../utils/common.function';
 import { Role } from '../enums/index';
 import { InjectRepository } from '@nestjs/typeorm';
