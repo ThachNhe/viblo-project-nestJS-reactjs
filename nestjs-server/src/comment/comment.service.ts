@@ -26,12 +26,6 @@ export class CommentService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
 
-    @InjectRepository(Notification)
-    private notificationRepository: Repository<Notification>,
-
-    @InjectRepository(NotificationDetail)
-    private notificationDetailRepository: Repository<NotificationDetail>,
-
     private readonly commentsGateway: CommentGateway,
 
     private notificationService: NotificationService,
@@ -123,6 +117,7 @@ export class CommentService {
           user,
           comment.id,
           post.slug,
+          post.id,
         );
 
       await this.notificationService.createCommentNotificationDetail(
@@ -147,6 +142,7 @@ export class CommentService {
           user,
           comment.id,
           post.slug,
+          post.id,
         );
 
       await this.notificationService.createCommentNotificationDetail(

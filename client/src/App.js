@@ -2,7 +2,7 @@ import { Provider as StoreProvider } from "react-redux";
 import { store, persistor } from "./redux/store";
 import AppRoutes from "./routes/AppRoute";
 import { useContext } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import Navbar from "./components/navbar/Navbar";
 import "./App.css";
 import { PersistGate } from "redux-persist/integration/react";

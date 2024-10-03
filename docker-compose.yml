@@ -2,11 +2,11 @@ version: '3.8'
 services:
 
   dev-db:
-    container_name: pg_container
+    container_name: ${POSTGES_CONTAINER_NAME}
     image: postgres:latest
     restart: always
     ports:
-      - 5432:5432
+      - ${POSTGRES_PORT}:5432
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -14,25 +14,16 @@ services:
 
     
   test-db:
-    container_name: test_container
+    container_name: ${POSTGES_TEST_CONTAINER_NAME}
     image: postgres:latest
     restart: always
     ports:
-      - 5435:5432
+      - ${POSTGRES_TEST_PORT}:5432
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_DB=testdb
+      - POSTGRES_USER=${POSTGRES_TEST_USER}
+      - POSTGRES_PASSWORD={POSTGRES_TEST_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_TEST_DB}
 
-  # pgadmin:
-  #   container_name: pgadmin4_container
-  #   image: dpage/pgadmin4
-  #   restart: always
-  #   environment:
-  #     - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-  #     - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-  #   ports:
-  #     - "5050:80"
 
   minio:
     image: quay.io/minio/minio

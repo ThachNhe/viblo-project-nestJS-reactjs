@@ -20,7 +20,7 @@ import NoComment from "./NoComment";
 import { socket } from "../../../socket";
 import { useParams } from "react-router-dom";
 import TableOfContents from "./TableOfContent";
-import BannerImg from "../../../images/cover/banner.png"
+import BannerImg from "../../../images/cover/banner.png";
 import { useLocation } from "react-router-dom";
 
 const settings = {
@@ -49,11 +49,12 @@ function PostDetail() {
   const sidebarRef = useRef(null);
   const [isContentScrolledToEnd, setIsContentScrolledToEnd] = useState(false);
   const location = useLocation();
-  const { commentId, scrollTrigger } = location.state || {};
+  const { commentId = 0, scrollTrigger = false, postId } = location.state || {};
 
   useEffect(() => {
     dispatch(actions.getPostBySlug(slug));
     dispatch(actions.getUsersNotifications());
+    postId && dispatch(actions.getCommentByPostId(postId));
     socket.on("newComment", (commentData) => {
       if (+commentData?.postId === +postBySlug?.data?.id) {
         dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
@@ -86,13 +87,18 @@ function PostDetail() {
   }, []);
 
   useEffect(() => {
-    if (commentId && comments?.data?.length > 0) {
+    if (commentId) {
       const commentElement = document.getElementById(`comment-${commentId}`);
+      console.log("commentElement : ", commentElement);
+
       if (commentElement) {
         commentElement.scrollIntoView({ behavior: "smooth" });
       }
     }
-  }, [commentId, comments, scrollTrigger]);
+    console.log("scrollTrigger : ", scrollTrigger);
+    console.log("commentId : ", commentId);
+    console.log("postId : ", postId);
+  }, [commentId, scrollTrigger]);
 
   // Sử dụng hiệu ứng để trích xuất tiêu đề khi mount component
   useEffect(() => {
@@ -187,7 +193,6 @@ function PostDetail() {
     dispatch(actions.getPostBySlug(slug));
   }, [slug]);
 
-
   const handleCreateComment = async (newComment) => {
     try {
       const commentInfo = await services.createComment(newComment);
@@ -242,7 +247,7 @@ function PostDetail() {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen border">
+      <div className="flex flex-col min-h-screen">
         <Banner src={BannerImg} />
         {/* Content */}
         <div className="container mx-auto my-8 px-4 max-w-[1190px] bg-homepage">
@@ -275,7 +280,7 @@ function PostDetail() {
                           postBySlug?.data?.author?.follower_number
                         }
                         postNumber={postBySlug?.data?.author?.post_number}
-                         userAvatar={postBySlug?.data?.author?.avatar}
+                        userAvatar={postBySlug?.data?.author?.avatar}
                       />
 
                       <div className="flex flex-col gap-2">

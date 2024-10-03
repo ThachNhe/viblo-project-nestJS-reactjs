@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useContext , useState} from "react";
+import React, { useEffect, useContext, useState } from "react";
 import Container from "../Container";
 import Logo from "./Logo";
 import Search from "./Search";
@@ -36,8 +36,10 @@ const Navbar = ({ isHomePage }) => {
   }, []);
 
   useEffect(() => {
-    const unRead = usersNotifications?.data?.filter((noti) => !noti.isRead).length;
-  
+    const unRead = usersNotifications?.data?.filter(
+      (noti) => !noti.isRead
+    ).length;
+
     setUnReadNumber(unRead);
   }, [usersNotifications]);
 
@@ -48,8 +50,7 @@ const Navbar = ({ isHomePage }) => {
     } catch (error) {
       console.log(error);
     }
-  }
-
+  };
 
   useEffect(() => {
     async function requestPermission() {
@@ -58,11 +59,10 @@ const Navbar = ({ isHomePage }) => {
         console.log("Notification permission granted.");
         try {
           const currentToken = await getToken(messaging, {
-            vapidKey:
-             process.env.REACT_APP_VAPID_KEY,
+            vapidKey: process.env.REACT_APP_VAPID_KEY,
           });
           if (currentToken) {
-           await services.saveNotificationToken({
+            await services.saveNotificationToken({
               token: currentToken,
             });
           } else {
@@ -134,9 +134,10 @@ const Navbar = ({ isHomePage }) => {
               {isHomePage && <Search />}
 
               <DropdownCommonNotification />
-              <DropdownPersonalNotification data={usersNotifications?.data} 
-              handlerMarkAsRead = {handlerMarkAsRead}
-              unReadNumber={unReadNumber}
+              <DropdownPersonalNotification
+                data={usersNotifications?.data}
+                handlerMarkAsRead={handlerMarkAsRead}
+                unReadNumber={unReadNumber}
               />
               <WriteMenu />
               <Auth isLogin={isLogin} />

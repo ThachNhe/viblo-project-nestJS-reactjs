@@ -21,12 +21,13 @@ const DropdownPersonalNotification = ({
   const handlerShowCommentDetail = async (
     postSlug,
     commentId,
-    notificationId
+    notificationId,
+    postId
   ) => {
     try {
       handlerMarkAsRead(notificationId);
       navigator(`/p/${postSlug}`, {
-        state: { commentId, scrollTrigger: scrollTrigger },
+        state: { commentId, scrollTrigger: scrollTrigger, postId },
       });
       setScrollTrigger(!scrollTrigger);
       setIsOpenDropdown(false);
@@ -95,7 +96,8 @@ const DropdownPersonalNotification = ({
                       handlerShowCommentDetail(
                         notification?.notification?.post_slug,
                         notification?.notification?.commentId,
-                        notification?.id
+                        notification?.id,
+                        notification.notification.postId
                       )
                     }
                   >

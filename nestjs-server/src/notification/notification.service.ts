@@ -29,6 +29,7 @@ export class NotificationService {
     author: User,
     commentId: number,
     post_slug: string,
+    postId: number,
   ) {
     if (!author || !commentId || !post_slug || !content) {
       throw new Error('Missing required fields');
@@ -38,6 +39,7 @@ export class NotificationService {
     notification.author = author;
     notification.commentId = commentId;
     notification.post_slug = post_slug;
+    notification.postId = postId;
     return await this.notificationRepository.save(notification);
   }
 
@@ -94,6 +96,7 @@ export class NotificationService {
         'notification.id',
         'notification.commentId',
         'notification.post_slug',
+        'notification.postId',
         'notification.created_at',
         'author.id',
         'author.fullName',

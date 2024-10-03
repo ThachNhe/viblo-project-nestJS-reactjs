@@ -23,6 +23,9 @@ export class Notification {
   @Column({ default: '' })
   post_slug: string;
 
+  @Column()
+  postId: number;
+
   @OneToMany(
     () => NotificationDetail,
     (notificationDetail) => notificationDetail.notification,

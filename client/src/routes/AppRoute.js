@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Redirect } from "react-router-dom";
 import ForgetPassword from "../components/auth/ForgetPassword";
 import Register from "../components/auth/Register";
 import Login from "../components/auth/Login";
@@ -22,6 +22,7 @@ function AppRoutes() {
       </Route>
 
       <Route path="/p/:slug" element={<PostDetail />} />
+      <Route path="/" element={<Navigate to="/followings" />} />
       <Route path="/" element={<PostPageLayout />}>
         <Route index path="followings" element={<FollowingPost />} />
         <Route path="newest" element={<NewestPost />} />
