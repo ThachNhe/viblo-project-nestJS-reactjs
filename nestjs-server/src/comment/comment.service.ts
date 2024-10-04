@@ -1,18 +1,12 @@
+import { commentType } from './../enums/comment.type.enum';
 import { Injectable, NotFoundException, Request } from '@nestjs/common';
 import { CommentDTO, PostIdDTO } from './dto/comment.dto';
-import {
-  Comment,
-  User,
-  Post,
-  Notification,
-  NotificationDetail,
-} from '../entity';
+import { Comment, User, Post } from '../entity';
 import { formatVietnameseDate } from '../utils/common.function';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommentGateway } from './comment.gateway';
-import { NotificationService } from '../../src/notification/notification.service';
-import { commentType } from '../../src/enums';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class CommentService {
@@ -135,6 +129,7 @@ export class CommentService {
 
     // send && create notification commenter
     if (replyForUser && replyForUser.id !== userId) {
+      console.log('2222222222222222');
       const content = `đã nhắc đến bạn trong một bình luận`;
       const notification =
         await this.notificationService.createCommentNotification(

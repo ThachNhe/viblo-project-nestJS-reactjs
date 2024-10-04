@@ -27,7 +27,11 @@ async function bootstrap() {
     jsonDocumentUrl: 'swagger/json',
   });
 
-  await app.listen(process.env.APP_PORT);
+  await app.listen(process.env.APP_PORT || 8080, () => {
+    console.log(
+      `Server is running on http://localhost:${process.env.APP_PORT}`,
+    );
+  });
 
   if (module.hot) {
     module.hot.accept();

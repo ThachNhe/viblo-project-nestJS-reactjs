@@ -10,7 +10,7 @@ import {
   User,
 } from '../entity/index';
 import { CommentGateway } from './comment.gateway';
-import { NotificationModule } from '../../src/notification/notification.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
