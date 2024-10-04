@@ -2,11 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 
 import * as cookieParser from 'cookie-parser';
 declare const module: any;
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
 
   app.enableCors({
     origin: true,
@@ -27,7 +35,7 @@ async function bootstrap() {
     jsonDocumentUrl: 'swagger/json',
   });
 
-  await app.listen(process.env.APP_PORT || 8080, () => {
+  await app.listen(+process.env.APP_PORT || 8000, '0.0.0.0', () => {
     console.log(
       `Server is running on http://localhost:${process.env.APP_PORT}`,
     );

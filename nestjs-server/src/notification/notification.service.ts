@@ -5,7 +5,7 @@ import * as serviceAccount from '../config/serviceAccountKey.json';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationDetail, Notification, User } from '../entity';
-import { formatVietnameseDate } from 'src/utils/common.function';
+import { formatVietnameseDate } from '../utils/common.function';
 @Injectable()
 export class NotificationService {
   constructor(

@@ -12,7 +12,34 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
 
-    
+  nestjs-server:
+    build:
+      context: ./nestjs-server  # Chỉ định thư mục chứa Dockerfile
+      dockerfile: Dockerfile     # Tên file Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - dev-db
+    environment:
+      DATABASE_HOST: dev-db
+      DATABASE_PORT: ${POSTGRES_PORT}        # Port của PostgreSQL
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_NAME: ${POSTGRES_DB}
+      DATABASE_USER: ${POSTGRES_USER}
+    volumes:
+      - ./nestjs-server:/app            # Gắn mã nguồn của bạn vào container
+      - /app/node_modules               # Đảm bảo node_modules không bị ghi đè
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'      # Giới hạn CPU cho container
+          memory: 512M     # Giới hạn bộ nhớ cho container
+        reservations:
+          cpus: '0.5'      # Đảm bảo có sẵn tài nguyên CPU
+          memory: 512M     # Đảm bảo có sẵn bộ nhớ
+
+
   test-db:
     container_name: ${POSTGES_TEST_CONTAINER_NAME}
     image: postgres:latest
@@ -37,24 +64,11 @@ services:
     volumes:
       - ~/minio/data:/data
     command: server /data --console-address ":9001"
-    # app:
-    #     build:
-    #       context: ./nestjs-server
-    #       dockerfile: Dockerfile
-    #     container_name: nest-docker-postgres
-    #     environment:
-    #       - PORT=${PORT}
-    #     ports:
-    #       - '3000:3000'
-    #     depends_on:
-    #       - db
-    #     volumes:
-    #       - ./src:/app/src
 
-    # networks:
-    #   shared-network:
 volumes:
   cloudbeaver:
+
+
 #  api.viblo.local
 # viblo.local
 # https

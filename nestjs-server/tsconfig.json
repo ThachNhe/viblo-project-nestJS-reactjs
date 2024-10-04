@@ -20,4 +20,9 @@
     "resolveJsonModule": true,
     // "esModuleInterop": true,
   }
+  , "watchOptions": {
+    "watchFile": "dynamicPriorityPolling",
+    "watchDirectory": "dynamicPriorityPolling",
+    "excludeDirectories": ["**/node_modules", "dist"]
+  }
 }

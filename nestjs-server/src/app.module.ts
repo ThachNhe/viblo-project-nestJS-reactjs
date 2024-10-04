@@ -33,12 +33,15 @@ import { NotificationModule } from './notification/notification.module';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         // host: configService.get<string>('DB_HOST_TEST'),
-        // port: configService.get<number>('DB_PORT_TEST'),
+        // port: +configService.get<number>('DB_PORT_TEST'),
         // username: configService.get<string>('DB_USERNAME_TEST'),
         // password: configService.get<string>('DB_PASSWORD_TEST'),
         // database: configService.get<string>('DB_TEST'),
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
+        host:
+          process.env.NODE_ENV === 'test'
+            ? 'localhost' // Sử dụng localhost khi chạy test cục bộ
+            : 'dev-db', // Sử dụng dev-db khi chạy trong Docker
+        port: +configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_MAIN'),
@@ -73,7 +76,15 @@ import { NotificationModule } from './notification/notification.module';
   controllers: [],
 })
 export class AppModule implements NestModule {
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) {
+    // console.log('Database Config:', {
+    //   host: 'dev-db',
+    //   port: +configService.get<number>('DB_PORT'),
+    //   username: configService.get<string>('DB_USERNAME'),
+    //   password: configService.get<string>('DB_PASSWORD'),
+    //   database: configService.get<string>('DB_MAIN'),
+    // });
+  }
 
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
