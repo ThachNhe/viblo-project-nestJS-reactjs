@@ -16,10 +16,9 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entity/User';
 import { Repository } from 'typeorm';
-
 import { InjectRepository } from '@nestjs/typeorm';
 import { MailService } from './mail.service';
-import { error } from 'console';
+import { FastifyReply } from 'fastify';
 
 @Injectable()
 export class AuthService {
@@ -58,7 +57,7 @@ export class AuthService {
   }
 
   // user login service
-  async login(body: AuthDTOLogin, response: Response) {
+  async login(body: AuthDTOLogin, response: FastifyReply) {
     const user = await this.userRepository.findOne({
       where: [{ email: body.email }, { userName: body.userName }],
       select: [
@@ -103,14 +102,14 @@ export class AuthService {
       user.roles,
     );
 
-    response.cookie('accessToken', accessToken, {
+    response.setCookie('accessToken', accessToken, {
       httpOnly: true,
       secure: false,
       sameSite: 'strict',
       path: '/',
     });
 
-    response.cookie('refreshToken', refreshToken, {
+    response.setCookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: false,
       sameSite: 'strict',

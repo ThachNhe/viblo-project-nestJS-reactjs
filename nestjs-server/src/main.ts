@@ -2,12 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import fastifyCookie from '@fastify/cookie';
 
-import * as cookieParser from 'cookie-parser';
 declare const module: any;
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
@@ -16,6 +17,9 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
+  await app.register(fastifyCookie, {
+    secret: 'my-secret', // for cookies signature
+  });
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

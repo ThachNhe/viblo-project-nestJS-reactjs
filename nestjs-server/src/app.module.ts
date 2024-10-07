@@ -32,15 +32,14 @@ import { NotificationModule } from './notification/notification.module';
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
+
         // host: configService.get<string>('DB_HOST_TEST'),
         // port: +configService.get<number>('DB_PORT_TEST'),
         // username: configService.get<string>('DB_USERNAME_TEST'),
         // password: configService.get<string>('DB_PASSWORD_TEST'),
         // database: configService.get<string>('DB_TEST'),
-        host:
-          process.env.NODE_ENV === 'test'
-            ? 'localhost' // Sử dụng localhost khi chạy test cục bộ
-            : 'dev-db', // Sử dụng dev-db khi chạy trong Docker
+        // host: 'localhost',
+        host: process.env.NODE_ENV === 'test' ? 'localhost' : 'dev-db',
         port: +configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),

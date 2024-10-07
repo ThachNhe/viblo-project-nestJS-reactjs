@@ -14,13 +14,13 @@ import {
   ResetPasswordDto,
 } from './dto/auth.dto';
 import { Response, Request } from 'express';
-import { AuthGuard } from '@nestjs/passport';
 import { ApiOkResponse } from '@nestjs/swagger';
 import {
   LoginResponseDto,
   LogoutResponseDTO,
   RegisterResponseDto,
 } from './dto/response-auth.dto';
+import { FastifyRequest, FastifyReply } from 'fastify';
 
 @Controller('auth')
 export class AuthController {
@@ -35,7 +35,7 @@ export class AuthController {
   @ApiOkResponse({ type: LoginResponseDto })
   login(
     @Body() body: AuthDTOLogin,
-    @Res({ passthrough: true }) response: Response,
+    @Res({ passthrough: true }) response: FastifyReply,
   ) {
     if (!body.email && !body.userName) {
       throw new BadRequestException(
