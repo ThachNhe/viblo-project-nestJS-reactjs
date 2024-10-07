@@ -41,11 +41,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'      # Giới hạn CPU cho container
-          memory: 512M     # Giới hạn bộ nhớ cho container
+          cpus: '1.0'       # Giới hạn CPU
+          memory: '512M'    # Giới hạn bộ nhớ
         reservations:
-          cpus: '0.5'      # Đảm bảo có sẵn tài nguyên CPU
-          memory: 512M     # Đảm bảo có sẵn bộ nhớ
+          cpus: '0.5'       # Dự trữ CPU
+          memory: '256M'    # Dự trữ bộ nhớ
   minio:
     image: quay.io/minio/minio
     container_name: minio
