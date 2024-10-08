@@ -13,6 +13,7 @@ import AdminApp from "../components/admin/AdminApp";
 import PostPageLayout from "../components/layouts/PostPageLayout";
 import FollowingPost from "../components/user/PostPage/FollowingPost";
 import ResetPassword from "../components/auth/ResetPassword";
+import UserBlog from "../components/user/UserBlog";
 
 function AppRoutes() {
   return (
@@ -23,6 +24,7 @@ function AppRoutes() {
 
       <Route path="/p/:slug" element={<PostDetail />} />
       <Route path="/" element={<Navigate to="/followings" />} />
+      <Route path="/user/:userName" element={<UserBlog />} />
       <Route path="/" element={<PostPageLayout />}>
         <Route index path="followings" element={<FollowingPost />} />
         <Route path="newest" element={<NewestPost />} />

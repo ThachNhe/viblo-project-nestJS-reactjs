@@ -4,6 +4,8 @@ import { FaUserPlus } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
 import NumberFormatter from "../../NumberFormatter";
+import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 
 function UserInfo({
   fullName,
@@ -11,11 +13,22 @@ function UserInfo({
   starNumber,
   followerNumber,
   postNumber,
-  userAvatar
+  userAvatar,
 }) {
+  const navigate = useNavigate();
+  console.log("userName", userName);
+  const handlerNavigateToUserBlog = useCallback(() => {
+    navigate(`/user/${userName}`);
+  });
+
   return (
     <div className="flex gap-2 p-1 items-center">
-      <Avatar imgURL={userAvatar} height={37} width={37} />
+      <Avatar
+        imgURL={userAvatar}
+        height={37}
+        width={37}
+        onClick={handlerNavigateToUserBlog}
+      />
       <div className="flex flex-col gap-1 ">
         <div className="flex gap-2 items-center">
           <span className=" text-blue-400 hover:underline font-medium">
@@ -63,7 +76,7 @@ function UserInfo({
 
           {/* <!-- Tooltip for bookmark --> */}
           <div className="relative flex items-center gap-1 group">
-            <MdEdit  data-tooltip-id="my-tooltip-2"/>
+            <MdEdit data-tooltip-id="my-tooltip-2" />
             <span className="">
               <NumberFormatter number={postNumber} />
             </span>

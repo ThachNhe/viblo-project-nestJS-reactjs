@@ -8,7 +8,8 @@ export class FileUploadService {
 
   constructor(private configService: ConfigService) {
     this.minioClient = new Minio.Client({
-      endPoint: this.configService.get('MINIO_ENDPOINT'),
+      // endPoint: 'minio',
+      endPoint: 'localhost',
       port: +this.configService.get('MINIO_PORT'),
       useSSL: this.configService.get('MINIO_USE_SSL') === 'true',
       accessKey: this.configService.get('MINIO_ACCESS_KEY'),
@@ -30,7 +31,14 @@ export class FileUploadService {
           if (err) {
             reject(err);
           } else {
-            resolve(presignedUrl);
+            const localUrl = presignedUrl.replace(
+              'http://minio',
+              'http://localhost',
+            );
+            console.log('localUrl', localUrl);
+            console.log('presignedUrl1', presignedUrl);
+            // resolve(localUrl);
+            resolve(localUrl);
           }
         },
       );
@@ -50,6 +58,12 @@ export class FileUploadService {
         (err, presignedUrl) => {
           if (err) reject(err);
           else {
+            // const localUrl = presignedUrl.replace(
+            //   'http://minio',
+            //   'http://localhost',
+            // );
+            // console.log('localUrl', localUrl);
+            // resolve(localUrl);
             resolve(presignedUrl);
           }
         },

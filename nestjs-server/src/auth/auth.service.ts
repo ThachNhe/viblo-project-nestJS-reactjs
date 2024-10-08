@@ -16,9 +16,10 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entity/User';
 import { Repository } from 'typeorm';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { MailService } from './mail.service';
-import { FastifyReply } from 'fastify';
+import { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
 export class AuthService {

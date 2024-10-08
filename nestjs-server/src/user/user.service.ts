@@ -45,6 +45,25 @@ export class UserService {
     };
   }
 
+  async searchUser(userName: string) {
+    const user = await this.userRepository.findOne({
+      where: { userName: userName },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const { password, email, roles, ...result } = user;
+
+    return {
+      success: true,
+      statusCode: 200,
+      error: null,
+      data: result,
+    };
+  }
+
   async uploadAvatar(userId: number, avatar: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import UserInfo from "./UserInfo";
 import ArticleStats from "../../ArticleStats";
 import Posts from "./Posts";
@@ -18,7 +18,7 @@ import { extractHeadings } from "../../../utils/utils";
 import Banner from "./Banner";
 import NoComment from "./NoComment";
 import { socket } from "../../../socket";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TableOfContents from "./TableOfContent";
 import BannerImg from "../../../images/cover/banner.png";
 import { useLocation } from "react-router-dom";
@@ -33,6 +33,7 @@ const settings = {
 
 function PostDetail() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const comments = useSelector((state) => state.comment.commentByPostId);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const relatedPosts = useSelector((state) => state.post.relatedPosts);
@@ -102,6 +103,38 @@ function PostDetail() {
 
   // Sử dụng hiệu ứng để trích xuất tiêu đề khi mount component
   useEffect(() => {
+    dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
+    dispatch(actions.getRelatedPosts(postBySlug?.data?.id));
+    const user = postBySlug?.data?.userVotes.find(
+      (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
+    );
+
+    const bookmark = postBySlug?.data?.bookmarkers.find(
+      (bookmarker) => +bookmarker?.id === +userInfo?.data?.user?.id
+    );
+
+    if (+bookmark?.id === +userInfo?.data?.user?.id) {
+      setIsBookmark(true);
+    }
+
+    if (+bookmark?.id !== +userInfo?.data?.user?.id) {
+      setIsBookmark(false);
+    }
+
+    if (user?.voteType === "UPVOTE") {
+      setIsUpvote(true);
+      setIsDownvote(false);
+    }
+
+    if (user?.voteType === "DOWNVOTE") {
+      setIsUpvote(false);
+      setIsDownvote(true);
+    }
+
+    if (!user) {
+      setIsUpvote(false);
+      setIsDownvote(false);
+    }
     const headingsFromMarkdown = extractHeadings(
       postBySlug?.data?.content_markdown
     );
@@ -152,40 +185,6 @@ function PostDetail() {
   //   };
   // }, [headings, activeHeading]);
 
-  useEffect(() => {
-    dispatch(actions.getCommentByPostId(postBySlug?.data?.id));
-    dispatch(actions.getRelatedPosts(postBySlug?.data?.id));
-    const user = postBySlug?.data?.userVotes.find(
-      (vote) => +vote?.user?.id === +userInfo?.data?.user?.id
-    );
-
-    const bookmark = postBySlug?.data?.bookmarkers.find(
-      (bookmarker) => +bookmarker?.id === +userInfo?.data?.user?.id
-    );
-
-    if (+bookmark?.id === +userInfo?.data?.user?.id) {
-      setIsBookmark(true);
-    }
-
-    if (+bookmark?.id !== +userInfo?.data?.user?.id) {
-      setIsBookmark(false);
-    }
-
-    if (user?.voteType === "UPVOTE") {
-      setIsUpvote(true);
-      setIsDownvote(false);
-    }
-
-    if (user?.voteType === "DOWNVOTE") {
-      setIsUpvote(false);
-      setIsDownvote(true);
-    }
-
-    if (!user) {
-      setIsUpvote(false);
-      setIsDownvote(false);
-    }
-  }, [postBySlug]);
 
   // Xử lý sự kiện cuộn của phần nội dung bài viết
 
@@ -245,6 +244,8 @@ function PostDetail() {
     }
   };
 
+  
+ 
   return (
     <>
       <div className="flex flex-col min-h-screen">
@@ -281,6 +282,7 @@ function PostDetail() {
                         }
                         postNumber={postBySlug?.data?.author?.post_number}
                         userAvatar={postBySlug?.data?.author?.avatar}
+                        
                       />
 
                       <div className="flex flex-col gap-2">

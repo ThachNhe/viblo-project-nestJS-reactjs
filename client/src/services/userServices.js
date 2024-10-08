@@ -43,6 +43,10 @@ const saveNotificationToken = (body) => {
   return axios.put("/users/save-notification-token", body);
 };
 
+const getProfile = (userName) => {
+  return axios.get(`/users/details/${userName}`);
+};
+
 export {
   userLoginService,
   userRegisterService,
@@ -55,4 +59,5 @@ export {
   forgotPassword,
   resetPassword,
   saveNotificationToken,
+  getProfile,
 };

@@ -33,6 +33,12 @@ import {
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Get('details/:userName')
+  @ApiOkResponse({ type: GetUsersResponseDto })
+  searchUser(@Param('userName') params: string) {
+    return this.userService.searchUser(params);
+  }
+
   @Get('top')
   @ApiOkResponse({ type: GetUsersResponseDto })
   async getTopUsers(@Query() query: UserPaginationDTO) {

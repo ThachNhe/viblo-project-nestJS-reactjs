@@ -21,6 +21,7 @@ services:
       - POSTGRES_PASSWORD={POSTGRES_TEST_PASSWORD}
       - POSTGRES_DB=${POSTGRES_TEST_DB}
   nestjs-server:
+    container_name: server
     build:
       context: ./nestjs-server  # Chỉ định thư mục chứa Dockerfile
       dockerfile: Dockerfile     # Tên file Dockerfile
@@ -34,6 +35,12 @@ services:
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
       DATABASE_NAME: ${POSTGRES_DB}
       DATABASE_USER: ${POSTGRES_USER}
+      NODE_ENV: development
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: 'false'
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     volumes:
       - ./nestjs-server:/app            # Gắn mã nguồn của bạn vào container
       - /app/node_modules               # Đảm bảo node_modules không bị ghi đè
@@ -52,6 +59,8 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
+    extra_hosts:
+      - "minio:127.0.0.1"
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
