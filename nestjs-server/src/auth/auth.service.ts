@@ -16,10 +16,11 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../entity/User';
 import { Repository } from 'typeorm';
-
 import { InjectRepository } from '@nestjs/typeorm';
-import { MailService } from './mail.service';
+import { MailService } from '../mail/mail.service';
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +30,7 @@ export class AuthService {
     private mailService: MailService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectQueue('mail') private mailQueue: Queue,
   ) {}
 
   // user register service
@@ -226,7 +228,9 @@ export class AuthService {
       secret: this.configService.get('JWT_RESET_KEY'),
     });
 
-    await this.mailService.sendResetPasswordMail(user.email, token);
+    await this.mailQueue.add({ email, token }); // Đưa job vào queue
+
+    // await this.mailService.sendPasswordResetEmail(user.email, token);
 
     return {
       success: true,

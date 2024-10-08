@@ -6,11 +6,13 @@ import { JwtStrategy } from './strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entity/index';
 import { ConfigModule } from '@nestjs/config';
-import { MailService } from './mail.service';
+import { MailService } from '../mail/mail.service';
+import { BullModule } from '@nestjs/bull';
 @Module({
   imports: [
     JwtModule.register({}),
     TypeOrmModule.forFeature([User]),
+    BullModule.registerQueue({ name: 'mail' }),
     ConfigModule,
   ],
   providers: [AuthService, JwtStrategy, MailService],
