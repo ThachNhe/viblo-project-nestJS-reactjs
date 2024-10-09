@@ -8,6 +8,9 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import fastifyCookie from '@fastify/cookie';
+import { join } from 'path';
+import * as pointOfView from 'point-of-view';
+import * as handlebars from 'handlebars';
 
 declare const module: any;
 async function bootstrap() {
@@ -18,13 +21,23 @@ async function bootstrap() {
   );
 
   await app.register(fastifyCookie, {
-    secret: 'my-secret', // for cookies signature
+    secret: 'my-secret',
   });
+
+  app.register(pointOfView, {
+    engine: {
+      handlebars: handlebars,
+    },
+    root: join(__dirname, '..', 'views'),
+    viewExt: 'hbs',
+  });
+
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
+
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()

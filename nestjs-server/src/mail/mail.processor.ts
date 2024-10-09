@@ -1,14 +1,14 @@
 import { Process, Processor } from '@nestjs/bull';
-import { MailService } from './mail.service';
 import { Job } from 'bull';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Processor('mail')
 export class MailProcessor {
-  constructor(private readonly mailService: MailService) {}
+  constructor(private mailerService: MailerService) {}
 
   @Process()
   async handleMail(job: Job) {
-    const { email, token } = job.data;
-    await this.mailService.sendPasswordResetEmail(email, token);
+    const { mailOptions } = job.data;
+    await this.mailerService.sendMail(mailOptions);
   }
 }

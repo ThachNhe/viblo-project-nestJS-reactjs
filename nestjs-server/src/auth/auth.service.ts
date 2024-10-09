@@ -228,9 +228,7 @@ export class AuthService {
       secret: this.configService.get('JWT_RESET_KEY'),
     });
 
-    await this.mailQueue.add({ email, token }); // Đưa job vào queue
-
-    // await this.mailService.sendPasswordResetEmail(user.email, token);
+    await this.mailService.sendPasswordResetEmail(email, token);
 
     return {
       success: true,
