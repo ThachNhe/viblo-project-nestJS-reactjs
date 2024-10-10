@@ -14,13 +14,9 @@ import { handlerFileUpload } from "../../utils/utils";
 import * as services from "../../services/index";
 import toast from "react-hot-toast";
 import ClickOutside from "../ClickOutside";
-import { useNavigate } from "react-router-dom";
 
 const UserMenu = () => {
   const [isOpenUserMenu, setIsOpenUserMenu] = useState(false);
-  const navigate = useNavigate();
-
-  const isLogin = useSelector((state) => state?.auth?.isLogin);
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const userAvatar = useSelector((state) => state?.user?.userAvatar);
@@ -37,12 +33,6 @@ const UserMenu = () => {
     e.preventDefault();
     dispatch(actions.logout());
   };
-
-  // useEffect(() => {
-  //   if (!isLogin) {
-  //     navigate("/login");
-  //   }
-  // }, [isLogin]);
 
   const toggleOpen = useCallback(() => {
     setIsOpenUserMenu((prev) => !prev);

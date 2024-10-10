@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 const Navbar = ({ isHomePage }) => {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
+  console.log("isLogin", isLogin);
   const usersNotifications = useSelector(
     (state) => state.notification.userNotifications
   );
@@ -130,7 +131,7 @@ const Navbar = ({ isHomePage }) => {
               <Logo />
               <MainMenu />
             </div>
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-row gap-2 items-center"> 
               {isHomePage && <Search />}
 
               <DropdownCommonNotification />
@@ -139,7 +140,7 @@ const Navbar = ({ isHomePage }) => {
                 handlerMarkAsRead={handlerMarkAsRead}
                 unReadNumber={unReadNumber}
               />
-              <WriteMenu />
+              <WriteMenu isLogin={isLogin} />
               <Auth isLogin={isLogin} />
             </div>
           </div>

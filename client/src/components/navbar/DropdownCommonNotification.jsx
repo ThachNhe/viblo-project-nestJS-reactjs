@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import * as actions from "../../redux/action/index";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import React from "react";
@@ -8,14 +6,12 @@ import { CiEdit } from "react-icons/ci";
 import { PiListDashesBold } from "react-icons/pi";
 import { FaRegQuestionCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import ClickOutside from "../ClickOutside";
 
 const CommonNotification = () => {
   const navigator = useNavigate();
   const isLogin = useSelector((state) => state?.auth?.isLogin);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
-  const dispatch = useDispatch();
 
   useEffect(() => {}, [navigator]);
 

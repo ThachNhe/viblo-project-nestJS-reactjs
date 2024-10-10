@@ -1,9 +1,5 @@
-import Avatar from "./Avatar";
 import MenuItem from "./MenuItem";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import * as actions from "../../redux/action/index";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { CiEdit } from "react-icons/ci";
@@ -11,11 +7,9 @@ import { PiListDashesBold } from "react-icons/pi";
 import { FaRegQuestionCircle } from "react-icons/fa";
 import ClickOutside from "../ClickOutside";
 
-const WriteMenu = () => {
+const WriteMenu = ({isLogin}) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigator = useNavigate();
-  const isLogin = useSelector((state) => state?.auth?.isLogin);
-  const dispatch = useDispatch();
   useEffect(() => {}, [navigator]);
 
   const toggleOpen = useCallback(() => {

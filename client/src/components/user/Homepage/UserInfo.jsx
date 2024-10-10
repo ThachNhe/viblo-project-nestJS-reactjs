@@ -16,7 +16,6 @@ function UserInfo({
   userAvatar,
 }) {
   const navigate = useNavigate();
-  console.log("userName", userName);
   const handlerNavigateToUserBlog = useCallback(() => {
     navigate(`/user/${userName}`);
   });

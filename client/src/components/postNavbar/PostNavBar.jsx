@@ -1,18 +1,9 @@
 import React, { useEffect } from "react";
 import Container from "../Container";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 const PostNavbar = () => {
   const navigator = useNavigate();
-  const isLogin = useSelector((state) => state?.auth?.isLogin);
-
-  useEffect(() => {
-    if (!isLogin) {
-      navigator("/login");
-    }
-  }, [navigator, isLogin]);
-
   return (
     <div className="w-full bg-slate-800 shadow-md  py-4">
       <div className=" py-1">

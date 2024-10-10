@@ -103,3 +103,13 @@ export const updateAvatar = (avatarUrl) => {
     }
   };
 };
+
+export const getRefreshToken = () => {
+  return async (dispatch) => {
+    try {
+      await services.getRefreshToken();
+    } catch (error) {
+      console.log("Err from get refresh token:", error);
+    }
+  };
+};

@@ -20,10 +20,10 @@ function authReducer(state = initialState, action) {
       state.isLogin = true;
       return { ...state };
 
-    case actionTypes.USER_LOGIN_FAILURE:
-      state.userInfo = null;
-      state.isLogin = false;
-      return { ...state };
+    // case actionTypes.USER_LOGIN_FAILURE:
+    //   state.userInfo = null;
+    //   state.isLogin = false;
+    //   return { ...state };
 
     case actionTypes.USER_LOGOUT_SUCCESS:
       state.userInfo = null;

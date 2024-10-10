@@ -139,7 +139,7 @@ export class AuthService {
     };
 
     return await this.jwtService.signAsync(payload, {
-      expiresIn: '100m',
+      expiresIn: '30s',
       secret: this.configService.get('JWT_ACCESS_KEY'),
     });
   }
@@ -153,20 +153,26 @@ export class AuthService {
     };
 
     return await this.jwtService.signAsync(payload, {
-      expiresIn: '365d',
+      expiresIn: '1m',
       secret: this.configService.get('JWT_REFRESH_KEY'),
     });
   }
 
   // request new access token
-  async requestNewAccessToken(req: Request, res: Response) {
+  async requestNewAccessToken(req: Request, res: FastifyReply) {
     const refreshToken = req.cookies.refreshToken;
-    console.log('refreshToken', refreshToken);
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
+
     const payload = await this.jwtService.verifyAsync(refreshToken, {
       secret: this.configService.get('JWT_REFRESH_KEY'),
+    });
+    res.clearCookie('accessToken', {
+      httpOnly: true,
+      secure: false, // Set to true in production
+      sameSite: 'strict',
+      path: '/',
     });
 
     const newAccessToken = await this.getAccessToken(
@@ -175,18 +181,12 @@ export class AuthService {
       payload.role,
     );
 
-    const newRefreshToken = await this.getRefreshToken(
-      payload.email,
-      +payload.sub,
-      payload.role,
-    );
-    res.cookie('refreshToken', newRefreshToken, {
+    res.setCookie('accessToken', newAccessToken, {
       httpOnly: true,
       secure: false,
       sameSite: 'strict',
-      path: './',
+      path: '/',
     });
-
     return {
       success: true,
       statusCode: 200,
@@ -197,8 +197,21 @@ export class AuthService {
   }
 
   // logout service
-  async logout(req: Request) {
-    // req.cookies?.refreshToken = null;
+  async logout(res: FastifyReply) {
+    res.clearCookie('accessToken', {
+      httpOnly: true,
+      secure: false, // Set to true in production
+      sameSite: 'strict',
+      path: '/',
+    });
+
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: false, // Set to true in production
+      sameSite: 'strict',
+      path: '/',
+    });
+
     return {
       success: true,
       statusCode: 200,

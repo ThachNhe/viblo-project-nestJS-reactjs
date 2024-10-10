@@ -46,15 +46,15 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  refresh(@Req() req: Request, @Res({ passthrough: true }) res: FastifyReply) {
     return this.authService.requestNewAccessToken(req, res);
   }
 
   @Post('logout')
   // @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: LogoutResponseDTO })
-  logout(@Req() req: Request) {
-    return this.authService.logout(req);
+  logout(@Res({ passthrough: true }) res: FastifyReply) {
+    return this.authService.logout(res);
   }
 
   @Post('forgot-password')

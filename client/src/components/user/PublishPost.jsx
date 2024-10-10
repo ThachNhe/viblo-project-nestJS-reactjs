@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../contexts/AppContext";
 import { handlerFileUpload } from "../../utils/utils";
 import { privacyOptions } from "../../utils/index";
+// import axios from '../../axios'
 
 function PublishPost() {
   const dispatch = useDispatch();

@@ -47,6 +47,10 @@ const getProfile = (userName) => {
   return axios.get(`/users/details/${userName}`);
 };
 
+const getRefreshToken = () => {
+  return axios.post("/auth/refresh-token", {});
+};
+
 export {
   userLoginService,
   userRegisterService,
@@ -60,4 +64,5 @@ export {
   resetPassword,
   saveNotificationToken,
   getProfile,
+  getRefreshToken,
 };
