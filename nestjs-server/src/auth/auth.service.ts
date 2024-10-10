@@ -19,8 +19,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MailService } from '../mail/mail.service';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { Queue } from 'bull';
-import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +28,6 @@ export class AuthService {
     private mailService: MailService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectQueue('mail') private mailQueue: Queue,
   ) {}
 
   // user register service

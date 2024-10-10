@@ -9,6 +9,9 @@ import { TagModule } from './tag/tag.module';
 import { CommentModule } from './comment/comment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
+import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { redisStore } from 'cache-manager-redis-store';
 
 import {
   Answer,
@@ -30,6 +33,18 @@ import { MailModule } from './mail/mail.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+
+    CacheModule.register({
+      // @ts-ignore
+      store: async () =>
+        await redisStore({
+          // Store-specific configuration:
+          socket: {
+            host: 'localhost',
+            port: 6379,
+          },
+        }),
     }),
     BullModule.forRoot({
       redis: {
@@ -80,7 +95,12 @@ import { MailModule } from './mail/mail.module';
     NotificationModule,
     MailModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+  ],
   controllers: [],
 })
 export class AppModule implements NestModule {
