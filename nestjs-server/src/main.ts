@@ -14,7 +14,6 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  // Thiết lập ứng dụng
   await setup(app);
 
   await app.listen(+process.env.APP_PORT || 8000, '0.0.0.0', () => {

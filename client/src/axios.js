@@ -27,7 +27,7 @@ instance.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        // store.dispatch(actions.getRefreshToken());
+        store.dispatch(actions.getRefreshToken());
       } catch (refreshError) {
         console.log("refreshError", refreshError);
         // if (refreshError.response.status === 500) {

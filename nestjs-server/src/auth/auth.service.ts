@@ -139,7 +139,7 @@ export class AuthService {
     };
 
     return await this.jwtService.signAsync(payload, {
-      expiresIn: '30s',
+      expiresIn: '30m',
       secret: this.configService.get('JWT_ACCESS_KEY'),
     });
   }
@@ -153,7 +153,7 @@ export class AuthService {
     };
 
     return await this.jwtService.signAsync(payload, {
-      expiresIn: '1m',
+      expiresIn: '30d',
       secret: this.configService.get('JWT_REFRESH_KEY'),
     });
   }
